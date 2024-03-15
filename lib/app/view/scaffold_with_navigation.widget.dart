@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spk_app_frontend/auth/auth_gate.dart';
 
-class MainFrame extends StatelessWidget {
-  const MainFrame({
+class ScaffoldWithNavigation extends StatelessWidget {
+  const ScaffoldWithNavigation({
     super.key,
     required this.navigationShell,
   });
@@ -16,24 +15,22 @@ class MainFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AuthGate(
-      appWidget: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 450) {
-            return _ScaffoldWithNavigationBar(
-              body: navigationShell,
-              selectedIndex: navigationShell.currentIndex,
-              onDestinationSelected: _goBranch,
-            );
-          } else {
-            return _ScaffoldWithNavigationRail(
-              body: navigationShell,
-              selectedIndex: navigationShell.currentIndex,
-              onDestinationSelected: _goBranch,
-            );
-          }
-        },
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 450) {
+          return _ScaffoldWithNavigationBar(
+            body: navigationShell,
+            selectedIndex: navigationShell.currentIndex,
+            onDestinationSelected: _goBranch,
+          );
+        } else {
+          return _ScaffoldWithNavigationRail(
+            body: navigationShell,
+            selectedIndex: navigationShell.currentIndex,
+            onDestinationSelected: _goBranch,
+          );
+        }
+      },
     );
   }
 }
