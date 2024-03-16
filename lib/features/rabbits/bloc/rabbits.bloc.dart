@@ -62,7 +62,7 @@ class RabbitsBloc extends Bloc<RabbitsEvent, RabbitsState> {
       '''),
     ))
         .then((value) {
-      print("HELLO");
+      print('HELLO');
       print(value.data);
     }).catchError((error) {
       print(error);

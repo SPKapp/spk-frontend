@@ -55,7 +55,7 @@ class _RabbitsListViewState extends State<RabbitsListView> {
                     ? TextButton(
                         onPressed: () =>
                             context.read<RabbitsBloc>().add(RabbitsFeached()),
-                        child: const Text("Click ME"))
+                        child: const Text('Click ME'))
                     : RabbitsGroupListItem(
                         rabbitsGroup: state.rabbits[index],
                       );
