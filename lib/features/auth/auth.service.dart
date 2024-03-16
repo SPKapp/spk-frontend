@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:spk_app_frontend/features/auth/current_user.model.dart';
+import 'package:spk_app_frontend/features/auth/roles.enum.dart';
 
-// TODO: Ustaw role użytkownika
 class AuthService {
   AuthService();
 
@@ -31,9 +31,16 @@ class AuthService {
 
 extension on User {
   Future<CurrentUser> get toCurrentUser async {
-    final token = await getIdToken();
+    final tokenResult = await getIdTokenResult();
+
+    final token = tokenResult.token;
     if (token == null) {
       throw Exception('Token is null');
+    }
+
+    final claims = tokenResult.claims;
+    if (claims == null) {
+      throw Exception('Claims are null');
     }
 
     return CurrentUser(
@@ -42,6 +49,8 @@ extension on User {
       email: email,
       phone: phoneNumber,
       name: displayName,
+      roles:
+          (claims['roles'] as List).map((role) => Role.fromJson(role)).toList(),
     );
   }
 }

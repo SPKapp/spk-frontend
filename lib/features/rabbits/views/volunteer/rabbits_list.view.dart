@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits.bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbits_group_list_item.widget.dart';
 
@@ -55,7 +56,8 @@ class _RabbitsListViewState extends State<RabbitsListView> {
                     ? TextButton(
                         onPressed: () =>
                             context.read<RabbitsBloc>().add(RabbitsFeached()),
-                        child: const Text('Click ME'))
+                        child: Text(
+                            'Click ME ${context.read<AppBloc>().state.currentUser}'))
                     : RabbitsGroupListItem(
                         rabbitsGroup: state.rabbits[index],
                       );

@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-// TODO: add roles enum
+import 'package:spk_app_frontend/features/auth/roles.enum.dart';
 
 class CurrentUser extends Equatable {
-  /// {@macro user}
   const CurrentUser({
     required this.uid,
     required this.token,
@@ -18,7 +17,7 @@ class CurrentUser extends Equatable {
   final String? email;
   final String? phone;
   final String? name;
-  final List<String>? roles;
+  final List<Role>? roles;
 
   /// Empty user which represents an unauthenticated user.
   static const empty = CurrentUser(uid: '', token: '');
@@ -27,5 +26,5 @@ class CurrentUser extends Equatable {
   bool get isNotEmpty => this != CurrentUser.empty;
 
   @override
-  List<Object?> get props => [uid, email, phone, name, roles];
+  List<Object?> get props => [uid, token, email, phone, name, roles];
 }
