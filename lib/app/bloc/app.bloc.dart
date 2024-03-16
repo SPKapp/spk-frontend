@@ -12,12 +12,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({required AuthService authService})
       : _authService = authService,
         super(
-          authService.currentUser.isNotEmpty
-              ? AppState.authenticated(authService.currentUser)
-              : const AppState.unauthenticated(),
+          const AppState.unauthenticated(),
         ) {
     on<_AppUserChanged>(_onUserChanged);
     on<AppLogoutRequested>(_onLogoutRequested);
+
     _userSubscription = _authService.user
         .listen((currentUser) => add(_AppUserChanged(currentUser)));
   }

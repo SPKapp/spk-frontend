@@ -11,6 +11,15 @@ final class RabbitsGroup extends Equatable {
   final int id;
   final List<Rabbit> rabbits;
 
+  static RabbitsGroup fromJson(Map<String, dynamic> json) {
+    return RabbitsGroup(
+      id: int.parse(json['id']),
+      rabbits: (json['rabbits'] as List)
+          .map((e) => Rabbit.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
   @override
   List<Object> get props => [id, rabbits];
 }

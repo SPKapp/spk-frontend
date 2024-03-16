@@ -1,18 +1,20 @@
 import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'package:spk_app_frontend/common/services/gql.service.dart';
-import 'package:spk_app_frontend/features/rabbits/models/rabbit.model.dart';
-import 'package:spk_app_frontend/features/rabbits/models/rabbits_group.model.dart';
+import 'package:spk_app_frontend/features/rabbits/models/models.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
 
 part 'rabbits.event.dart';
 part 'rabbits.state.dart';
 
 class RabbitsBloc extends Bloc<RabbitsEvent, RabbitsState> {
-  RabbitsBloc() : super(const RabbitsState()) {
+  RabbitsBloc(RabbitsRepository rabbitsRepository)
+      : _rabbitsRepository = rabbitsRepository,
+        super(const RabbitsState()) {
     on<RabbitsFeached>(_onRabbitsFeached);
   }
+
+  final RabbitsRepository _rabbitsRepository;
 
   Future<void> _onRabbitsFeached(
       RabbitsFeached event, Emitter<RabbitsState> emit) async {
@@ -40,44 +42,6 @@ class RabbitsBloc extends Bloc<RabbitsEvent, RabbitsState> {
   }
 
   Future<List<RabbitsGroup>> _fetchRabbits() async {
-    print('fetching rabbits');
-
-    graphQLClient
-        .query(QueryOptions(
-      document: gql('''
-        query {
-  rabbitGroups {
-    data {
-      id
-      region {
-        id
-        name
-      }
-    }
-    offset
-    limit
-    totalCount
-  }
-}
-      '''),
-    ))
-        .then((value) {
-      print('HELLO');
-      print(value.data);
-    }).catchError((error) {
-      print(error);
-    });
-
-    return Future.delayed(const Duration(seconds: 1), () {
-      return List.generate(10, (i) {
-        return RabbitsGroup(
-          id: i,
-          rabbits: const [
-            Rabbit(id: 1, name: 'Rabbit 1'),
-            Rabbit(id: 2, name: 'Rabbit 2'),
-          ],
-        );
-      });
-    });
+    return await _rabbitsRepository.myRabbits();
   }
 }

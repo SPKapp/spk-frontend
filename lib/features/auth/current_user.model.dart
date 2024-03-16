@@ -6,6 +6,7 @@ class CurrentUser extends Equatable {
   /// {@macro user}
   const CurrentUser({
     required this.uid,
+    required this.token,
     this.email,
     this.phone,
     this.name,
@@ -13,13 +14,14 @@ class CurrentUser extends Equatable {
   });
 
   final String uid;
+  final String token;
   final String? email;
   final String? phone;
   final String? name;
   final List<String>? roles;
 
   /// Empty user which represents an unauthenticated user.
-  static const empty = CurrentUser(uid: '');
+  static const empty = CurrentUser(uid: '', token: '');
 
   bool get isEmpty => this == CurrentUser.empty;
   bool get isNotEmpty => this != CurrentUser.empty;

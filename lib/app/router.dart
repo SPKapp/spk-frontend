@@ -1,8 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
-import 'package:spk_app_frontend/app/view/auth_gate.widget.dart';
-import 'package:spk_app_frontend/app/view/scaffold_with_navigation.widget.dart';
+import 'package:spk_app_frontend/app/view/view.dart';
 
 import 'package:spk_app_frontend/example2.dart';
 import 'package:spk_app_frontend/features/rabbits/views/volunteer/rabbits_list.page.dart';
@@ -16,8 +15,10 @@ final router = GoRouter(
           showAuthActionSwitch: false,
           email: 'tester2@example.com', // TODO: Remove testing data
         ),
-        child: ScaffoldWithNavigation(
-          navigationShell: navigationShell,
+        child: InjectRepositories(
+          child: ScaffoldWithNavigation(
+            navigationShell: navigationShell,
+          ),
         ),
       ),
       branches: [
