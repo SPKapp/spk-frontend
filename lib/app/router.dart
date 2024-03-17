@@ -7,7 +7,7 @@ import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/app/view/view.dart';
 
 import 'package:spk_app_frontend/example2.dart';
-import 'package:spk_app_frontend/features/rabbits/views/volunteer/rabbits_list.page.dart';
+import 'package:spk_app_frontend/features/rabbits/views/pages/pages.dart';
 
 class AppRouter {
   static GoRouter router = GoRouter(
@@ -34,7 +34,25 @@ class AppRouter {
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/myRabbits',
-              builder: (context, state) => const RabbitsListPage(),
+              builder: (context, state) => const MyRabbitsPage(
+                drawer: Drawer(
+                  child: Placeholder(),
+                ),
+              ),
+            ),
+            GoRoute(
+              path: '/rabbit',
+              redirect: (context, state) => '/', // TODO: Redirect where?
+              routes: [
+                GoRoute(
+                  path: ':id',
+                  builder: (context, state) {
+                    return RabbitInfo(
+                      id: int.parse(state.pathParameters['id']!),
+                    );
+                  },
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(

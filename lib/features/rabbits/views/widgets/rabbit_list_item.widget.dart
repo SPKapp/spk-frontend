@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class RabbitListItem extends StatelessWidget {
   const RabbitListItem({
@@ -7,8 +8,8 @@ class RabbitListItem extends StatelessWidget {
     required this.name,
   });
 
-  final id;
-  final name;
+  final int id;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class RabbitListItem extends StatelessWidget {
       leading: const Icon(Icons.pets),
       title: Text(name),
       subtitle: Text(id.toString()),
+      onTap: () => context.push('/rabbit/$id'),
     );
   }
 }

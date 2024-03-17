@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits.bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbits_group_list_item.widget.dart';
 
@@ -53,11 +54,16 @@ class _RabbitsListViewState extends State<RabbitsListView> {
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return index >= state.rabbits.length
-                    ? TextButton(
-                        onPressed: () =>
-                            context.read<RabbitsBloc>().add(RabbitsFeached()),
-                        child: Text(
-                            'Click ME ${context.read<AppBloc>().state.currentUser}'))
+                    ? Column(
+                        children: [
+                          TextButton(
+                              onPressed: () => context.push('/myRabbits'),
+                              child: const Text('NEW')),
+                          TextButton(
+                              onPressed: () => context.pop(),
+                              child: const Text('BACK')),
+                        ],
+                      )
                     : RabbitsGroupListItem(
                         rabbitsGroup: state.rabbits[index],
                       );
