@@ -19,4 +19,14 @@ class RabbitsRepository {
         .map((json) => RabbitsGroup.fromJson(json))
         .toList();
   }
+
+  Future<Rabbit> rabbit(int id) async {
+    final result = await gqlService.query(_rabbitQuery, variables: {'id': id});
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+
+    return Rabbit.fromJson(result.data!['rabbit']);
+  }
 }

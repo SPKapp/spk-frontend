@@ -15,3 +15,21 @@ query MyRabbits {
   }
 }
 ''';
+
+const String _rabbitQuery = '''
+query Rabbit(\$id: Int!) {
+  rabbit(id: \$id) {
+    id
+    name
+    admissionType
+    color
+    rabbitGroup {
+      id
+      rabbits {
+        id
+        name
+      }
+    }
+  }
+}
+''';

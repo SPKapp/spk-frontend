@@ -1,21 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class RabbitInfo extends StatelessWidget {
-  const RabbitInfo({
+import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
+import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info.widget.dart';
+
+class RabbitInfoPage extends StatelessWidget {
+  const RabbitInfoPage({
     super.key,
-    required this.id,
+    required this.rabbitId,
   });
 
-  final int id;
+  final int rabbitId;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocProvider(
+      create: (context) => RabbitCubit(
+          rabbitsRepository: context.read<RabbitsRepository>(),
+          rabbitId: rabbitId)
+        ..fetchRabbit(),
+      child: Scaffold(
         appBar: AppBar(
           title: const Text('Rabbit Info'),
         ),
-        body: Placeholder(
-          child: Text('id: $id'),
-        ));
+        body: const RabbitInfo(),
+      ),
+    );
   }
 }

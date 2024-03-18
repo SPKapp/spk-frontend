@@ -41,18 +41,12 @@ class AppRouter {
               ),
             ),
             GoRoute(
-              path: '/rabbit',
-              redirect: (context, state) => '/', // TODO: Redirect where?
-              routes: [
-                GoRoute(
-                  path: ':id',
-                  builder: (context, state) {
-                    return RabbitInfo(
-                      id: int.parse(state.pathParameters['id']!),
-                    );
-                  },
-                ),
-              ],
+              path: '/rabbit/:id',
+              builder: (context, state) {
+                return RabbitInfoPage(
+                  rabbitId: int.parse(state.pathParameters['id']!),
+                );
+              },
             ),
           ]),
           StatefulShellBranch(
