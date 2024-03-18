@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           child: InjectRepositories(
             child: MaterialApp.router(
               title: 'Flutter Demo',
-              theme: ThemeData(
+              theme: ThemeData.dark(
                 // This is the theme of your application.
                 //
                 // TRY THIS: Try running your application with "flutter run". You'll see
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
                 //
                 // This works for code too, not just values: Most code changes can be
                 // tested with just a hot reload.
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                 useMaterial3: true,
               ),
               routerConfig: AppRouter.router,

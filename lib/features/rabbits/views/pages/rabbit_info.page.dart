@@ -20,11 +20,35 @@ class RabbitInfoPage extends StatelessWidget {
           rabbitsRepository: context.read<RabbitsRepository>(),
           rabbitId: rabbitId)
         ..fetchRabbit(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Rabbit Info'),
-        ),
-        body: const RabbitInfo(),
+      child: BlocBuilder<RabbitCubit, RabbitState>(
+        builder: (context, state) {
+          late AppBar appBar;
+          late Widget body;
+
+          switch (state) {
+            case RabbitInitial():
+              appBar = AppBar();
+              body = const Center(child: CircularProgressIndicator());
+            case RabbitFailure():
+              appBar = AppBar();
+              body = const Center(child: Text('Failed to fetch rabbit'));
+            case RabbitSuccess():
+              appBar = AppBar(
+                title: Text(
+                  state.rabbit.name,
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall!
+                      .copyWith(fontWeight: FontWeight.w500),
+                ),
+              );
+              body = RabbitInfo(rabbit: state.rabbit);
+          }
+          return Scaffold(
+            appBar: appBar,
+            body: body,
+          );
+        },
       ),
     );
   }
