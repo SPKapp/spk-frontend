@@ -1,30 +1,39 @@
 part of 'rabbits.bloc.dart';
 
-enum RabbitsStatus { initial, success, failure }
+sealed class RabbitsState extends Equatable {
+  const RabbitsState();
 
-final class RabbitsState extends Equatable {
-  const RabbitsState({
-    this.status = RabbitsStatus.initial,
-    this.rabbits = const <RabbitsGroup>[],
-    this.hasReachedMax = false,
+  @override
+  List<Object?> get props => [];
+}
+
+final class RabbitsInitial extends RabbitsState {
+  const RabbitsInitial();
+}
+
+final class RabbitsSuccess extends RabbitsState {
+  const RabbitsSuccess({
+    required this.rabbitsGroups,
+    required this.hasReachedMax,
   });
 
-  final RabbitsStatus status;
-  final List<RabbitsGroup> rabbits;
+  final List<RabbitsGroup> rabbitsGroups;
   final bool hasReachedMax;
 
-  RabbitsState copyWith({
-    RabbitsStatus? status,
-    List<RabbitsGroup>? rabbits,
+  RabbitsSuccess copyWith({
+    List<RabbitsGroup>? rabbitsGroups,
     bool? hasReachedMax,
   }) {
-    return RabbitsState(
-      status: status ?? this.status,
-      rabbits: rabbits ?? this.rabbits,
+    return RabbitsSuccess(
+      rabbitsGroups: rabbitsGroups ?? this.rabbitsGroups,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
     );
   }
 
   @override
-  List<Object> get props => [status, rabbits, hasReachedMax];
+  List<Object?> get props => [rabbitsGroups, hasReachedMax];
+}
+
+final class RabbitsFailure extends RabbitsState {
+  const RabbitsFailure();
 }

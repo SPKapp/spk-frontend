@@ -1,7 +1,5 @@
 part of 'rabbit.cubit.dart';
 
-enum RabbitStatus { initial, success, failure }
-
 sealed class RabbitState extends Equatable {
   const RabbitState();
 

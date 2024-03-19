@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
-
 import 'package:spk_app_frontend/config/config.local.dart';
-import 'package:spk_app_frontend/features/rabbits/models/gender.enum.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_list_item.widget.dart';
 
-class RabbitInfo extends StatelessWidget {
-  const RabbitInfo({super.key, required this.rabbit});
+class RabbitInfoView extends StatelessWidget {
+  const RabbitInfoView({super.key, required this.rabbit});
 
   final Rabbit rabbit;
 
