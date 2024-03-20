@@ -33,3 +33,14 @@ query Rabbit(\$id: Int!) {
   }
 }
 ''';
+
+const String _createRabbitMutation = '''
+mutation CreateRabbit(\$createRabbitInput: CreateRabbitInput!) {
+  createRabbit(createRabbitInput: \$createRabbitInput) {
+    id
+    rabbitGroup {
+      id
+    }
+  }
+}
+''';

@@ -1,12 +1,16 @@
 enum Gender {
-  male('male'),
-  female('female'),
-  unknown('unknown');
+  male('Male'),
+  female('Female'),
+  unknown('Unknown');
 
   const Gender(this.jsonValue);
 
-  final dynamic jsonValue;
+  final String jsonValue;
 
   static Gender fromJson(jsonValue) =>
       Gender.values.firstWhere((element) => jsonValue == element.jsonValue);
+
+  String toJson() {
+    return jsonValue;
+  }
 }

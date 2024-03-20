@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
@@ -34,6 +35,12 @@ class RabbitInfoPage extends StatelessWidget {
               body = const Center(child: Text('Failed to fetch rabbit'));
             case RabbitSuccess():
               appBar = AppBar(
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () => context.push('/rabbit/$rabbitId/edit'),
+                  ),
+                ],
                 title: Text(
                   state.rabbit.name,
                   style: Theme.of(context)

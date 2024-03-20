@@ -9,6 +9,7 @@ final class Rabbit extends Equatable {
     required this.name,
     required this.gender,
     this.color,
+    this.breed,
     this.weight,
     this.birthDate,
     required this.confirmedBirthDate,
@@ -19,6 +20,7 @@ final class Rabbit extends Equatable {
   final String name;
   final Gender gender;
   final String? color;
+  final String? breed;
   final double? weight;
 
   final DateTime? birthDate;
@@ -36,6 +38,7 @@ final class Rabbit extends Equatable {
           ? Gender.fromJson(json['gender'])
           : Gender.unknown,
       color: json['color'] as String?,
+      breed: json['breed'] as String?,
       weight: json['weight'] != null ? double.parse(json['weight']) : null,
       birthDate:
           json['birthDate'] != null ? DateTime.parse(json['birthDate']) : null,

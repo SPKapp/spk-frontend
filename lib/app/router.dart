@@ -34,11 +34,37 @@ class AppRouter {
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/myRabbits',
-              builder: (context, state) => const MyRabbitsPage(
+              builder: (context, state) => MyRabbitsPage(
                 drawer: Drawer(
-                  child: Placeholder(),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const Text('Drawer'),
+                        ElevatedButton(
+                          onPressed: () {
+                            context
+                                .read<AppBloc>()
+                                .add(const AppLogoutRequested());
+                          },
+                          child: const Text('Logout'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.push('/rabbit/add');
+                          },
+                          child: const Text('Add Rabit'),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
+            ),
+            GoRoute(
+              path: '/rabbit/add',
+              builder: (context, state) {
+                return const RabbitAddPage();
+              },
             ),
             GoRoute(
               path: '/rabbit/:id',
@@ -47,6 +73,16 @@ class AppRouter {
                   rabbitId: int.parse(state.pathParameters['id']!),
                 );
               },
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) {
+                    return RabbitEditPage(
+                      rabbitId: int.parse(state.pathParameters['id']!),
+                    );
+                  },
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(

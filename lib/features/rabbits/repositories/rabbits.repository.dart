@@ -1,4 +1,5 @@
 import 'package:spk_app_frontend/common/services/gql.service.dart';
+import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 
 part 'rabbits.queries.dart';
@@ -28,5 +29,16 @@ class RabbitsRepository {
     }
 
     return Rabbit.fromJson(result.data!['rabbit']);
+  }
+
+  Future<int> createRabbit(RabbitCreateDto rabbit) async {
+    final result = await gqlService.mutate(_createRabbitMutation,
+        variables: {'createRabbitInput': rabbit});
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+
+    return int.parse(result.data!['createRabbit']['id']);
   }
 }
