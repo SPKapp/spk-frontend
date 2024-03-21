@@ -1,3 +1,4 @@
+import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/common/services/gql.service.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
@@ -40,5 +41,25 @@ class RabbitsRepository {
     }
 
     return int.parse(result.data!['createRabbit']['id']);
+  }
+
+  Future<Paginated<RabbitsGroup>> findAll({
+    bool totalCount = false,
+    int? offset,
+    int? limit,
+  }) async {
+    final result = await gqlService.query(
+      _rabbitsQuery(totalCount),
+      variables: {
+        if (offset != null) 'offset': offset,
+        if (limit != null) 'limit': limit,
+      },
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+    return Paginated.fromJson(
+        result.data!['rabbitGroups'], RabbitsGroup.fromJson);
   }
 }

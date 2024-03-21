@@ -58,7 +58,12 @@ class _RabbitsListViewState extends State<RabbitsListView> {
           ? widget.rabbitsGroups.length
           : widget.rabbitsGroups.length + 1,
       itemBuilder: (context, index) {
-        return _RabbitsGroupCard(rabbitsGroup: widget.rabbitsGroups[index]);
+        return (index == widget.rabbitsGroups.length)
+            ? const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            : _RabbitsGroupCard(rabbitsGroup: widget.rabbitsGroups[index]);
       },
     );
   }

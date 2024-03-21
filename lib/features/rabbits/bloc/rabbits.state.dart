@@ -1,39 +1,32 @@
 part of 'rabbits.bloc.dart';
 
 sealed class RabbitsState extends Equatable {
-  const RabbitsState();
-
-  @override
-  List<Object?> get props => [];
-}
-
-final class RabbitsInitial extends RabbitsState {
-  const RabbitsInitial();
-}
-
-final class RabbitsSuccess extends RabbitsState {
-  const RabbitsSuccess({
-    required this.rabbitsGroups,
-    required this.hasReachedMax,
-  });
+  RabbitsState({
+    List<RabbitsGroup>? rabbitsGroups,
+    this.hasReachedMax = false,
+    this.totalCount = 0,
+  }) : rabbitsGroups = rabbitsGroups ?? List.empty(growable: true);
 
   final List<RabbitsGroup> rabbitsGroups;
   final bool hasReachedMax;
-
-  RabbitsSuccess copyWith({
-    List<RabbitsGroup>? rabbitsGroups,
-    bool? hasReachedMax,
-  }) {
-    return RabbitsSuccess(
-      rabbitsGroups: rabbitsGroups ?? this.rabbitsGroups,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-    );
-  }
+  final int totalCount;
 
   @override
-  List<Object?> get props => [rabbitsGroups, hasReachedMax];
+  List<Object> get props => [rabbitsGroups, hasReachedMax, totalCount];
+}
+
+final class RabbitsInitial extends RabbitsState {
+  RabbitsInitial();
+}
+
+final class RabbitsSuccess extends RabbitsState {
+  RabbitsSuccess({
+    required super.rabbitsGroups,
+    required super.hasReachedMax,
+    required super.totalCount,
+  });
 }
 
 final class RabbitsFailure extends RabbitsState {
-  const RabbitsFailure();
+  RabbitsFailure();
 }

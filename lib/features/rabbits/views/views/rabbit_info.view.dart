@@ -253,7 +253,7 @@ class _TopInfoCard extends StatelessWidget {
       age = DateTime.now().differenceInYears(rabbit.birthDate!);
       if (age <= 1) {
         ageInMonths = DateTime.now().differenceInMonths(rabbit.birthDate!);
-        if (ageInMonths > 12) {
+        if (ageInMonths >= 12) {
           ageInMonths = ageInMonths - 12;
         }
       }
@@ -278,6 +278,8 @@ class _TopInfoCard extends StatelessWidget {
               (0, 1) => '1 miesiąc',
               (0, >= 2 && <= 4) => '$ageInMonths miesiące',
               (0, _) => '$ageInMonths miesięcy',
+              (1, 0) => 'Rok',
+              (1, 1) => 'Rok 1 miesiąc',
               (1, >= 2 && <= 4) => 'Rok $ageInMonths miesiące',
               (1, _) => 'Rok $ageInMonths miesięcy',
               (>= 2 && <= 4, _) => '$age lata',

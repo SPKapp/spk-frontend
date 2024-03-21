@@ -16,7 +16,7 @@ class MyRabbitsPage extends StatelessWidget {
       create: (context) => RabbitsBloc(
         rabbitsRepository: context.read<RabbitsRepository>(),
         queryType: RabbitsQueryType.my,
-      )..add(const FeatchMyRabbits()),
+      )..add(const FeatchRabbits()),
       child: BlocBuilder<RabbitsBloc, RabbitsState>(
         builder: (context, state) {
           late Widget body;
@@ -34,11 +34,12 @@ class MyRabbitsPage extends StatelessWidget {
           }
 
           return Scaffold(
-              appBar: AppBar(
-                title: const Text('My Rabbits'),
-              ),
-              drawer: drawer,
-              body: body);
+            appBar: AppBar(
+              title: const Text('My Rabbits'),
+            ),
+            drawer: drawer,
+            body: body,
+          );
         },
       ),
     );

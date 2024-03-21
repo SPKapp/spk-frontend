@@ -50,3 +50,20 @@ mutation CreateRabbit(\$createRabbitInput: CreateRabbitInput!) {
   }
 }
 ''';
+
+String _rabbitsQuery(bool total) => '''
+query GetRabbitGroups(\$offset: Int, \$limit: Int, \$regionId: ID) {
+  rabbitGroups(offset: \$offset, limit: \$limit, regionId: \$regionId) {
+    data {
+      id
+      rabbits {
+          id
+          name
+        }
+    }
+    offset
+    limit
+    ${total ? 'totalCount' : ''}
+  }
+}
+''';

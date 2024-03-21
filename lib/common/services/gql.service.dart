@@ -17,9 +17,13 @@ class GqlService {
 
   late GraphQLClient _client;
 
-  Future<QueryResult> query(String query,
-      {Map<String, dynamic> variables = const {}}) {
+  Future<QueryResult> query(
+    String query, {
+    Map<String, dynamic> variables = const {},
+    String? operationName,
+  }) {
     return _client.query(QueryOptions(
+      operationName: operationName,
       document: gql(query),
       variables: variables,
     ));

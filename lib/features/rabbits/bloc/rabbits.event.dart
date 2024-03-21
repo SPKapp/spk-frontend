@@ -11,6 +11,10 @@ final class FeatchRabbits extends RabbitsEvent {
   const FeatchRabbits();
 }
 
-final class FeatchMyRabbits extends RabbitsEvent {
-  const FeatchMyRabbits();
+final class _FeatchMyRabbits extends RabbitsEvent {
+  const _FeatchMyRabbits();
+}
+
+final class _FeatchAllRabbits extends RabbitsEvent {
+  const _FeatchAllRabbits();
 }

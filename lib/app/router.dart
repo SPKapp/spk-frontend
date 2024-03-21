@@ -34,30 +34,14 @@ class AppRouter {
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/myRabbits',
-              builder: (context, state) => MyRabbitsPage(
-                drawer: Drawer(
-                  child: Center(
-                    child: Column(
-                      children: [
-                        const Text('Drawer'),
-                        ElevatedButton(
-                          onPressed: () {
-                            context
-                                .read<AppBloc>()
-                                .add(const AppLogoutRequested());
-                          },
-                          child: const Text('Logout'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.push('/rabbit/add');
-                          },
-                          child: const Text('Add Rabit'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              builder: (context, state) => const MyRabbitsPage(
+                drawer: AppDrawer(),
+              ),
+            ),
+            GoRoute(
+              path: '/rabbits',
+              builder: (context, state) => const RabbitsPage(
+                drawer: AppDrawer(),
               ),
             ),
             GoRoute(
