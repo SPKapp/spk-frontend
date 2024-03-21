@@ -16,13 +16,19 @@ query MyRabbits {
 }
 ''';
 
-const String _rabbitQuery = '''
-query Rabbit(\$id: Int!) {
-  rabbit(id: \$id) {
+const String _rabbitQuery = r'''
+query GetRabbit($id: Int!) {
+  rabbit(id: $id) {
     id
     name
-    admissionType
     color
+    breed
+    gender
+    birthDate
+    confirmedBirthDate
+    admissionDate
+    admissionType
+    fillingDate
     rabbitGroup {
       id
       rabbits {

@@ -1,32 +1,37 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/gender.enum.dart';
+import 'package:spk_app_frontend/features/rabbits/models/admission_type.enum.dart';
 import 'package:spk_app_frontend/features/rabbits/models/rabbits_group.model.dart';
 
 final class Rabbit extends Equatable {
   const Rabbit({
     required this.id,
     required this.name,
-    required this.gender,
     this.color,
     this.breed,
-    this.weight,
+    required this.gender,
     this.birthDate,
     required this.confirmedBirthDate,
+    this.admissionDate,
+    required this.admissionType,
+    this.fillingDate,
+    this.weight,
     this.rabbitGroup,
   });
 
   final int id;
   final String name;
-  final Gender gender;
   final String? color;
   final String? breed;
-  final double? weight;
-
+  final Gender gender;
   final DateTime? birthDate;
   final bool confirmedBirthDate;
+  final DateTime? admissionDate;
+  final AdmissionType admissionType;
+  final DateTime? fillingDate;
 
-  // AdmissionType? admissionType;
+  final double? weight;
 
   final RabbitsGroup? rabbitGroup;
 
@@ -34,17 +39,26 @@ final class Rabbit extends Equatable {
     return Rabbit(
       id: int.parse(json['id']),
       name: json['name'] as String,
+      color: json['color'] as String?,
+      breed: json['breed'] as String?,
       gender: json['gender'] != null
           ? Gender.fromJson(json['gender'])
           : Gender.unknown,
-      color: json['color'] as String?,
-      breed: json['breed'] as String?,
-      weight: json['weight'] != null ? double.parse(json['weight']) : null,
       birthDate:
           json['birthDate'] != null ? DateTime.parse(json['birthDate']) : null,
       confirmedBirthDate: json['confirmedBirthDate'] != null
           ? json['confirmedBirthDate'] as bool
           : false,
+      admissionDate: json['admissionDate'] != null
+          ? DateTime.parse(json['admissionDate'])
+          : null,
+      admissionType: json['admissionType'] != null
+          ? AdmissionType.fromJson(json['admissionType'])
+          : AdmissionType.found,
+      fillingDate: json['fillingDate'] != null
+          ? DateTime.parse(json['fillingDate'])
+          : null,
+      weight: json['weight'] != null ? double.parse(json['weight']) : null,
       rabbitGroup: json['rabbitGroup'] != null
           ? RabbitsGroup.fromJson(json['rabbitGroup'])
           : null,

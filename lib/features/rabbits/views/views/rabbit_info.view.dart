@@ -286,7 +286,7 @@ class _TopInfoCard extends StatelessWidget {
             style: infoTheme,
           ),
           Text(
-            'Rasa', // TODO: Add breed to Rabbit model
+            rabbit.breed ?? 'Rasa Nieznana',
             style: infoTheme,
           ),
           Text(

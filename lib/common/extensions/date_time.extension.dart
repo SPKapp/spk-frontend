@@ -1,6 +1,6 @@
 extension DateTimeExtension on DateTime {
   String toDateString() {
-    return '$year-${month.toString().padLeft(2, '0')}-$day';
+    return '$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
   }
 
   int differenceInYears(DateTime other) {
