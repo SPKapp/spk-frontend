@@ -43,6 +43,17 @@ class RabbitsRepository {
     return int.parse(result.data!['createRabbit']['id']);
   }
 
+  Future<int> updateRabbit(RabbitUpdateDto rabbit) async {
+    final result = await gqlService.mutate(_updateRabbitMutation,
+        variables: {'updateRabbitInput': rabbit});
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+
+    return int.parse(result.data!['updateRabbit']['id']);
+  }
+
   Future<Paginated<RabbitsGroup>> findAll({
     bool totalCount = false,
     int? offset,

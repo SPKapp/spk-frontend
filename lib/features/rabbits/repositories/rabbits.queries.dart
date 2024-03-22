@@ -44,8 +44,29 @@ const String _createRabbitMutation = '''
 mutation CreateRabbit(\$createRabbitInput: CreateRabbitInput!) {
   createRabbit(createRabbitInput: \$createRabbitInput) {
     id
+  }
+}
+''';
+
+const String _updateRabbitMutation = r'''
+mutation updateRabbit($updateRabbitInput: UpdateRabbitInput!) {
+  updateRabbit(updateRabbitInput: $updateRabbitInput) {
+    id
+    name
+    color
+    breed
+    gender
+    birthDate
+    confirmedBirthDate
+    admissionDate
+    admissionType
+    fillingDate
     rabbitGroup {
       id
+      rabbits {
+        id
+        name
+      }
     }
   }
 }

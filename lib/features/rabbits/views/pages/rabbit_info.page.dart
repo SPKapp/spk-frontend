@@ -38,7 +38,12 @@ class RabbitInfoPage extends StatelessWidget {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.edit),
-                    onPressed: () => context.push('/rabbit/$rabbitId/edit'),
+                    onPressed: () async {
+                      await context.push('/rabbit/$rabbitId/edit');
+                      if (context.mounted) {
+                        context.read<RabbitCubit>().fetchRabbit();
+                      }
+                    },
                   ),
                 ],
                 title: Text(

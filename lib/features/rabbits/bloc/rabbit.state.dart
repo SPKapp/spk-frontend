@@ -22,16 +22,6 @@ final class RabbitSuccess extends RabbitState {
   List<Object?> get props => [rabbit];
 }
 
-final class RabbitUpdated extends RabbitSuccess {
-  const RabbitUpdated({
-    required super.rabbit,
-  });
-}
-
 final class RabbitFailure extends RabbitState {
   const RabbitFailure();
-}
-
-final class RabbitUpdateFailure extends RabbitFailure {
-  const RabbitUpdateFailure();
 }
