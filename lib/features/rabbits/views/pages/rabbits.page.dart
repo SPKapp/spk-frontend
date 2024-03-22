@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits.bloc.dart';
-import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbits_list.view.dart';
 
 class RabbitsPage extends StatelessWidget {
@@ -17,7 +17,7 @@ class RabbitsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocProvider(
         create: (context) => RabbitsBloc(
-          rabbitsRepository: context.read<RabbitsRepository>(),
+          rabbitsRepository: context.read<IRabbitsRepository>(),
           queryType: RabbitsQueryType.all,
         )..add(const FeatchRabbits()),
         child: BlocBuilder<RabbitsBloc, RabbitsState>(

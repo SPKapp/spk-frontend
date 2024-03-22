@@ -2,14 +2,16 @@ import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/common/services/gql.service.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/interfaces/rabbits.repo.interface.dart';
 
 part 'rabbits.queries.dart';
 
-class RabbitsRepository {
+class RabbitsRepository implements IRabbitsRepository {
   RabbitsRepository(this.gqlService);
 
   final GqlService gqlService;
 
+  @override
   Future<List<RabbitsGroup>> myRabbits() async {
     final result = await gqlService.query(_myRabbitsQuery);
 
@@ -22,6 +24,7 @@ class RabbitsRepository {
         .toList();
   }
 
+  @override
   Future<Rabbit> rabbit(int id) async {
     final result = await gqlService.query(_rabbitQuery, variables: {'id': id});
 
@@ -32,6 +35,7 @@ class RabbitsRepository {
     return Rabbit.fromJson(result.data!['rabbit']);
   }
 
+  @override
   Future<int> createRabbit(RabbitCreateDto rabbit) async {
     final result = await gqlService.mutate(_createRabbitMutation,
         variables: {'createRabbitInput': rabbit});
@@ -43,6 +47,7 @@ class RabbitsRepository {
     return int.parse(result.data!['createRabbit']['id']);
   }
 
+  @override
   Future<int> updateRabbit(RabbitUpdateDto rabbit) async {
     final result = await gqlService.mutate(_updateRabbitMutation,
         variables: {'updateRabbitInput': rabbit});
@@ -54,6 +59,7 @@ class RabbitsRepository {
     return int.parse(result.data!['updateRabbit']['id']);
   }
 
+  @override
   Future<Paginated<RabbitsGroup>> findAll({
     bool totalCount = false,
     int? offset,

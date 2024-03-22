@@ -7,7 +7,7 @@ import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
-import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_modify.view.dart';
 
 class RabbitEditPage extends StatefulWidget {
@@ -32,13 +32,13 @@ class _RabbitEditPageState extends State<RabbitEditPage> {
       providers: [
         BlocProvider(
           create: (context) => RabbitCubit(
-            rabbitsRepository: context.read<RabbitsRepository>(),
+            rabbitsRepository: context.read<IRabbitsRepository>(),
             rabbitId: widget.rabbitId,
           )..fetchRabbit(),
         ),
         BlocProvider(
           create: (context) => RabbitUpdateCubit(
-            rabbitsRepository: context.read<RabbitsRepository>(),
+            rabbitsRepository: context.read<IRabbitsRepository>(),
           ),
         ),
       ],

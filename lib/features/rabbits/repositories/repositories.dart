@@ -1,1 +1,1 @@
-export 'rabbits.repository.dart';
+export 'repositories/rabbits.repository.dart';

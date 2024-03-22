@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 
 import 'package:spk_app_frontend/common/services/gql.service.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
 
 class InjectRepositories extends StatelessWidget {
@@ -17,7 +18,7 @@ class InjectRepositories extends StatelessWidget {
 
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<RabbitsRepository>(
+        RepositoryProvider<IRabbitsRepository>(
           create: (context) => RabbitsRepository(gqlService),
         ),
       ],

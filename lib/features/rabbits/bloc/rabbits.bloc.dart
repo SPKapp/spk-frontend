@@ -5,7 +5,7 @@ import 'package:spk_app_frontend/common/bloc/debounce.transformer.dart';
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
-import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 
 part 'rabbits.state.dart';
 part 'rabbits.event.dart';
@@ -14,7 +14,7 @@ enum RabbitsQueryType { my, all }
 
 class RabbitsBloc extends Bloc<RabbitsEvent, RabbitsState> {
   RabbitsBloc({
-    required RabbitsRepository rabbitsRepository,
+    required IRabbitsRepository rabbitsRepository,
     required RabbitsQueryType queryType,
   })  : _rabbitsRepository = rabbitsRepository,
         _queryType = queryType,
@@ -27,7 +27,7 @@ class RabbitsBloc extends Bloc<RabbitsEvent, RabbitsState> {
     on<_FeatchAllRabbits>(_onFetchAllRabbits);
   }
 
-  final RabbitsRepository _rabbitsRepository;
+  final IRabbitsRepository _rabbitsRepository;
   final RabbitsQueryType _queryType;
 
   void _onFetchRabbits(FeatchRabbits event, Emitter<RabbitsState> emit) async {

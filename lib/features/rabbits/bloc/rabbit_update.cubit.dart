@@ -2,17 +2,17 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
-import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 
 part 'rabbit_update.state.dart';
 
 class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
   RabbitUpdateCubit({
-    required RabbitsRepository rabbitsRepository,
+    required IRabbitsRepository rabbitsRepository,
   })  : _rabbitsRepository = rabbitsRepository,
         super(const RabbitUpdateInitial());
 
-  final RabbitsRepository _rabbitsRepository;
+  final IRabbitsRepository _rabbitsRepository;
 
   void updateRabbit(RabbitUpdateDto rabbit) async {
     try {

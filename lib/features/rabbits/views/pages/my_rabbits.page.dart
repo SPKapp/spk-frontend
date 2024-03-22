@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits.bloc.dart';
-import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbits_list.view.dart';
 
 class MyRabbitsPage extends StatelessWidget {
@@ -14,7 +14,7 @@ class MyRabbitsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => RabbitsBloc(
-        rabbitsRepository: context.read<RabbitsRepository>(),
+        rabbitsRepository: context.read<IRabbitsRepository>(),
         queryType: RabbitsQueryType.my,
       )..add(const FeatchRabbits()),
       child: BlocBuilder<RabbitsBloc, RabbitsState>(

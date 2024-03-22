@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
-import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_info.view.dart';
 
 class RabbitInfoPage extends StatelessWidget {
@@ -18,7 +18,7 @@ class RabbitInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => RabbitCubit(
-        rabbitsRepository: context.read<RabbitsRepository>(),
+        rabbitsRepository: context.read<IRabbitsRepository>(),
         rabbitId: rabbitId,
       )..fetchRabbit(),
       child: BlocBuilder<RabbitCubit, RabbitState>(

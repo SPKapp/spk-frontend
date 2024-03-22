@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_add.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
-import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
+import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_modify.view.dart';
 
 class RabbitAddPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _RabbitAddPageState extends State<RabbitAddPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => RabbitAddCubit(
-        rabbitsRepository: context.read<RabbitsRepository>(),
+        rabbitsRepository: context.read<IRabbitsRepository>(),
       ),
       child: Builder(builder: (context) {
         return Scaffold(
