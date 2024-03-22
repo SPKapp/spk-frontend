@@ -12,6 +12,11 @@ part 'rabbits.event.dart';
 
 enum RabbitsQueryType { my, all }
 
+/// A bloc that manages the state of a list with rabbitGroups.
+///
+/// The bloc can be configured with [queryType]
+/// to fetch the rabbits of the volunteer [RabbitsQueryType.my]
+/// or all rabbits [RabbitsQueryType.all].
 class RabbitsBloc extends Bloc<RabbitsEvent, RabbitsState> {
   RabbitsBloc({
     required IRabbitsRepository rabbitsRepository,
@@ -23,8 +28,6 @@ class RabbitsBloc extends Bloc<RabbitsEvent, RabbitsState> {
       _onFetchRabbits,
       transformer: debounceTransformer(const Duration(milliseconds: 500)),
     );
-    on<_FeatchMyRabbits>(_onFetchMyRabbits);
-    on<_FeatchAllRabbits>(_onFetchAllRabbits);
   }
 
   final IRabbitsRepository _rabbitsRepository;
@@ -33,14 +36,13 @@ class RabbitsBloc extends Bloc<RabbitsEvent, RabbitsState> {
   void _onFetchRabbits(FeatchRabbits event, Emitter<RabbitsState> emit) async {
     switch (_queryType) {
       case RabbitsQueryType.my:
-        add(const _FeatchMyRabbits());
+        await _onFetchMyRabbits(emit);
       case RabbitsQueryType.all:
-        add(const _FeatchAllRabbits());
+        await _onFetchAllRabbits(emit);
     }
   }
 
-  Future<void> _onFetchMyRabbits(
-      _FeatchMyRabbits event, Emitter<RabbitsState> emit) async {
+  Future<void> _onFetchMyRabbits(Emitter<RabbitsState> emit) async {
     try {
       switch (state) {
         case RabbitsInitial():
@@ -61,8 +63,7 @@ class RabbitsBloc extends Bloc<RabbitsEvent, RabbitsState> {
     }
   }
 
-  Future<void> _onFetchAllRabbits(
-      _FeatchAllRabbits event, Emitter<RabbitsState> emit) async {
+  Future<void> _onFetchAllRabbits(Emitter<RabbitsState> emit) async {
     if (state.hasReachedMax) return;
 
     final myState = state;

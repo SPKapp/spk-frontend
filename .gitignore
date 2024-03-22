@@ -50,3 +50,6 @@ firebase_options.dart
 
 # local files
 *.local.dart
+
+# Mockito related
+*.mocks.dart

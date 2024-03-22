@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_add.cubit.dart';
+import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_create.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_modify.view.dart';
@@ -23,14 +23,14 @@ class _RabbitAddPageState extends State<RabbitAddPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RabbitAddCubit(
+      create: (context) => RabbitCreateCubit(
         rabbitsRepository: context.read<IRabbitsRepository>(),
       ),
       child: Builder(builder: (context) {
         return Scaffold(
           appBar: AppBar(
             actions: [
-              BlocListener<RabbitAddCubit, RabbitAddState>(
+              BlocListener<RabbitCreateCubit, RabbitCreateState>(
                 listener: (context, state) {
                   switch (state) {
                     case RabbitCreated():
@@ -41,7 +41,7 @@ class _RabbitAddPageState extends State<RabbitAddPage> {
                       );
                       context.pushReplacement('/rabbit/${state.rabbitId}');
                       break;
-                    case RabbitAddFailure():
+                    case RabbitCreateFailure():
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Nie udało się dodać królika'),
@@ -54,7 +54,7 @@ class _RabbitAddPageState extends State<RabbitAddPage> {
                   icon: const Icon(Icons.send_rounded),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      context.read<RabbitAddCubit>().addRabbit(
+                      context.read<RabbitCreateCubit>().createRabbit(
                             RabbitCreateDto(
                               name: _editControlers.nameControler.text,
                               color:

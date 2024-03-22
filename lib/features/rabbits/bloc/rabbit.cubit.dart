@@ -6,6 +6,7 @@ import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 
 part 'rabbit.state.dart';
 
+/// A cubit that manages the state of a rabbit.
 class RabbitCubit extends Cubit<RabbitState> {
   RabbitCubit({
     required this.rabbitId,
@@ -16,6 +17,7 @@ class RabbitCubit extends Cubit<RabbitState> {
   final int rabbitId;
   final IRabbitsRepository _rabbitsRepository;
 
+  /// Fetches a rabbit from the repository.
   void fetchRabbit() async {
     try {
       final rabbit = await _rabbitsRepository.rabbit(rabbitId);

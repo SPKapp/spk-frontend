@@ -7,7 +7,7 @@ import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/app/view/view.dart';
 
 import 'package:spk_app_frontend/example2.dart';
-import 'package:spk_app_frontend/features/rabbits/views/pages/pages.dart';
+import 'package:spk_app_frontend/features/rabbits/views/pages.dart';
 
 class AppRouter {
   static GoRouter router = GoRouter(

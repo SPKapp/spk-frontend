@@ -4,17 +4,19 @@ import 'package:bloc/bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 
-part 'rabbit_add.state.dart';
+part 'rabbit_create.state.dart';
 
-class RabbitAddCubit extends Cubit<RabbitAddState> {
-  RabbitAddCubit({
+/// A cubit that handles the state management for adding a rabbit.
+class RabbitCreateCubit extends Cubit<RabbitCreateState> {
+  RabbitCreateCubit({
     required IRabbitsRepository rabbitsRepository,
   })  : _rabbitsRepository = rabbitsRepository,
-        super(const RabbitAddInitial());
+        super(const RabbitCreateInitial());
 
   final IRabbitsRepository _rabbitsRepository;
 
-  void addRabbit(RabbitCreateDto rabbit) async {
+  /// Sends an create request for the [rabbit].
+  void createRabbit(RabbitCreateDto rabbit) async {
     try {
       if (rabbit.rabbitGroupId == null) {
         // TODO: add correct group id and region id
@@ -28,10 +30,10 @@ class RabbitAddCubit extends Cubit<RabbitAddState> {
       );
     } catch (e) {
       emit(
-        const RabbitAddFailure(),
+        const RabbitCreateFailure(),
       );
       emit(
-        const RabbitAddInitial(),
+        const RabbitCreateInitial(),
       );
     }
   }
