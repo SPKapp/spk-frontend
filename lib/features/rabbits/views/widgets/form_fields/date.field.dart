@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A widget that represents a date field.
 class DateField extends StatelessWidget {
   const DateField({
     super.key,

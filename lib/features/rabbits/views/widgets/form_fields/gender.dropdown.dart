@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 
+/// A dropdown widget for selecting the gender of a rabbit.
 class GenderDropdown extends StatelessWidget {
   const GenderDropdown({
     super.key,
@@ -25,9 +26,18 @@ class GenderDropdown extends StatelessWidget {
           onSelected: onSelected,
           initialSelection: initialSelection,
           dropdownMenuEntries: const [
-            DropdownMenuEntry(value: Gender.female, label: 'Samica'),
-            DropdownMenuEntry(value: Gender.male, label: 'Samiec'),
-            DropdownMenuEntry(value: Gender.unknown, label: 'Nieznana'),
+            DropdownMenuEntry(
+              value: Gender.female,
+              label: 'Samiczka',
+            ),
+            DropdownMenuEntry(
+              value: Gender.male,
+              label: 'Samiec',
+            ),
+            DropdownMenuEntry(
+              value: Gender.unknown,
+              label: 'Nieznana',
+            ),
           ],
         ),
       ),

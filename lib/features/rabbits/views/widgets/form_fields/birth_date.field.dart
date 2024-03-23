@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class BirthDateField extends StatelessWidget {
+/// A widget that represents a form field for entering a birth date.
+class BirthDateField extends StatefulWidget {
   const BirthDateField({
     super.key,
     required this.controller,
@@ -16,11 +17,18 @@ class BirthDateField extends StatelessWidget {
   final bool confirmedBirthDate;
 
   @override
+  State<BirthDateField> createState() => _BirthDateFieldState();
+}
+
+class _BirthDateFieldState extends State<BirthDateField> {
+  late bool _confirmedBirthDate = widget.confirmedBirthDate;
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
-        controller: controller,
+        controller: widget.controller,
         readOnly: true,
         decoration: InputDecoration(
           labelText: 'Data urodzenia',
@@ -28,9 +36,14 @@ class BirthDateField extends StatelessWidget {
           border: const OutlineInputBorder(),
           prefixIcon: const Icon(FontAwesomeIcons.calendarDay),
           suffix: TextButton(
-            onPressed: onConfirmedBirthDate,
+            onPressed: () {
+              setState(() {
+                _confirmedBirthDate = !_confirmedBirthDate;
+              });
+              widget.onConfirmedBirthDate();
+            },
             child: Text(
-              confirmedBirthDate ? 'Dokładna data' : 'Przybliżona data',
+              _confirmedBirthDate ? 'Dokładna data' : 'Przybliżona data',
             ),
           ),
         ),
@@ -43,7 +56,7 @@ class BirthDateField extends StatelessWidget {
             lastDate: today,
           );
           if (date != null) {
-            onTap(date);
+            widget.onTap(date);
           }
         },
       ),

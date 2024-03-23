@@ -8,7 +8,7 @@ import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits.bloc.dart';
 
-import 'rabbit.cubit_test.mocks.dart';
+import 'rabbits.bloc_test.mocks.dart';
 
 @GenerateMocks([IRabbitsRepository])
 void main() {

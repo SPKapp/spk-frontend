@@ -18,8 +18,18 @@ class FieldControlers {
   Gender selectedGender = Gender.unknown;
   AdmissionType selectedAdmissionType = AdmissionType.found;
   bool confirmedBirthDate = false;
+
+  void dispose() {
+    nameControler.dispose();
+    birthDateControler.dispose();
+    colorControler.dispose();
+    breedControler.dispose();
+    admissionDateControler.dispose();
+    filingDateControler.dispose();
+  }
 }
 
+/// A StatefulWidget that represents the view for modifying or creating a rabbit.
 class RabbitModifyView extends StatefulWidget {
   const RabbitModifyView({
     super.key,
@@ -45,6 +55,7 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
             child: Column(
               children: [
                 RabbitTextField(
+                    key: const Key('nameTextField'),
                     controller: widget.editControlers.nameControler,
                     labelText: 'Imię',
                     hintText: 'Podaj imię królika',
@@ -78,18 +89,21 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
                   confirmedBirthDate: widget.editControlers.confirmedBirthDate,
                 ),
                 RabbitTextField(
+                  key: const Key('colorTextField'),
                   controller: widget.editControlers.colorControler,
                   labelText: 'Kolor',
                   hintText: 'Podaj kolor królika',
                   icon: FontAwesomeIcons.palette,
                 ),
                 RabbitTextField(
+                  key: const Key('breedTextField'),
                   controller: widget.editControlers.breedControler,
                   labelText: 'Rasa',
                   hintText: 'Podaj rasę królika',
                   icon: FontAwesomeIcons.dna,
                 ),
                 DateField(
+                  key: const Key('admissionDateField'),
                   controller: widget.editControlers.admissionDateControler,
                   labelText: 'Data Przekazania',
                   hintText: 'Podaj datę przekazania do Fundacji',
@@ -113,6 +127,7 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
                   initialSelection: AdmissionType.found,
                 ),
                 DateField(
+                  key: const Key('filingDateField'),
                   controller: widget.editControlers.filingDateControler,
                   labelText: 'Data Zgłoszenia',
                   hintText: 'Podaj datę zgłoszenia do Fundacji',
@@ -134,3 +149,7 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
     );
   }
 }
+
+// TODO: Add group change and region change fields
+// group change should be loaded only for admin and regionManager
+// region change should be loaded only for admin or regionManager with more than one region

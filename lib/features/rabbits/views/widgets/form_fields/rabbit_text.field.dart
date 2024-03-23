@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A custom text field widget with custom styling.
 class RabbitTextField extends StatelessWidget {
   const RabbitTextField({
     super.key,
