@@ -13,7 +13,7 @@ void main() {
   group(RabbitListItem, () {
     const int rabbitId = 1;
     const String rabbitName = 'Rabbit';
-    late final MockGoRouter mockGoRouter;
+    late MockGoRouter mockGoRouter;
 
     setUp(() {
       mockGoRouter = MockGoRouter();

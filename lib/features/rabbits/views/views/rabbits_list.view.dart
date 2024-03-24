@@ -3,8 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits.bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
-import 'package:spk_app_frontend/features/rabbits/views/widgets/list_items/rabbit_group_card.widget.dart';
+import 'package:spk_app_frontend/features/rabbits/views/widgets/list_items.dart';
 
+/// A widget that displays a list of rabbits.
+///
+/// If [rabbitsGroups] is empty, it displays a message "Brak królików.".
+/// If [hasReachedMax] is false, it displays a [CircularProgressIndicator] at the end of the list.
 class RabbitsListView extends StatefulWidget {
   const RabbitsListView(
       {super.key, required this.rabbitsGroups, required this.hasReachedMax});
@@ -49,7 +53,7 @@ class _RabbitsListViewState extends State<RabbitsListView> {
   @override
   Widget build(BuildContext context) {
     if (widget.rabbitsGroups.isEmpty) {
-      return const Center(child: Text('No rabbits'));
+      return const Center(child: Text('Brak królików.'));
     }
 
     return ListView.builder(
