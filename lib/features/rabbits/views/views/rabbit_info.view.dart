@@ -5,7 +5,7 @@ import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/config/config.local.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
-import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_list_item.widget.dart';
+import 'package:spk_app_frontend/features/rabbits/views/widgets/list_items.dart';
 
 class RabbitInfoView extends StatelessWidget {
   const RabbitInfoView({super.key, required this.rabbit});

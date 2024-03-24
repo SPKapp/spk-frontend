@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits.bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
-import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_list_item.widget.dart';
+import 'package:spk_app_frontend/features/rabbits/views/widgets/list_items/rabbit_group_card.widget.dart';
 
 class RabbitsListView extends StatefulWidget {
   const RabbitsListView(
@@ -63,44 +63,8 @@ class _RabbitsListViewState extends State<RabbitsListView> {
                 padding: EdgeInsets.all(8.0),
                 child: Center(child: CircularProgressIndicator()),
               )
-            : _RabbitsGroupCard(rabbitsGroup: widget.rabbitsGroups[index]);
+            : RabbitGroupCard(rabbitsGroup: widget.rabbitsGroups[index]);
       },
-    );
-  }
-}
-
-class _RabbitsGroupCard extends StatelessWidget {
-  const _RabbitsGroupCard({
-    required this.rabbitsGroup,
-  });
-
-  final RabbitsGroup rabbitsGroup;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8.0,
-        vertical: 4.0,
-      ),
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-          child: ListView.separated(
-            itemCount: rabbitsGroup.rabbits.length,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            separatorBuilder: (context, index) => const Divider(),
-            itemBuilder: (context, index) {
-              return RabbitListItem(
-                id: rabbitsGroup.rabbits[index].id,
-                name: rabbitsGroup.rabbits[index].name,
-              );
-            },
-          ),
-        ),
-      ),
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
-import 'package:spk_app_frontend/features/rabbits/views/widgets/form_fields/form_fields.dart';
+import 'package:spk_app_frontend/features/rabbits/views/widgets/form_fields.dart';
 
 class FieldControlers {
   FieldControlers();
