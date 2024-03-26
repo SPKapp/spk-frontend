@@ -54,7 +54,7 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                RabbitTextField(
+                AppTextField(
                     key: const Key('nameTextField'),
                     controller: widget.editControlers.nameControler,
                     labelText: 'Imię',
@@ -88,14 +88,14 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
                   },
                   confirmedBirthDate: widget.editControlers.confirmedBirthDate,
                 ),
-                RabbitTextField(
+                AppTextField(
                   key: const Key('colorTextField'),
                   controller: widget.editControlers.colorControler,
                   labelText: 'Kolor',
                   hintText: 'Podaj kolor królika',
                   icon: FontAwesomeIcons.palette,
                 ),
-                RabbitTextField(
+                AppTextField(
                   key: const Key('breedTextField'),
                   controller: widget.editControlers.breedControler,
                   labelText: 'Rasa',

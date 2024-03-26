@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:spk_app_frontend/features/rabbits/views/widgets/form_fields/rabbit_text.field.dart';
+import 'package:spk_app_frontend/common/views/widgets/form_fields/text.field.dart';
 
 void main() {
-  group(RabbitTextField, () {
+  group(AppTextField, () {
     late TextEditingController controller;
 
     setUp(() {
@@ -19,7 +19,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: RabbitTextField(
+            body: AppTextField(
               controller: controller,
               labelText: 'Label',
               hintText: 'Hint',
@@ -42,7 +42,7 @@ void main() {
           home: Scaffold(
             body: Form(
               key: formKey,
-              child: RabbitTextField(
+              child: AppTextField(
                 controller: controller,
                 labelText: 'Label',
                 hintText: 'Hint',

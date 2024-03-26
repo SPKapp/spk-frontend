@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// A custom text field widget with custom styling.
-class RabbitTextField extends StatelessWidget {
-  const RabbitTextField({
+class AppTextField extends StatelessWidget {
+  const AppTextField({
     super.key,
     required this.controller,
     required this.labelText,

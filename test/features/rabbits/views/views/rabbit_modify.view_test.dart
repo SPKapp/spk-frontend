@@ -31,7 +31,7 @@ void main() {
       expect(find.byType(SingleChildScrollView), findsOneWidget);
       expect(find.byType(Card), findsOneWidget);
       expect(find.byType(Column), findsOneWidget);
-      expect(find.byType(RabbitTextField), findsNWidgets(3));
+      expect(find.byType(AppTextField), findsNWidgets(3));
       expect(find.byKey(const Key('nameTextField')), findsOneWidget);
       expect(find.byKey(const Key('colorTextField')), findsOneWidget);
       expect(find.byKey(const Key('breedTextField')), findsOneWidget);

@@ -8,10 +8,11 @@ import 'package:spk_app_frontend/app/view/view.dart';
 
 import 'package:spk_app_frontend/example2.dart';
 import 'package:spk_app_frontend/features/rabbits/views/pages.dart';
+import 'package:spk_app_frontend/features/users/views/pages.dart';
 
 class AppRouter {
   static GoRouter router = GoRouter(
-    initialLocation: '/myRabbits',
+    initialLocation: '/user/add',
     redirect: _authGuard,
     routes: [
       GoRoute(
@@ -24,7 +25,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/',
-        redirect: (context, state) => '/myRabbits',
+        redirect: (context, state) => '/user/add',
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => ScaffoldWithNavigation(
@@ -68,6 +69,11 @@ class AppRouter {
                 ),
               ],
             ),
+            GoRoute(
+                path: '/user/add',
+                builder: (context, state) {
+                  return const UserCreatePage();
+                }),
           ]),
           StatefulShellBranch(
             routes: [

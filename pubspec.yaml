@@ -45,6 +45,7 @@ dependencies:
   graphql_flutter: ^5.2.0-beta.6
   font_awesome_flutter: ^10.7.0
   rxdart: ^0.27.7
+  email_validator: ^2.1.17
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +55,7 @@ dev_dependencies:
   bloc_test: ^9.1.6
   mockito: ^5.4.4
   build_runner: ^2.4.8
+  mocktail: ^1.0.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
