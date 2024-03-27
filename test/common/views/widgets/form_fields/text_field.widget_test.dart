@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:spk_app_frontend/common/views/widgets/form_fields/text.field.dart';
+import 'package:spk_app_frontend/common/views/widgets/form_fields/text_field.widget.dart';
 
 void main() {
   group(AppTextField, () {

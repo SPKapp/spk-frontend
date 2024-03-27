@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -18,7 +19,7 @@ class MockGoRouter extends Mock implements GoRouter {}
 void main() {
   group(UserCreatePage, () {
     final MockUserCreateCubit userCreateCubit = MockUserCreateCubit();
-    late final MockGoRouter mockGoRouter;
+    final MockGoRouter mockGoRouter = MockGoRouter();
 
     setUpAll(() {
       registerFallbackValue(
@@ -29,7 +30,6 @@ void main() {
           phone: '123456789',
         ),
       );
-      mockGoRouter = MockGoRouter();
     });
 
     testWidgets('UserCreatePage should render correctly',
@@ -51,11 +51,10 @@ void main() {
 
     testWidgets('UserCreatePage should create user when save button is pressed',
         (widgetTester) async {
+      final streamController = StreamController<UserCreateState>();
       whenListen(
         userCreateCubit,
-        Stream.fromIterable([
-          const UserCreated(userId: 1),
-        ]),
+        streamController.stream,
         initialState: const UserCreateInitial(),
       );
       when(() => mockGoRouter.pushReplacement(any()))
@@ -72,9 +71,13 @@ void main() {
         ),
       );
 
+      await fillForm(widgetTester);
+
       final saveButton = find.byKey(const Key('saveButton'));
       expect(saveButton, findsOneWidget);
       expect(find.text('Użytkownik został dodany'), findsNothing);
+
+      streamController.add(const UserCreated(userId: 1));
 
       await widgetTester.tap(saveButton);
       await widgetTester.pump();
@@ -87,14 +90,47 @@ void main() {
 
     testWidgets('UserCreatePage should show error message when save fails',
         (widgetTester) async {
+      final streamController = StreamController<UserCreateState>();
       whenListen(
         userCreateCubit,
-        Stream.fromIterable([
-          const UserCreateFailure(),
-          const UserCreateInitial(),
-        ]),
+        streamController.stream,
         initialState: const UserCreateInitial(),
       );
+
+      when(() => userCreateCubit.state)
+          .thenAnswer((invocation) => const UserCreateInitial());
+
+      await widgetTester.pumpWidget(
+        MaterialApp(
+          home: UserCreatePage(
+            cubitCreate: (_) => userCreateCubit,
+          ),
+        ),
+      );
+
+      await fillForm(widgetTester);
+
+      final saveButton = find.byKey(const Key('saveButton'));
+      expect(saveButton, findsOneWidget);
+      expect(find.text('Nie udało się dodać użytkownika'), findsNothing);
+
+      streamController.add(const UserCreateFailure());
+
+      await widgetTester.tap(saveButton);
+      await widgetTester.pump();
+
+      verify(() => userCreateCubit.createUser(any())).called(1);
+
+      expect(find.text('Nie udało się dodać użytkownika'), findsOneWidget);
+      expect(find.text('Użytkownik został dodany'), findsNothing);
+    });
+
+    testWidgets('UserCreatePage should show error message when form is invalid',
+        (widgetTester) async {
+      when(() => userCreateCubit.state)
+          .thenAnswer((invocation) => const UserCreateInitial());
+      when(() => userCreateCubit.state)
+          .thenAnswer((invocation) => const UserCreateInitial());
 
       await widgetTester.pumpWidget(
         MaterialApp(
@@ -111,10 +147,29 @@ void main() {
       await widgetTester.tap(saveButton);
       await widgetTester.pump();
 
-      verify(() => userCreateCubit.createUser(any())).called(1);
+      verifyNever(() => userCreateCubit.createUser(any()));
 
-      expect(find.text('Nie udało się dodać użytkownika'), findsOneWidget);
+      expect(find.text('Nie udało się dodać użytkownika'), findsNothing);
       expect(find.text('Użytkownik został dodany'), findsNothing);
     });
   });
+}
+
+Future<void> fillForm(WidgetTester tester) async {
+  await tester.tap(find.byKey(const Key('firstnameTextField')));
+  await tester.pump();
+  await tester.enterText(find.byKey(const Key('firstnameTextField')), 'John');
+
+  await tester.tap(find.byKey(const Key('lastnameTextField')));
+  await tester.pump();
+  await tester.enterText(find.byKey(const Key('lastnameTextField')), 'Doe');
+
+  await tester.tap(find.byKey(const Key('emailTextField')));
+  await tester.pump();
+  await tester.enterText(
+      find.byKey(const Key('emailTextField')), 'email@example.com');
+
+  await tester.tap(find.byKey(const Key('phoneTextField')));
+  await tester.pump();
+  await tester.enterText(find.byKey(const Key('phoneTextField')), '123456789');
 }

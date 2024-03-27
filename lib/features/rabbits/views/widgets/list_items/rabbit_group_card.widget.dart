@@ -5,6 +5,7 @@ import 'package:spk_app_frontend/features/rabbits/views/widgets/list_items/rabbi
 
 /// A widget that represents a card for displaying a group of rabbits.
 class RabbitGroupCard extends StatelessWidget {
+  // TODO: transform to use [ListCard] widget
   const RabbitGroupCard({
     super.key,
     required this.rabbitsGroup,

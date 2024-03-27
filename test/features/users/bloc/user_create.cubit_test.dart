@@ -1,18 +1,16 @@
 import 'package:test/test.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/user_create.cubit.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
-import 'user_create.cubit_test.mocks.dart';
+class MockUsersRepository extends Mock implements IUsersRepository {}
 
-@GenerateMocks([IUsersRepository])
 void main() {
   group(UserCreateCubit, () {
-    final usersRepository = MockIUsersRepository();
+    final usersRepository = MockUsersRepository();
     late UserCreateCubit userCreateCubit;
 
     final dto = UserCreateDto(
@@ -21,6 +19,10 @@ void main() {
       email: 'email@example.com',
       phone: '123456789',
     );
+
+    setUpAll(() {
+      registerFallbackValue(dto);
+    });
 
     setUp(() {
       userCreateCubit = UserCreateCubit(usersRepository: usersRepository);
@@ -37,7 +39,8 @@ void main() {
     blocTest<UserCreateCubit, UserCreateState>(
       'emits [UserCreated] when createUser is called',
       setUp: () {
-        when(usersRepository.createUser(any)).thenAnswer((_) async => 1);
+        when(() => usersRepository.createUser(any()))
+            .thenAnswer((_) async => 1);
       },
       build: () => userCreateCubit,
       act: (cubit) => cubit.createUser(dto),
@@ -49,7 +52,7 @@ void main() {
     blocTest<UserCreateCubit, UserCreateState>(
       'emits [UserCreateFailure] when createUser is called',
       setUp: () {
-        when(usersRepository.createUser(any)).thenThrow(Exception());
+        when(() => usersRepository.createUser(any())).thenThrow(Exception());
       },
       build: () => userCreateCubit,
       act: (cubit) => cubit.createUser(dto),

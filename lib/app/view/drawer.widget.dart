@@ -21,6 +21,10 @@ class AppDrawer extends StatelessWidget {
         title: const Text('Dodaj królika'),
         onTap: () => context.push('/rabbit/add'),
       ),
+      ListTile(
+        title: const Text('Dodaj użytkownika'),
+        onTap: () => context.push('/user/add'),
+      ),
       const Divider()
     ];
 
