@@ -5,6 +5,8 @@ import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
+part 'users.queries.dart';
+
 final class UsersRepository implements IUsersRepository {
   UsersRepository(this._gqlService);
 
@@ -15,107 +17,23 @@ final class UsersRepository implements IUsersRepository {
     bool totalCount = false,
     int? offset,
     int? limit,
+    List<int>? regionIds,
+    List<bool>? active,
   }) async {
-    return const Paginated<Team>(
-      totalCount: 100,
-      data: [
-        Team(
-          id: 1,
-          users: [
-            User(
-              id: 1,
-              firstName: 'John',
-              lastName: 'Doe',
-              email: 'email@example.com',
-              phone: '123456789',
-            ),
-          ],
-        ),
-        Team(
-          id: 1,
-          users: [
-            User(
-              id: 1,
-              firstName: 'John',
-              lastName: 'Doe',
-              email: 'email@example.com',
-              phone: '123456789',
-            ),
-          ],
-        ),
-        Team(
-          id: 1,
-          users: [
-            User(
-              id: 1,
-              firstName: 'John',
-              lastName: 'Doe',
-              email: 'email@example.com',
-              phone: '123456789',
-            ),
-          ],
-        ),
-        Team(
-          id: 1,
-          users: [
-            User(
-              id: 1,
-              firstName: 'John',
-              lastName: 'Doe',
-              email: 'email@example.com',
-              phone: '123456789',
-            ),
-          ],
-        ),
-        Team(
-          id: 1,
-          users: [
-            User(
-              id: 1,
-              firstName: 'John',
-              lastName: 'Doe',
-              email: 'email@example.com',
-              phone: '123456789',
-            ),
-          ],
-        ),
-        Team(
-          id: 1,
-          users: [
-            User(
-              id: 1,
-              firstName: 'John',
-              lastName: 'Doe',
-              email: 'email@example.com',
-              phone: '123456789',
-            ),
-          ],
-        ),
-        Team(
-          id: 1,
-          users: [
-            User(
-              id: 1,
-              firstName: 'John',
-              lastName: 'Doe',
-              email: 'email@example.com',
-              phone: '123456789',
-            ),
-          ],
-        ),
-        Team(
-          id: 1,
-          users: [
-            User(
-              id: 1,
-              firstName: 'John',
-              lastName: 'Doe',
-              email: 'email@example.com',
-              phone: '123456789',
-            ),
-          ],
-        ),
-      ],
+    final result =
+        await _gqlService.query(_getTeamListQuery(totalCount), variables: {
+      if (offset != null) 'offset': offset,
+      if (limit != null) 'limit': limit,
+    });
+
+    if (result.hasException) {
+      // TODO: add exception handling
+      throw Exception(result.exception);
+    }
+
+    return Paginated.fromJson<Team>(
+      result.data!['teams'],
+      (json) => Team.fromJson(json),
     );
   }
 

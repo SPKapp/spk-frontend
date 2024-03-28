@@ -19,8 +19,8 @@ final class User extends Equatable {
     // TODO: Add tests
     return User(
       id: int.parse(json['id']),
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
+      firstName: json['firstname'] as String,
+      lastName: json['lastname'] as String,
       email: json['email'] as String?,
       phone: json['phone'] as String?,
     );

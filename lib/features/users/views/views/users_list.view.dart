@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:spk_app_frontend/common/views/widgets/lists/list_card.widget.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
@@ -92,10 +94,12 @@ class _UsersListViewState extends State<UsersListView> {
                   return ListCard(
                     itemCount: widget.teams[index].users.length,
                     itemBuilder: (context, userIndex) {
+                      final user = widget.teams[index].users[userIndex];
                       return ListTile(
                         leading: const Icon(Icons.person),
+                        onTap: () => context.push('/user/${user.id}'),
                         title: Text(
-                          '${widget.teams[index].users[userIndex].firstName} ${widget.teams[index].users[userIndex].lastName}',
+                          '${user.firstName} ${user.lastName}',
                         ),
                         subtitle: // TODO: Add role
                             const Text('Rola'),

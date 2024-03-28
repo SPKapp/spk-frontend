@@ -15,7 +15,7 @@ final class Team extends Equatable {
     // TODO: Add tests
     return Team(
       id: int.parse(json['id']),
-      users: (json['name'] as List)
+      users: (json['users'] as List)
           .map((user) => User.fromJson(user as Map<String, dynamic>))
           .toList(),
     );
