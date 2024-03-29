@@ -27,14 +27,25 @@ void main() {
         ),
       ],
     );
+    const team2 = Team(
+      id: 2,
+      users: [
+        User(
+          id: 2,
+          firstName: 'Tom',
+          lastName: 'Smith',
+          email: 'email2@example.com',
+          phone: '223456789',
+        ),
+      ],
+    );
 
-    const paginatedResult1 = Paginated<Team>(
-      totalCount: 1,
+    const paginatedResult = Paginated<Team>(
       data: [team1],
     );
-    const paginatedResult2 = Paginated<Team>(
+    const paginatedResultTotalCount = Paginated<Team>(
       totalCount: 2,
-      data: [team1],
+      data: [team2],
     );
 
     setUp(() {
@@ -55,17 +66,24 @@ void main() {
         when(() => usersRepository.fetchTeams(
               offset: 0,
               totalCount: true,
-            )).thenAnswer((invocation) async => paginatedResult1);
+            )).thenAnswer((invocation) async => paginatedResultTotalCount);
       },
       build: () => usersListBloc,
       act: (bloc) => bloc.add(const FetchUsers()),
       expect: () => [
         UsersListSuccess(
-          teams: paginatedResult1.data,
-          hasReachedMax: true,
-          totalCount: paginatedResult1.totalCount!,
+          teams: paginatedResultTotalCount.data,
+          hasReachedMax: false,
+          totalCount: paginatedResultTotalCount.totalCount!,
         ),
       ],
+      verify: (_) {
+        verify(() => usersRepository.fetchTeams(
+              offset: 0,
+              totalCount: true,
+            )).called(1);
+        verifyNoMoreInteractions(usersRepository);
+      },
     );
 
     blocTest<UsersListBloc, UsersListState>(
@@ -81,6 +99,13 @@ void main() {
       expect: () => [
         UsersListFailure(),
       ],
+      verify: (_) {
+        verify(() => usersRepository.fetchTeams(
+              offset: 0,
+              totalCount: true,
+            )).called(1);
+        verifyNoMoreInteractions(usersRepository);
+      },
     );
 
     blocTest<UsersListBloc, UsersListState>(
@@ -93,52 +118,71 @@ void main() {
       },
       build: () => usersListBloc,
       seed: () => UsersListSuccess(
-        teams: paginatedResult1.data,
+        teams: paginatedResultTotalCount.data,
         hasReachedMax: false,
-        totalCount: paginatedResult1.totalCount!,
+        totalCount: paginatedResultTotalCount.totalCount!,
       ),
       act: (bloc) => bloc.add(const FetchUsers()),
       expect: () => [
         UsersListFailure(
-          teams: paginatedResult1.data,
+          teams: paginatedResultTotalCount.data,
           hasReachedMax: false,
-          totalCount: paginatedResult1.totalCount!,
+          totalCount: paginatedResultTotalCount.totalCount!,
         ),
       ],
+      verify: (_) {
+        verify(() => usersRepository.fetchTeams(
+              offset: 1,
+              totalCount: false,
+            )).called(1);
+        verifyNoMoreInteractions(usersRepository);
+      },
     );
 
     blocTest<UsersListBloc, UsersListState>(
       'emits [UsersListSuccess] when FetchUsers event is added and hasReachedMax is false',
       setUp: () {
-        when(() => usersRepository.fetchTeams(offset: 1, totalCount: false))
-            .thenAnswer((invocation) async => paginatedResult1);
+        when(() => usersRepository.fetchTeams(
+              offset: 1,
+              totalCount: false,
+            )).thenAnswer((invocation) async => paginatedResult);
       },
       build: () => usersListBloc,
       seed: () => UsersListSuccess(
-        teams: paginatedResult2.data,
+        teams: paginatedResultTotalCount.data,
         hasReachedMax: false,
-        totalCount: paginatedResult2.totalCount!,
+        totalCount: paginatedResultTotalCount.totalCount!,
       ),
       act: (bloc) => bloc.add(const FetchUsers()),
       expect: () => [
         UsersListSuccess(
-          teams: paginatedResult2.data + paginatedResult1.data,
+          teams: paginatedResultTotalCount.data + paginatedResult.data,
           hasReachedMax: true,
-          totalCount: paginatedResult2.totalCount!,
+          totalCount: paginatedResultTotalCount.totalCount!,
         ),
       ],
+      verify: (_) {
+        verify(() => usersRepository.fetchTeams(
+              offset: 1,
+              totalCount: false,
+            )).called(1);
+        verifyNoMoreInteractions(usersRepository);
+      },
     );
 
     blocTest<UsersListBloc, UsersListState>(
       'does not emit any state when FetchUsers event is added and hasReachedMax is true',
       build: () => usersListBloc,
       seed: () => UsersListSuccess(
-        teams: paginatedResult2.data,
+        teams: paginatedResultTotalCount.data,
         hasReachedMax: true,
         totalCount: 1,
       ),
       act: (bloc) => bloc.add(const FetchUsers()),
       expect: () => [],
+      verify: (_) {
+        verifyNoMoreInteractions(usersRepository);
+      },
     );
 
     blocTest<UsersListBloc, UsersListState>(
@@ -147,18 +191,25 @@ void main() {
         when(() => usersRepository.fetchTeams(
               offset: 0,
               totalCount: true,
-            )).thenAnswer((invocation) async => paginatedResult1);
+            )).thenAnswer((invocation) async => paginatedResultTotalCount);
       },
       build: () => usersListBloc,
       act: (bloc) => bloc.add(const RefreshUsers()),
       expect: () => [
         UsersListInitial(),
         UsersListSuccess(
-          teams: paginatedResult1.data,
-          hasReachedMax: true,
-          totalCount: paginatedResult1.totalCount!,
+          teams: paginatedResultTotalCount.data,
+          hasReachedMax: false,
+          totalCount: paginatedResultTotalCount.totalCount!,
         ),
       ],
+      verify: (_) {
+        verify(() => usersRepository.fetchTeams(
+              offset: 0,
+              totalCount: true,
+            )).called(1);
+        verifyNoMoreInteractions(usersRepository);
+      },
     );
   });
 }

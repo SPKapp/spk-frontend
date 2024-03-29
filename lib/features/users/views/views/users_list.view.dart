@@ -10,6 +10,8 @@ import 'package:spk_app_frontend/features/users/models/models.dart';
 /// A widget that displays a scrollable list of users.
 ///
 /// This widget assumes that the [UsersListBloc] is already provided above in the widget tree.
+/// If [teams] is empty, it displays a message "Brak użytkowników.".
+/// If [hasReachedMax] is false, it displays a [CircularProgressIndicator] at the end of the list.
 class UsersListView extends StatefulWidget {
   const UsersListView({
     super.key,
@@ -55,9 +57,8 @@ class _UsersListViewState extends State<UsersListView> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      LayoutBuilder(builder: (context, constraints) {
-        return RefreshIndicator(
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) => RefreshIndicator(
           onRefresh: () async {
             Future bloc = context.read<UsersListBloc>().stream.first;
             context.read<UsersListBloc>().add(const RefreshUsers());
@@ -66,11 +67,14 @@ class _UsersListViewState extends State<UsersListView> {
           child: Builder(builder: (context) {
             if (widget.teams.isEmpty) {
               return SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(minHeight: constraints.maxHeight),
-                      child: const Center(child: Text('Brak użytkowników.'))));
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: const Center(
+                    child: Text('Brak użytkowników.'),
+                  ),
+                ),
+              );
             }
 
             return ListView.builder(
@@ -110,6 +114,6 @@ class _UsersListViewState extends State<UsersListView> {
               },
             );
           }),
-        );
-      });
+        ),
+      );
 }

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spk_app_frontend/common/views/widgets/lists/list_card.widget.dart';
 
-import 'package:spk_app_frontend/features/rabbits/bloc/rabbits.bloc.dart';
+import 'package:spk_app_frontend/features/rabbits/bloc/rabbits_list.bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/list_items.dart';
 
 /// A widget that displays a list of rabbits.
 ///
+/// This widget assumes that the [RabbitsListBloc] is already provided above in the widget tree.
 /// If [rabbitsGroups] is empty, it displays a message "Brak królików.".
 /// If [hasReachedMax] is false, it displays a [CircularProgressIndicator] at the end of the list.
 class RabbitsListView extends StatefulWidget {
@@ -39,7 +41,7 @@ class _RabbitsListViewState extends State<RabbitsListView> {
 
   void _onScroll() {
     if (_isBottom) {
-      context.read<RabbitsBloc>().add(const FeatchRabbits());
+      context.read<RabbitsListBloc>().add(const FetchRabbits());
     }
   }
 
@@ -51,24 +53,59 @@ class _RabbitsListViewState extends State<RabbitsListView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (widget.rabbitsGroups.isEmpty) {
-      return const Center(child: Text('Brak królików.'));
-    }
-
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: widget.hasReachedMax
-          ? widget.rabbitsGroups.length
-          : widget.rabbitsGroups.length + 1,
-      itemBuilder: (context, index) {
-        return (index == widget.rabbitsGroups.length)
-            ? const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Center(child: CircularProgressIndicator()),
-              )
-            : RabbitGroupCard(rabbitsGroup: widget.rabbitsGroups[index]);
-      },
-    );
-  }
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) => RefreshIndicator(
+          onRefresh: () async {
+            Future bloc = context.read<RabbitsListBloc>().stream.first;
+            context.read<RabbitsListBloc>().add(const RefreshRabbits());
+            return bloc;
+          },
+          child: Builder(builder: (context) {
+            if (widget.rabbitsGroups.isEmpty) {
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: const Center(
+                    child: Text('Brak królików.'),
+                  ),
+                ),
+              );
+            }
+            return ListView.builder(
+              key: const Key('rabbitsListView'),
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: widget.hasReachedMax
+                  ? widget.rabbitsGroups.length
+                  : widget.rabbitsGroups.length + 1,
+              itemBuilder: (context, index) {
+                if (index == widget.rabbitsGroups.length) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextButton(
+                      onPressed: () => context
+                          .read<RabbitsListBloc>()
+                          .add(const FetchRabbits()),
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                  );
+                } else {
+                  return ListCard(
+                    itemCount: widget.rabbitsGroups[index].rabbits.length,
+                    itemBuilder: (context, rabbitIndex) {
+                      final rabbit =
+                          widget.rabbitsGroups[index].rabbits[rabbitIndex];
+                      return RabbitListItem(
+                        id: rabbit.id,
+                        name: rabbit.name,
+                      );
+                    },
+                  );
+                }
+              },
+            );
+          }),
+        ),
+      );
 }

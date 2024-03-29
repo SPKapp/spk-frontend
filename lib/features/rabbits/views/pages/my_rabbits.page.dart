@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:spk_app_frontend/features/rabbits/bloc/rabbits.bloc.dart';
+import 'package:spk_app_frontend/features/rabbits/bloc/rabbits_list.bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbits_list.view.dart';
 
@@ -13,20 +13,20 @@ class MyRabbitsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RabbitsBloc(
+      create: (context) => RabbitsListBloc(
         rabbitsRepository: context.read<IRabbitsRepository>(),
         queryType: RabbitsQueryType.my,
-      )..add(const FeatchRabbits()),
-      child: BlocBuilder<RabbitsBloc, RabbitsState>(
+      )..add(const FetchRabbits()),
+      child: BlocBuilder<RabbitsListBloc, RabbitsListState>(
         builder: (context, state) {
           late Widget body;
 
           switch (state) {
-            case RabbitsInitial():
+            case RabbitsListInitial():
               body = const Center(child: CircularProgressIndicator());
-            case RabbitsFailure():
+            case RabbitsListFailure():
               body = const Center(child: Text('Failed to fetch rabbits'));
-            case RabbitsSuccess():
+            case RabbitsListSuccess():
               body = RabbitsListView(
                 rabbitsGroups: state.rabbitsGroups,
                 hasReachedMax: state.hasReachedMax,

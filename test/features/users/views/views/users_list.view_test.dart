@@ -38,10 +38,11 @@ void main() {
       );
 
       expect(find.text('Brak użytkowników.'), findsOneWidget);
+      expect(find.byType(ListView), findsNothing);
     });
 
     testWidgets(
-        'should display CircularProgressIndicator when hasReachedMax is false and index is equal to teams length',
+        'should display CircularProgressIndicator when hasReachedMax is false',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
@@ -80,8 +81,8 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: BlocProvider<UsersListBloc>(
-            create: (_) => usersListBloc,
+          home: BlocProvider<UsersListBloc>.value(
+            value: usersListBloc,
             child: UsersListView(
               teams: teams + teams,
               hasReachedMax: false,
@@ -100,16 +101,15 @@ void main() {
       verify(() => usersListBloc.add(const FetchUsers())).called(1);
     });
 
-    testWidgets(
-        'should call RefreshUsers event when RefreshIndicator is pulled',
+    testWidgets('should call RefreshUsers event when pull to refresh',
         (WidgetTester tester) async {
       when(() => usersListBloc.stream)
           .thenAnswer((_) => Stream.fromIterable([UsersListInitial()]));
 
       await tester.pumpWidget(
         MaterialApp(
-          home: BlocProvider<UsersListBloc>(
-            create: (_) => usersListBloc,
+          home: BlocProvider<UsersListBloc>.value(
+            value: usersListBloc,
             child: const UsersListView(
               teams: teams,
               hasReachedMax: true,
@@ -135,8 +135,8 @@ void main() {
           .thenAnswer((_) => Stream.fromIterable([UsersListInitial()]));
       await tester.pumpWidget(
         MaterialApp(
-          home: BlocProvider<UsersListBloc>(
-            create: (_) => usersListBloc,
+          home: BlocProvider<UsersListBloc>.value(
+            value: usersListBloc,
             child: const UsersListView(
               teams: [],
               hasReachedMax: true,

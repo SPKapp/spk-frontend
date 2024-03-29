@@ -37,17 +37,20 @@ void main() {
     });
 
     blocTest<UserCreateCubit, UserCreateState>(
-      'emits [UserCreated] when createUser is called',
-      setUp: () {
-        when(() => usersRepository.createUser(any()))
-            .thenAnswer((_) async => 1);
-      },
-      build: () => userCreateCubit,
-      act: (cubit) => cubit.createUser(dto),
-      expect: () => [
-        const UserCreated(userId: 1),
-      ],
-    );
+        'emits [UserCreated] when createUser is called',
+        setUp: () {
+          when(() => usersRepository.createUser(any()))
+              .thenAnswer((_) async => 1);
+        },
+        build: () => userCreateCubit,
+        act: (cubit) => cubit.createUser(dto),
+        expect: () => [
+              const UserCreated(userId: 1),
+            ],
+        verify: (_) {
+          verify(() => usersRepository.createUser(dto)).called(1);
+          verifyNoMoreInteractions(usersRepository);
+        });
 
     blocTest<UserCreateCubit, UserCreateState>(
       'emits [UserCreateFailure] when createUser is called',
@@ -60,6 +63,10 @@ void main() {
         const UserCreateFailure(),
         const UserCreateInitial(),
       ],
+      verify: (_) {
+        verify(() => usersRepository.createUser(dto)).called(1);
+        verifyNoMoreInteractions(usersRepository);
+      },
     );
   });
 }
