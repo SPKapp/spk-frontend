@@ -1,18 +1,16 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
 
-import 'rabbit.cubit_test.mocks.dart';
+class MockRabbitsRepository extends Mock implements IRabbitsRepository {}
 
-@GenerateMocks([IRabbitsRepository])
 void main() {
   group(RabbitCubit, () {
-    final rabbitRepository = MockIRabbitsRepository();
+    final rabbitRepository = MockRabbitsRepository();
     late RabbitCubit rabbitCubit;
 
     const Rabbit rabbit = Rabbit(
@@ -24,7 +22,7 @@ void main() {
     );
 
     setUp(() {
-      provideDummy(rabbit);
+      registerFallbackValue(rabbit);
       rabbitCubit = RabbitCubit(
         rabbitsRepository: rabbitRepository,
         rabbitId: rabbit.id,
@@ -38,7 +36,7 @@ void main() {
     blocTest<RabbitCubit, RabbitState>(
       'emits [RabbitSuccess] when fetchRabbit is called',
       setUp: () {
-        when(rabbitRepository.rabbit(rabbit.id))
+        when(() => rabbitRepository.rabbit(rabbit.id))
             .thenAnswer((_) async => rabbit);
       },
       build: () => rabbitCubit,
@@ -46,18 +44,26 @@ void main() {
       expect: () => [
         const RabbitSuccess(rabbit: rabbit),
       ],
+      verify: (_) {
+        verify(() => rabbitRepository.rabbit(rabbit.id)).called(1);
+        verifyNoMoreInteractions(rabbitRepository);
+      },
     );
 
     blocTest<RabbitCubit, RabbitState>(
       'emits [RabbitFailure] when fetchRabbit is called',
       setUp: () {
-        when(rabbitRepository.rabbit(rabbit.id)).thenThrow(Exception());
+        when(() => rabbitRepository.rabbit(rabbit.id)).thenThrow(Exception());
       },
       build: () => rabbitCubit,
       act: (cubit) => cubit.fetchRabbit(),
       expect: () => [
         const RabbitFailure(),
       ],
+      verify: (_) {
+        verify(() => rabbitRepository.rabbit(rabbit.id)).called(1);
+        verifyNoMoreInteractions(rabbitRepository);
+      },
     );
   });
 }

@@ -1,21 +1,26 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart';
 
-import 'rabbit_update.cubit_test.mocks.dart';
+class MockRabbitsRepository extends Mock implements IRabbitsRepository {}
 
-@GenerateMocks([IRabbitsRepository])
 void main() {
   group(RabbitUpdateCubit, () {
-    final rabbitRepository = MockIRabbitsRepository();
+    final rabbitRepository = MockRabbitsRepository();
     late RabbitUpdateCubit rabbitUpdateCubit;
 
+    final dto = RabbitUpdateDto(
+      id: 1,
+      name: 'name',
+      rabbitGroupId: 1,
+    );
+
     setUp(() {
+      registerFallbackValue(dto);
       rabbitUpdateCubit = RabbitUpdateCubit(
         rabbitsRepository: rabbitRepository,
       );
@@ -28,16 +33,11 @@ void main() {
     blocTest<RabbitUpdateCubit, RabbitUpdateState>(
       'emits [RabbitUpdated] when updateRabbit is called',
       setUp: () {
-        when(rabbitRepository.updateRabbit(any)).thenAnswer((_) async => 1);
+        when(() => rabbitRepository.updateRabbit(any()))
+            .thenAnswer((_) async => 1);
       },
       build: () => rabbitUpdateCubit,
-      act: (cubit) => cubit.updateRabbit(
-        RabbitUpdateDto(
-          id: 1,
-          name: 'name',
-          rabbitGroupId: 1,
-        ),
-      ),
+      act: (cubit) => cubit.updateRabbit(dto),
       expect: () => [
         const RabbitUpdated(),
       ],
@@ -46,16 +46,10 @@ void main() {
     blocTest<RabbitUpdateCubit, RabbitUpdateState>(
       'emits [RabbitUpdateFailure] when updateRabbit is called',
       setUp: () {
-        when(rabbitRepository.updateRabbit(any)).thenThrow(Exception());
+        when(() => rabbitRepository.updateRabbit(any())).thenThrow(Exception());
       },
       build: () => rabbitUpdateCubit,
-      act: (cubit) => cubit.updateRabbit(
-        RabbitUpdateDto(
-          id: 1,
-          name: 'name',
-          rabbitGroupId: 1,
-        ),
-      ),
+      act: (cubit) => cubit.updateRabbit(dto),
       expect: () => [
         const RabbitUpdateFailure(),
         const RabbitUpdateInitial(),

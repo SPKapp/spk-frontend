@@ -1,21 +1,25 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_create.cubit.dart';
 
-import 'rabbit_create.cubit_test.mocks.dart';
+class MockRabbitsRepository extends Mock implements IRabbitsRepository {}
 
-@GenerateMocks([IRabbitsRepository])
 void main() {
   group(RabbitCreateCubit, () {
-    final rabbitRepository = MockIRabbitsRepository();
+    final rabbitRepository = MockRabbitsRepository();
     late RabbitCreateCubit rabbitCreateCubit;
 
+    final dto = RabbitCreateDto(
+      name: 'name',
+      rabbitGroupId: 1,
+    );
+
     setUp(() {
+      registerFallbackValue(dto);
       rabbitCreateCubit = RabbitCreateCubit(
         rabbitsRepository: rabbitRepository,
       );
@@ -26,38 +30,36 @@ void main() {
     });
 
     blocTest<RabbitCreateCubit, RabbitCreateState>(
-      'emits [RabbitCreated] when addRabbit is called',
-      setUp: () {
-        when(rabbitRepository.createRabbit(any)).thenAnswer((_) async => 1);
-      },
-      build: () => rabbitCreateCubit,
-      act: (cubit) => cubit.createRabbit(
-        RabbitCreateDto(
-          name: 'name',
-          rabbitGroupId: 1,
-        ),
-      ),
-      expect: () => [
-        const RabbitCreated(rabbitId: 1),
-      ],
-    );
+        'emits [RabbitCreated] when addRabbit is called',
+        setUp: () {
+          when(() => rabbitRepository.createRabbit(any()))
+              .thenAnswer((_) async => 1);
+        },
+        build: () => rabbitCreateCubit,
+        act: (cubit) => cubit.createRabbit(dto),
+        expect: () => [
+              const RabbitCreated(rabbitId: 1),
+            ],
+        verify: (_) {
+          verify(() => rabbitRepository.createRabbit(any())).called(1);
+          verifyNoMoreInteractions(rabbitRepository);
+        });
 
     blocTest<RabbitCreateCubit, RabbitCreateState>(
       'emits [RabbitAddFailure] when addRabbit is called',
       setUp: () {
-        when(rabbitRepository.createRabbit(any)).thenThrow(Exception());
+        when(() => rabbitRepository.createRabbit(any())).thenThrow(Exception());
       },
       build: () => rabbitCreateCubit,
-      act: (cubit) => cubit.createRabbit(
-        RabbitCreateDto(
-          name: 'name',
-          rabbitGroupId: 1,
-        ),
-      ),
+      act: (cubit) => cubit.createRabbit(dto),
       expect: () => [
         const RabbitCreateFailure(),
         const RabbitCreateInitial(),
       ],
+      verify: (_) {
+        verify(() => rabbitRepository.createRabbit(any())).called(1);
+        verifyNoMoreInteractions(rabbitRepository);
+      },
     );
   });
 }
