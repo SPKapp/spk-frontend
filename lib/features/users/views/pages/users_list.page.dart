@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:spk_app_frontend/common/views/views.dart';
+
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/users/views/views/users_list.view.dart';
@@ -25,22 +27,32 @@ class UsersListPage extends StatelessWidget {
             (context) => UsersListBloc(
                   usersRepository: context.read<IUsersRepository>(),
                 )..add(const FetchUsers()),
-        child: BlocBuilder<UsersListBloc, UsersListState>(
+        child: BlocConsumer<UsersListBloc, UsersListState>(
+          listener: (context, state) {
+            if (state is UsersListFailure && state.teams.isNotEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Wystąpił błąd podczas pobierania użytkowników.',
+                  ),
+                ),
+              );
+            }
+          },
           buildWhen: (previous, current) =>
+              !(previous is UsersListSuccess && current is UsersListFailure) &&
               !(previous is UsersListSuccess && current is UsersListInitial),
           builder: (context, state) {
             late Widget body;
 
             switch (state) {
               case UsersListInitial():
-                body = const Center(child: CircularProgressIndicator());
+                body = const InitialView();
               case UsersListFailure():
-                body = const Center(
-                  child: Text(
-                    key: Key('usersListFailureText'),
-                    'Wystąpił błąd podczas pobierania użytkowników.\nSpróbuj ponownie.',
-                    textAlign: TextAlign.center,
-                  ),
+                body = FailureView(
+                  message: 'Wystąpił błąd podczas pobierania użytkowników.',
+                  onPressed: () =>
+                      context.read<UsersListBloc>().add(const RefreshUsers()),
                 );
               case UsersListSuccess():
                 body = UsersListView(

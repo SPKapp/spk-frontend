@@ -4,7 +4,10 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
 
+import 'package:spk_app_frontend/common/views/views.dart';
+
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
+import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/views/pages/users_list.page.dart';
 import 'package:spk_app_frontend/features/users/views/views/users_list.view.dart';
 
@@ -31,7 +34,7 @@ void main() {
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(find.byType(UsersListView), findsNothing);
-      expect(find.byKey(const Key('usersListFailureText')), findsNothing);
+      expect(find.byType(FailureView), findsNothing);
     });
 
     testWidgets(
@@ -48,7 +51,7 @@ void main() {
 
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.byType(UsersListView), findsNothing);
-      expect(find.byKey(const Key('usersListFailureText')), findsOneWidget);
+      expect(find.byType(FailureView), findsOneWidget);
     });
 
     testWidgets(
@@ -101,7 +104,42 @@ void main() {
 
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.byType(UsersListView), findsOneWidget);
-      expect(find.byKey(const Key('usersListFailureText')), findsNothing);
+      expect(find.byType(FailureView), findsNothing);
+    });
+
+    testWidgets(
+        'UsersListPage should display Snackbar with error and not rebuild',
+        (WidgetTester tester) async {
+      whenListen(
+        usersListBloc,
+        Stream.fromIterable([
+          UsersListFailure(
+            teams: const [Team(id: 1, users: [])],
+            hasReachedMax: true,
+            totalCount: 0,
+          ),
+        ]),
+        initialState: UsersListSuccess(
+          teams: const [Team(id: 1, users: [])],
+          hasReachedMax: true,
+          totalCount: 0,
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: UsersListPage(
+            usersListBloc: (_) => usersListBloc,
+          ),
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byType(UsersListView), findsOneWidget);
+      expect(find.byType(FailureView), findsNothing);
+      expect(find.byType(SnackBar), findsOneWidget);
     });
   });
 }

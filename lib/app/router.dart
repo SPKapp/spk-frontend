@@ -41,7 +41,7 @@ class AppRouter {
             ),
             GoRoute(
               path: '/rabbits',
-              builder: (context, state) => const RabbitsPage(
+              builder: (context, state) => const RabbitsListPage(
                 drawer: AppDrawer(),
               ),
             ),
