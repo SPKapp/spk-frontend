@@ -61,7 +61,7 @@ void main() {
       });
 
       test('initial state', () {
-        expect(rabbitsListBloc.state, equals(RabbitsListInitial()));
+        expect(rabbitsListBloc.state, equals(const RabbitsListInitial()));
       });
 
       blocTest<RabbitsListBloc, RabbitsListState>(
@@ -73,8 +73,8 @@ void main() {
         build: () => rabbitsListBloc,
         act: (bloc) => bloc.add(const FetchRabbits()),
         expect: () => [
-          RabbitsListSuccess(
-            rabbitsGroups: const [rabbitGroup1],
+          const RabbitsListSuccess(
+            rabbitsGroups: [rabbitGroup1],
             hasReachedMax: true,
             totalCount: 1,
           ),
@@ -93,7 +93,7 @@ void main() {
         build: () => rabbitsListBloc,
         act: (bloc) => bloc.add(const FetchRabbits()),
         expect: () => [
-          RabbitsListFailure(),
+          const RabbitsListFailure(),
         ],
         verify: (_) {
           verify(() => rabbitRepository.myRabbits()).called(1);
@@ -104,8 +104,8 @@ void main() {
       blocTest<RabbitsListBloc, RabbitsListState>(
         'do not emit new state when state is RabbitsListSuccess',
         build: () => rabbitsListBloc,
-        seed: () => RabbitsListSuccess(
-          rabbitsGroups: const [rabbitGroup1],
+        seed: () => const RabbitsListSuccess(
+          rabbitsGroups: [rabbitGroup1],
           hasReachedMax: true,
           totalCount: 1,
         ),
@@ -126,7 +126,7 @@ void main() {
       });
 
       test('initial state', () {
-        expect(rabbitsListBloc.state, equals(RabbitsListInitial()));
+        expect(rabbitsListBloc.state, equals(const RabbitsListInitial()));
       });
 
       blocTest<RabbitsListBloc, RabbitsListState>(
@@ -170,7 +170,7 @@ void main() {
         build: () => rabbitsListBloc,
         act: (bloc) => bloc.add(const FetchRabbits()),
         expect: () => [
-          RabbitsListFailure(),
+          const RabbitsListFailure(),
         ],
         verify: (_) {
           verify(() => rabbitRepository.findAll(
@@ -275,7 +275,7 @@ void main() {
         build: () => rabbitsListBloc,
         act: (bloc) => bloc.add(const RefreshRabbits()),
         expect: () => [
-          RabbitsListInitial(),
+          const RabbitsListInitial(),
           RabbitsListSuccess(
             rabbitsGroups: paginatedResultTotalCount.data,
             hasReachedMax: false,

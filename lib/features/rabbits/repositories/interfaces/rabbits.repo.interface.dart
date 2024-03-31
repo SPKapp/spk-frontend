@@ -13,4 +13,11 @@ abstract interface class IRabbitsRepository {
   });
   Future<int> createRabbit(RabbitCreateDto rabbit);
   Future<int> updateRabbit(RabbitUpdateDto rabbit);
+
+  Future<Paginated<Rabbit>> findRabbitsByName(
+    String name, {
+    bool totalCount = false,
+    int? offset,
+    int? limit,
+  });
 }

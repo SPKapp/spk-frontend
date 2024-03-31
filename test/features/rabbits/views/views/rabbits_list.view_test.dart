@@ -127,7 +127,7 @@ void main() {
     testWidgets('should call RefreshRabbits event when pull to refresh',
         (WidgetTester tester) async {
       when(() => rabbitsListBloc.stream)
-          .thenAnswer((_) => Stream.fromIterable([RabbitsListInitial()]));
+          .thenAnswer((_) => Stream.fromIterable([const RabbitsListInitial()]));
       await tester.pumpWidget(
         MaterialApp(
           home: BlocProvider<RabbitsListBloc>.value(
@@ -155,7 +155,7 @@ void main() {
         'should call RefreshRabbits event when pull to refresh and no data',
         (WidgetTester tester) async {
       when(() => rabbitsListBloc.stream)
-          .thenAnswer((_) => Stream.fromIterable([RabbitsListInitial()]));
+          .thenAnswer((_) => Stream.fromIterable([const RabbitsListInitial()]));
       await tester.pumpWidget(
         MaterialApp(
           home: BlocProvider<RabbitsListBloc>.value(

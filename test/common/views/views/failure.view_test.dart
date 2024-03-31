@@ -46,5 +46,21 @@ void main() {
       await tester.tap(buttonFinder);
       expect(onPressedCalled, true);
     });
+
+    testWidgets('FailureView does not display button when onPressed is null',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: FailureView(
+              message: 'Error',
+            ),
+          ),
+        ),
+      );
+
+      final buttonFinder = find.byType(FilledButton);
+      expect(buttonFinder, findsNothing);
+    });
   });
 }

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
+/// A view that represents a failure state.
+///
+/// This view displays a [message] and an optional button to retry the operation.
 class FailureView extends StatelessWidget {
   const FailureView({
     super.key,
     required this.message,
-    required this.onPressed,
+    this.onPressed,
   });
 
   final String message;
-  final void Function() onPressed;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +23,15 @@ class FailureView extends StatelessWidget {
             message,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(
-            height: 8,
-          ),
-          FilledButton.tonal(
-            onPressed: onPressed,
-            child: const Text('Spróbuj ponownie'),
-          ),
+          if (onPressed != null) ...[
+            const SizedBox(
+              height: 8,
+            ),
+            FilledButton.tonal(
+              onPressed: onPressed,
+              child: const Text('Spróbuj ponownie'),
+            ),
+          ]
         ],
       ),
     );

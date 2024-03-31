@@ -22,7 +22,7 @@ class RabbitsListBloc extends Bloc<RabbitsListEvent, RabbitsListState> {
     required RabbitsQueryType queryType,
   })  : _rabbitsRepository = rabbitsRepository,
         _queryType = queryType,
-        super(RabbitsListInitial()) {
+        super(const RabbitsListInitial()) {
     on<FetchRabbits>(
       _onFetchRabbits,
       transformer: debounceTransformer(const Duration(milliseconds: 500)),
@@ -60,7 +60,7 @@ class RabbitsListBloc extends Bloc<RabbitsListEvent, RabbitsListState> {
       }
     } catch (e) {
       emit(
-        RabbitsListFailure(),
+        const RabbitsListFailure(),
       );
     }
   }
@@ -100,7 +100,7 @@ class RabbitsListBloc extends Bloc<RabbitsListEvent, RabbitsListState> {
 
   void _onRefreshRabbits(
       RefreshRabbits event, Emitter<RabbitsListState> emit) async {
-    emit(RabbitsListInitial());
+    emit(const RabbitsListInitial());
     add(const FetchRabbits());
   }
 }

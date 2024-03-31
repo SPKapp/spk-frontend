@@ -21,7 +21,8 @@ void main() {
     testWidgets(
         'RabbitsListPage should dispaly CircularProgressIndicator when state is RabbitsListInitial',
         (WidgetTester widgetTester) async {
-      when(() => rabbitsListBloc.state).thenAnswer((_) => RabbitsListInitial());
+      when(() => rabbitsListBloc.state)
+          .thenAnswer((_) => const RabbitsListInitial());
 
       await widgetTester.pumpWidget(
         MaterialApp(
@@ -40,7 +41,8 @@ void main() {
     testWidgets(
         'RabbitsListPage should display "Failed to fetch rabbits" when state is RabbitsListFailure',
         (WidgetTester widgetTester) async {
-      when(() => rabbitsListBloc.state).thenAnswer((_) => RabbitsListFailure());
+      when(() => rabbitsListBloc.state)
+          .thenAnswer((_) => const RabbitsListFailure());
       await widgetTester.pumpWidget(
         MaterialApp(
           home: RabbitsListPage(
@@ -58,8 +60,8 @@ void main() {
         'RabbitsListPage should display RabbitsListView when state is RabbitsListSuccess',
         (WidgetTester widgetTester) async {
       when(() => rabbitsListBloc.state).thenAnswer(
-        (_) => RabbitsListSuccess(
-          rabbitsGroups: const [],
+        (_) => const RabbitsListSuccess(
+          rabbitsGroups: [],
           hasReachedMax: true,
           totalCount: 0,
         ),
@@ -84,10 +86,10 @@ void main() {
       whenListen(
         rabbitsListBloc,
         Stream.fromIterable([
-          RabbitsListInitial(),
+          const RabbitsListInitial(),
         ]),
-        initialState: RabbitsListSuccess(
-          rabbitsGroups: const [],
+        initialState: const RabbitsListSuccess(
+          rabbitsGroups: [],
           hasReachedMax: true,
           totalCount: 0,
         ),
@@ -114,14 +116,14 @@ void main() {
       whenListen(
         rabbitsListBloc,
         Stream.fromIterable([
-          RabbitsListFailure(
-            rabbitsGroups: const [RabbitsGroup(id: 1, rabbits: [])],
+          const RabbitsListFailure(
+            rabbitsGroups: [RabbitsGroup(id: 1, rabbits: [])],
             hasReachedMax: true,
             totalCount: 0,
           ),
         ]),
-        initialState: RabbitsListSuccess(
-          rabbitsGroups: const [RabbitsGroup(id: 1, rabbits: [])],
+        initialState: const RabbitsListSuccess(
+          rabbitsGroups: [RabbitsGroup(id: 1, rabbits: [])],
           hasReachedMax: true,
           totalCount: 0,
         ),

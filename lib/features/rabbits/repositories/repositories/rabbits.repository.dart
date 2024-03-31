@@ -79,4 +79,30 @@ class RabbitsRepository implements IRabbitsRepository {
     return Paginated.fromJson(
         result.data!['rabbitGroups'], RabbitsGroup.fromJson);
   }
+
+  @override
+  Future<Paginated<Rabbit>> findRabbitsByName(
+    String name, {
+    bool totalCount = false,
+    int? offset,
+    int? limit,
+  }) async {
+    return const Paginated(
+      data: [
+        Rabbit(
+            id: 1,
+            name: 'Timon',
+            gender: Gender.male,
+            confirmedBirthDate: false,
+            admissionType: AdmissionType.found),
+        Rabbit(
+            id: 1,
+            name: 'Timon2',
+            gender: Gender.male,
+            confirmedBirthDate: false,
+            admissionType: AdmissionType.found)
+      ],
+      totalCount: 2,
+    );
+  }
 }
