@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/common/views/widgets/actions.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits_list.bloc.dart';
+import 'package:spk_app_frontend/features/rabbits/bloc/rabbits_search.bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbits_list.view.dart';
+import 'package:spk_app_frontend/features/rabbits/views/views/rabbits_search_list.view.dart';
 
 /// A page that displays a list of rabbits.
 ///
@@ -16,18 +19,30 @@ class RabbitsListPage extends StatelessWidget {
     super.key,
     this.drawer,
     this.rabbitsListBloc,
+    this.rabbitsSearchBloc,
   });
 
   final Widget? drawer;
   final RabbitsListBloc Function(BuildContext)? rabbitsListBloc;
+  final RabbitsSearchBloc Function(BuildContext)? rabbitsSearchBloc;
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-        create: rabbitsListBloc ??
-            (context) => RabbitsListBloc(
-                  rabbitsRepository: context.read<IRabbitsRepository>(),
-                  queryType: RabbitsQueryType.all,
-                )..add(const FetchRabbits()),
+  Widget build(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: rabbitsListBloc ??
+                (context) => RabbitsListBloc(
+                      rabbitsRepository: context.read<IRabbitsRepository>(),
+                      queryType: RabbitsQueryType.all,
+                    )..add(const FetchRabbits()),
+          ),
+          BlocProvider(
+            create: rabbitsSearchBloc ??
+                (context) => RabbitsSearchBloc(
+                      rabbitsRepository: context.read<IRabbitsRepository>(),
+                    ),
+          ),
+        ],
         child: BlocConsumer<RabbitsListBloc, RabbitsListState>(
           listener: (context, state) {
             if (state is RabbitsListFailure && state.rabbitsGroups.isNotEmpty) {
@@ -69,30 +84,35 @@ class RabbitsListPage extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('Króliki'),
                 actions: [
-                  IconButton(
-                    // TODO: Add search functionality
-                    icon: const Icon(Icons.search),
-                    onPressed: () {
-                      // showSearch(
-                      //   context: context,
-                      //   delegate: null,
-                      // );
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return SizedBox(
-                              width: double.infinity,
-                              child: Center(
-                                  child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text('Tutaj powinna być wyszukiwarka'),
-                                  FilledButton.tonal(
-                                    child: const Text('Zamknij'),
-                                    onPressed: () => context.pop(),
-                                  ),
-                                ],
-                              )));
+                  SearchAction(
+                    key: const Key('search_action'),
+                    onClear: () => context.read<RabbitsSearchBloc>().add(
+                          const RabbitsSearchClear(),
+                        ),
+                    generateResults: (generateContext, query) {
+                      context
+                          .read<RabbitsSearchBloc>()
+                          .add(RabbitsSearchQueryChanged(query));
+
+                      return BlocBuilder<RabbitsSearchBloc, RabbitsSearchState>(
+                        bloc: context.read<RabbitsSearchBloc>(),
+                        builder: (context, state) {
+                          switch (state) {
+                            case RabbitsSearchInitial():
+                              return Container(
+                                key: const Key('search_initial'),
+                              );
+                            case RabbitsSearchFailure():
+                              return const FailureView(
+                                message:
+                                    'Wystąpił błąd podczas wyszukiwania królików.',
+                              );
+                            case RabbitsSearchSuccess():
+                              return RabbitsSearchView(
+                                rabbits: state.rabbits,
+                                hasReachedMax: state.hasReachedMax,
+                              );
+                          }
                         },
                       );
                     },
