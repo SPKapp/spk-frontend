@@ -94,26 +94,29 @@ class RabbitsListPage extends StatelessWidget {
                           .read<RabbitsSearchBloc>()
                           .add(RabbitsSearchQueryChanged(query));
 
-                      return BlocBuilder<RabbitsSearchBloc, RabbitsSearchState>(
-                        bloc: context.read<RabbitsSearchBloc>(),
-                        builder: (context, state) {
-                          switch (state) {
-                            case RabbitsSearchInitial():
-                              return Container(
-                                key: const Key('search_initial'),
-                              );
-                            case RabbitsSearchFailure():
-                              return const FailureView(
-                                message:
-                                    'Wystąpił błąd podczas wyszukiwania królików.',
-                              );
-                            case RabbitsSearchSuccess():
-                              return RabbitsSearchView(
-                                rabbits: state.rabbits,
-                                hasReachedMax: state.hasReachedMax,
-                              );
-                          }
-                        },
+                      return BlocProvider.value(
+                        value: context.read<RabbitsSearchBloc>(),
+                        child:
+                            BlocBuilder<RabbitsSearchBloc, RabbitsSearchState>(
+                          builder: (context, state) {
+                            switch (state) {
+                              case RabbitsSearchInitial():
+                                return Container(
+                                  key: const Key('search_initial'),
+                                );
+                              case RabbitsSearchFailure():
+                                return const FailureView(
+                                  message:
+                                      'Wystąpił błąd podczas wyszukiwania królików.',
+                                );
+                              case RabbitsSearchSuccess():
+                                return RabbitsSearchView(
+                                  rabbits: state.rabbits,
+                                  hasReachedMax: state.hasReachedMax,
+                                );
+                            }
+                          },
+                        ),
                       );
                     },
                   ),
