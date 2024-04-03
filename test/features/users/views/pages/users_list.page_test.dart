@@ -5,18 +5,24 @@ import 'package:mocktail/mocktail.dart';
 import 'package:flutter/material.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/common/views/widgets/actions.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
+import 'package:spk_app_frontend/features/users/bloc/users_search.bloc.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/views/pages/users_list.page.dart';
 import 'package:spk_app_frontend/features/users/views/views/users_list.view.dart';
+import 'package:spk_app_frontend/features/users/views/views/users_search_list.view.dart';
 
 class MockUsersListBloc extends MockBloc<UsersListEvent, UsersListState>
     implements UsersListBloc {}
 
+class MockUsersSearchBloc extends MockBloc<UsersSearchEvent, UsersSearchState>
+    implements UsersSearchBloc {}
+
 void main() {
   group(UsersListPage, () {
-    final MockUsersListBloc usersListBloc = MockUsersListBloc();
+    final UsersListBloc usersListBloc = MockUsersListBloc();
 
     testWidgets(
         'UsersListPage should display CircularProgressIndicator when state is UsersListInitial',
@@ -141,8 +147,166 @@ void main() {
       expect(find.byType(FailureView), findsNothing);
       expect(find.byType(SnackBar), findsOneWidget);
     });
+
+    group(SearchAction, () {
+      late UsersSearchBloc usersSearchBloc;
+
+      setUp(() {
+        usersSearchBloc = MockUsersSearchBloc();
+        when(() => usersListBloc.state).thenAnswer((_) => UsersListInitial());
+      });
+
+      testWidgets('should display nothing when state is UsersSearchInitial',
+          (WidgetTester tester) async {
+        when(() => usersSearchBloc.state)
+            .thenReturn(const UsersSearchInitial());
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: UsersListPage(
+              usersListBloc: (_) => usersListBloc,
+              usersSearchBloc: (_) => usersSearchBloc,
+            ),
+          ),
+        );
+
+        await tester.tap(find.byKey(const Key('searchAction')));
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('searchInitial')), findsOneWidget);
+        expect(find.byType(UsersSearchView), findsNothing);
+        expect(find.byType(FailureView), findsNothing);
+      });
+
+      testWidgets('should display Container when state is UsersSearchInitial',
+          (WidgetTester tester) async {
+        when(() => usersSearchBloc.state)
+            .thenReturn(const UsersSearchInitial());
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: UsersListPage(
+              usersListBloc: (_) => usersListBloc,
+              usersSearchBloc: (_) => usersSearchBloc,
+            ),
+          ),
+        );
+
+        await tester.tap(find.byKey(const Key('searchAction')));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byIcon(Icons.clear));
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('searchInitial')), findsOneWidget);
+        expect(find.byType(UsersSearchView), findsNothing);
+        expect(find.byType(FailureView), findsNothing);
+      });
+
+      testWidgets('should display FailureView when state is UsersSearchFailure',
+          (WidgetTester tester) async {
+        when(() => usersSearchBloc.state)
+            .thenAnswer((_) => const UsersSearchFailure());
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: UsersListPage(
+              usersListBloc: (_) => usersListBloc,
+              usersSearchBloc: (_) => usersSearchBloc,
+            ),
+          ),
+        );
+
+        await tester.tap(find.byKey(const Key('searchAction')));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(TextField), 'test');
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('searchInitial')), findsNothing);
+        expect(find.byType(UsersSearchView), findsNothing);
+        expect(find.byType(FailureView), findsOneWidget);
+      });
+
+      testWidgets(
+          'should display UsersSearchView when state is UsersSearchSuccess',
+          (WidgetTester tester) async {
+        when(() => usersSearchBloc.state).thenAnswer(
+          (_) => const UsersSearchSuccess(
+            query: 'text',
+            users: [],
+            hasReachedMax: true,
+            totalCount: 0,
+          ),
+        );
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: UsersListPage(
+              usersListBloc: (_) => usersListBloc,
+              usersSearchBloc: (_) => usersSearchBloc,
+            ),
+          ),
+        );
+
+        await tester.tap(find.byKey(const Key('searchAction')));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(TextField), 'test');
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('searchInitial')), findsNothing);
+        expect(find.byType(UsersSearchView), findsOneWidget);
+        expect(find.byType(FailureView), findsNothing);
+      });
+
+      testWidgets(
+          'should add UsersSearchClear event when clear button is pressed',
+          (WidgetTester tester) async {
+        when(() => usersSearchBloc.state)
+            .thenReturn(const UsersSearchInitial());
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: UsersListPage(
+              usersListBloc: (_) => usersListBloc,
+              usersSearchBloc: (_) => usersSearchBloc,
+            ),
+          ),
+        );
+
+        await tester.tap(find.byKey(const Key('searchAction')));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byIcon(Icons.clear));
+        await tester.pump();
+
+        verify(() => usersSearchBloc.add(const UsersSearchClear())).called(1);
+      });
+
+      testWidgets(
+          'should add UsersSearchClear event when back button is pressed',
+          (WidgetTester tester) async {
+        when(() => usersSearchBloc.state)
+            .thenReturn(const UsersSearchInitial());
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: UsersListPage(
+              usersListBloc: (_) => usersListBloc,
+              usersSearchBloc: (_) => usersSearchBloc,
+            ),
+          ),
+        );
+
+        await tester.tap(find.byKey(const Key('searchAction')));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byIcon(Icons.arrow_back));
+        await tester.pump();
+
+        verify(() => usersSearchBloc.add(const UsersSearchClear())).called(1);
+      });
+    });
   });
 }
-
-// TODO: Add search functionality
-// TODO: Add filter functionality

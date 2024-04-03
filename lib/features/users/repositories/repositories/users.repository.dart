@@ -53,4 +53,29 @@ final class UsersRepository implements IUsersRepository {
     print(userCreateDto.toJson());
     return 1;
   }
+
+  @override
+  Future<Paginated<User>> findUsersByName(
+    String name, {
+    bool totalCount = false,
+    int? offset,
+    int? limit,
+  }) async {
+    return const Paginated(data: [
+      User(
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'email@example.com',
+        phone: '123456789',
+      ),
+      User(
+        id: 2,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'email@example.com',
+        phone: '123456789',
+      ),
+    ], totalCount: 2);
+  }
 }

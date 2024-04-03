@@ -89,36 +89,31 @@ class RabbitsListPage extends StatelessWidget {
                     onClear: () => context.read<RabbitsSearchBloc>().add(
                           const RabbitsSearchClear(),
                         ),
-                    generateResults: (generateContext, query) {
-                      context
-                          .read<RabbitsSearchBloc>()
-                          .add(RabbitsSearchQueryChanged(query));
-
-                      return BlocProvider.value(
-                        value: context.read<RabbitsSearchBloc>(),
-                        child:
-                            BlocBuilder<RabbitsSearchBloc, RabbitsSearchState>(
-                          builder: (context, state) {
-                            switch (state) {
-                              case RabbitsSearchInitial():
-                                return Container(
-                                  key: const Key('search_initial'),
-                                );
-                              case RabbitsSearchFailure():
-                                return const FailureView(
-                                  message:
-                                      'Wystąpił błąd podczas wyszukiwania królików.',
-                                );
-                              case RabbitsSearchSuccess():
-                                return RabbitsSearchView(
-                                  rabbits: state.rabbits,
-                                  hasReachedMax: state.hasReachedMax,
-                                );
-                            }
-                          },
-                        ),
-                      );
-                    },
+                    generateResults: (generateContext, query) =>
+                        BlocProvider.value(
+                      value: context.read<RabbitsSearchBloc>()
+                        ..add(RabbitsSearchQueryChanged(query)),
+                      child: BlocBuilder<RabbitsSearchBloc, RabbitsSearchState>(
+                        builder: (context, state) {
+                          switch (state) {
+                            case RabbitsSearchInitial():
+                              return Container(
+                                key: const Key('search_initial'),
+                              );
+                            case RabbitsSearchFailure():
+                              return const FailureView(
+                                message:
+                                    'Wystąpił błąd podczas wyszukiwania królików.',
+                              );
+                            case RabbitsSearchSuccess():
+                              return RabbitsSearchView(
+                                rabbits: state.rabbits,
+                                hasReachedMax: state.hasReachedMax,
+                              );
+                          }
+                        },
+                      ),
+                    ),
                   ),
                   IconButton(
                     // TODO: Add filter functionality

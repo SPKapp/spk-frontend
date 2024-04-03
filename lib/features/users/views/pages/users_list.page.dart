@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/common/views/widgets/actions.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
+import 'package:spk_app_frontend/features/users/bloc/users_search.bloc.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/users/views/views/users_list.view.dart';
+import 'package:spk_app_frontend/features/users/views/views/users_search_list.view.dart';
 
 /// Represents a page that displays a list of users.
 ///
@@ -16,17 +19,29 @@ class UsersListPage extends StatelessWidget {
     super.key,
     this.drawer,
     this.usersListBloc,
+    this.usersSearchBloc,
   });
 
   final Widget? drawer;
   final UsersListBloc Function(BuildContext)? usersListBloc;
+  final UsersSearchBloc Function(BuildContext)? usersSearchBloc;
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-        create: usersListBloc ??
-            (context) => UsersListBloc(
-                  usersRepository: context.read<IUsersRepository>(),
-                )..add(const FetchUsers()),
+  Widget build(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: usersListBloc ??
+                (context) => UsersListBloc(
+                      usersRepository: context.read<IUsersRepository>(),
+                    )..add(const FetchUsers()),
+          ),
+          BlocProvider(
+            create: usersSearchBloc ??
+                (context) => UsersSearchBloc(
+                      usersRepository: context.read<IUsersRepository>(),
+                    ),
+          ),
+        ],
         child: BlocConsumer<UsersListBloc, UsersListState>(
           listener: (context, state) {
             if (state is UsersListFailure && state.teams.isNotEmpty) {
@@ -66,33 +81,38 @@ class UsersListPage extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('Użytkownicy'),
                 actions: [
-                  IconButton(
-                    // TODO: Add search functionality
-                    icon: const Icon(Icons.search),
-                    onPressed: () {
-                      // showSearch(
-                      //   context: context,
-                      //   delegate: null,
-                      // );
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return SizedBox(
-                              width: double.infinity,
-                              child: Center(
-                                  child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text('Tutaj powinna być wyszukiwarka'),
-                                  FilledButton.tonal(
-                                    child: const Text('Zamknij'),
-                                    onPressed: () => context.pop(),
-                                  ),
-                                ],
-                              )));
+                  SearchAction(
+                    key: const Key('searchAction'),
+                    onClear: () => context.read<UsersSearchBloc>().add(
+                          const UsersSearchClear(),
+                        ),
+                    generateResults: (generateContext, query) =>
+                        BlocProvider.value(
+                      value: context.read<UsersSearchBloc>()
+                        ..add(
+                          UsersSearchQueryChanged(query),
+                        ),
+                      child: BlocBuilder<UsersSearchBloc, UsersSearchState>(
+                        builder: (context, state) {
+                          switch (state) {
+                            case UsersSearchInitial():
+                              return Container(
+                                key: const Key('searchInitial'),
+                              );
+                            case UsersSearchFailure():
+                              return const FailureView(
+                                message:
+                                    'Wystąpił błąd podczas wyszukiwania użytkowników.',
+                              );
+                            case UsersSearchSuccess():
+                              return UsersSearchView(
+                                users: state.users,
+                                hasReachedMax: state.hasReachedMax,
+                              );
+                          }
                         },
-                      );
-                    },
+                      ),
+                    ),
                   ),
                   IconButton(
                     // TODO: Add filter functionality

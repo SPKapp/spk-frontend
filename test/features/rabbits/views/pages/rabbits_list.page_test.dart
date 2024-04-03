@@ -5,7 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:flutter/material.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
-import 'package:spk_app_frontend/common/views/widgets/actions/search_action.widget.dart';
+import 'package:spk_app_frontend/common/views/widgets/actions.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits_list.bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits_search.bloc.dart';

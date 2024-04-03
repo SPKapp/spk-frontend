@@ -125,6 +125,24 @@ void main() {
     });
 
     testWidgets(
+        'should not call RabbitsSearchFetch when page is scrollable and has reached max',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider.value(
+            value: rabbitsSearchBloc,
+            child: const RabbitsSearchView(
+              rabbits: rabbits,
+              hasReachedMax: true,
+            ),
+          ),
+        ),
+      );
+
+      verifyNever(() => rabbitsSearchBloc.add(const RabbitsSearchFetch()));
+    });
+
+    testWidgets(
         'should call RabbitsSearchFetch when page is not scrollable and has not reached max',
         (WidgetTester tester) async {
       await tester.pumpWidget(
@@ -140,6 +158,24 @@ void main() {
       );
 
       verify(() => rabbitsSearchBloc.add(const RabbitsSearchFetch())).called(1);
+    });
+
+    testWidgets(
+        'should not call RabbitsSearchFetch when page is not scrollable and has reached max',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider.value(
+            value: rabbitsSearchBloc,
+            child: const RabbitsSearchView(
+              rabbits: rabbits,
+              hasReachedMax: true,
+            ),
+          ),
+        ),
+      );
+
+      verifyNever(() => rabbitsSearchBloc.add(const RabbitsSearchFetch()));
     });
   });
 }

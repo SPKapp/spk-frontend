@@ -11,4 +11,11 @@ abstract interface class IUsersRepository {
   });
   Future<User> fetchUser(int id);
   Future<int> createUser(UserCreateDto user);
+
+  Future<Paginated<User>> findUsersByName(
+    String name, {
+    bool totalCount = false,
+    int? offset,
+    int? limit,
+  });
 }
