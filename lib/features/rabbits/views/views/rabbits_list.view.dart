@@ -9,13 +9,13 @@ import 'package:spk_app_frontend/features/rabbits/views/widgets/list_items.dart'
 /// A widget that displays a list of rabbits.
 ///
 /// This widget assumes that the [RabbitsListBloc] is already provided above in the widget tree.
-/// If [rabbitsGroups] is empty, it displays a message "Brak królików.".
+/// If [rabbitGroups] is empty, it displays a message "Brak królików.".
 /// If [hasReachedMax] is false, it displays a [CircularProgressIndicator] at the end of the list.
 class RabbitsListView extends StatefulWidget {
   const RabbitsListView(
-      {super.key, required this.rabbitsGroups, required this.hasReachedMax});
+      {super.key, required this.rabbitGroups, required this.hasReachedMax});
 
-  final List<RabbitsGroup> rabbitsGroups;
+  final List<RabbitGroup> rabbitGroups;
   final bool hasReachedMax;
 
   @override
@@ -61,7 +61,7 @@ class _RabbitsListViewState extends State<RabbitsListView> {
             return bloc;
           },
           child: Builder(builder: (context) {
-            if (widget.rabbitsGroups.isEmpty) {
+            if (widget.rabbitGroups.isEmpty) {
               return SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: ConstrainedBox(
@@ -77,10 +77,10 @@ class _RabbitsListViewState extends State<RabbitsListView> {
               controller: _scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: widget.hasReachedMax
-                  ? widget.rabbitsGroups.length
-                  : widget.rabbitsGroups.length + 1,
+                  ? widget.rabbitGroups.length
+                  : widget.rabbitGroups.length + 1,
               itemBuilder: (context, index) {
-                if (index == widget.rabbitsGroups.length) {
+                if (index == widget.rabbitGroups.length) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(
@@ -92,10 +92,10 @@ class _RabbitsListViewState extends State<RabbitsListView> {
                   );
                 } else {
                   return ListCard(
-                    itemCount: widget.rabbitsGroups[index].rabbits.length,
+                    itemCount: widget.rabbitGroups[index].rabbits.length,
                     itemBuilder: (context, rabbitIndex) {
                       final rabbit =
-                          widget.rabbitsGroups[index].rabbits[rabbitIndex];
+                          widget.rabbitGroups[index].rabbits[rabbitIndex];
                       return RabbitListItem(
                         id: rabbit.id,
                         name: rabbit.name,

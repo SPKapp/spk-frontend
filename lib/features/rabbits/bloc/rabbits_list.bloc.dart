@@ -51,7 +51,7 @@ class RabbitsListBloc extends Bloc<RabbitsListEvent, RabbitsListState> {
         case RabbitsListFailure():
           final rabbits = await _rabbitsRepository.myRabbits();
           emit(RabbitsListSuccess(
-            rabbitsGroups: rabbits,
+            rabbitGroups: rabbits,
             hasReachedMax: true,
             totalCount: rabbits.length,
           ));
@@ -72,7 +72,7 @@ class RabbitsListBloc extends Bloc<RabbitsListEvent, RabbitsListState> {
 
     try {
       final paginatedResult = await _rabbitsRepository.findAll(
-        offset: myState.rabbitsGroups.length,
+        offset: myState.rabbitGroups.length,
         totalCount: state is RabbitsListInitial,
       );
 
@@ -82,15 +82,15 @@ class RabbitsListBloc extends Bloc<RabbitsListEvent, RabbitsListState> {
           : myState.totalCount;
 
       emit(RabbitsListSuccess(
-        rabbitsGroups: List.of(myState.rabbitsGroups)..addAll(rabbitGroups),
+        rabbitGroups: List.of(myState.rabbitGroups)..addAll(rabbitGroups),
         hasReachedMax:
-            myState.rabbitsGroups.length + rabbitGroups.length >= totalCount,
+            myState.rabbitGroups.length + rabbitGroups.length >= totalCount,
         totalCount: totalCount,
       ));
     } catch (e) {
       emit(
         RabbitsListFailure(
-          rabbitsGroups: myState.rabbitsGroups,
+          rabbitGroups: myState.rabbitGroups,
           hasReachedMax: myState.hasReachedMax,
           totalCount: myState.totalCount,
         ),

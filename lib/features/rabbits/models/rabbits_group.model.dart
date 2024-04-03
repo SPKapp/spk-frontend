@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/rabbit.model.dart';
 
-final class RabbitsGroup extends Equatable {
-  const RabbitsGroup({
+final class RabbitGroup extends Equatable {
+  const RabbitGroup({
     required this.id,
     required this.rabbits,
   });
@@ -11,8 +11,8 @@ final class RabbitsGroup extends Equatable {
   final int id;
   final List<Rabbit> rabbits;
 
-  static RabbitsGroup fromJson(Map<String, dynamic> json) {
-    return RabbitsGroup(
+  static RabbitGroup fromJson(Map<String, dynamic> json) {
+    return RabbitGroup(
       id: int.parse(json['id']),
       rabbits: (json['rabbits'] as List)
           .map((e) => Rabbit.fromJson(e as Map<String, dynamic>))

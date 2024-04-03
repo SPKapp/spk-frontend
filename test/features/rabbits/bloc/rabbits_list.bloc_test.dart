@@ -15,7 +15,7 @@ void main() {
     final rabbitRepository = MockIRabbitsRepository();
     late RabbitsListBloc rabbitsListBloc;
 
-    const rabbitGroup1 = RabbitsGroup(
+    const rabbitGroup1 = RabbitGroup(
       id: 1,
       rabbits: [
         Rabbit(
@@ -27,7 +27,7 @@ void main() {
         ),
       ],
     );
-    const rabbitGroup2 = RabbitsGroup(
+    const rabbitGroup2 = RabbitGroup(
       id: 2,
       rabbits: [
         Rabbit(
@@ -40,10 +40,10 @@ void main() {
       ],
     );
 
-    const paginatedResult = Paginated<RabbitsGroup>(
+    const paginatedResult = Paginated<RabbitGroup>(
       data: [rabbitGroup1],
     );
-    const paginatedResultTotalCount = Paginated<RabbitsGroup>(
+    const paginatedResultTotalCount = Paginated<RabbitGroup>(
       totalCount: 2,
       data: [rabbitGroup2],
     );
@@ -74,7 +74,7 @@ void main() {
         act: (bloc) => bloc.add(const FetchRabbits()),
         expect: () => [
           const RabbitsListSuccess(
-            rabbitsGroups: [rabbitGroup1],
+            rabbitGroups: [rabbitGroup1],
             hasReachedMax: true,
             totalCount: 1,
           ),
@@ -105,7 +105,7 @@ void main() {
         'do not emit new state when state is RabbitsListSuccess',
         build: () => rabbitsListBloc,
         seed: () => const RabbitsListSuccess(
-          rabbitsGroups: [rabbitGroup1],
+          rabbitGroups: [rabbitGroup1],
           hasReachedMax: true,
           totalCount: 1,
         ),
@@ -143,7 +143,7 @@ void main() {
         act: (bloc) => bloc.add(const FetchRabbits()),
         expect: () => [
           RabbitsListSuccess(
-            rabbitsGroups: paginatedResultTotalCount.data,
+            rabbitGroups: paginatedResultTotalCount.data,
             hasReachedMax: false,
             totalCount: paginatedResultTotalCount.totalCount!,
           ),
@@ -193,14 +193,14 @@ void main() {
         },
         build: () => rabbitsListBloc,
         seed: () => RabbitsListSuccess(
-          rabbitsGroups: paginatedResultTotalCount.data,
+          rabbitGroups: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
         act: (bloc) => bloc.add(const FetchRabbits()),
         expect: () => [
           RabbitsListFailure(
-            rabbitsGroups: paginatedResultTotalCount.data,
+            rabbitGroups: paginatedResultTotalCount.data,
             hasReachedMax: false,
             totalCount: paginatedResultTotalCount.totalCount!,
           ),
@@ -226,15 +226,14 @@ void main() {
         },
         build: () => rabbitsListBloc,
         seed: () => RabbitsListSuccess(
-          rabbitsGroups: paginatedResultTotalCount.data,
+          rabbitGroups: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
         act: (bloc) => bloc.add(const FetchRabbits()),
         expect: () => [
           RabbitsListSuccess(
-            rabbitsGroups:
-                paginatedResultTotalCount.data + paginatedResult.data,
+            rabbitGroups: paginatedResultTotalCount.data + paginatedResult.data,
             hasReachedMax: true,
             totalCount: paginatedResultTotalCount.totalCount!,
           ),
@@ -252,7 +251,7 @@ void main() {
           'does not emit any state when FetchRabbits event is added and hasReachedMax is true',
           build: () => rabbitsListBloc,
           seed: () => RabbitsListSuccess(
-                rabbitsGroups: paginatedResultTotalCount.data,
+                rabbitGroups: paginatedResultTotalCount.data,
                 hasReachedMax: true,
                 totalCount: paginatedResultTotalCount.totalCount!,
               ),
@@ -277,7 +276,7 @@ void main() {
         expect: () => [
           const RabbitsListInitial(),
           RabbitsListSuccess(
-            rabbitsGroups: paginatedResultTotalCount.data,
+            rabbitGroups: paginatedResultTotalCount.data,
             hasReachedMax: false,
             totalCount: paginatedResultTotalCount.totalCount!,
           ),

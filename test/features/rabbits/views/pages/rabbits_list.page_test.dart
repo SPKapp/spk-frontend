@@ -68,7 +68,7 @@ void main() {
         (WidgetTester widgetTester) async {
       when(() => rabbitsListBloc.state).thenAnswer(
         (_) => const RabbitsListSuccess(
-          rabbitsGroups: [],
+          rabbitGroups: [],
           hasReachedMax: true,
           totalCount: 0,
         ),
@@ -96,7 +96,7 @@ void main() {
           const RabbitsListInitial(),
         ]),
         initialState: const RabbitsListSuccess(
-          rabbitsGroups: [],
+          rabbitGroups: [],
           hasReachedMax: true,
           totalCount: 0,
         ),
@@ -124,13 +124,13 @@ void main() {
         rabbitsListBloc,
         Stream.fromIterable([
           const RabbitsListFailure(
-            rabbitsGroups: [RabbitsGroup(id: 1, rabbits: [])],
+            rabbitGroups: [RabbitGroup(id: 1, rabbits: [])],
             hasReachedMax: true,
             totalCount: 0,
           ),
         ]),
         initialState: const RabbitsListSuccess(
-          rabbitsGroups: [RabbitsGroup(id: 1, rabbits: [])],
+          rabbitGroups: [RabbitGroup(id: 1, rabbits: [])],
           hasReachedMax: true,
           totalCount: 0,
         ),

@@ -12,7 +12,7 @@ class RabbitsRepository implements IRabbitsRepository {
   final GqlService gqlService;
 
   @override
-  Future<List<RabbitsGroup>> myRabbits() async {
+  Future<List<RabbitGroup>> myRabbits() async {
     final result = await gqlService.query(_myRabbitsQuery);
 
     if (result.hasException) {
@@ -20,7 +20,7 @@ class RabbitsRepository implements IRabbitsRepository {
     }
 
     return (result.data?['myProfile']['team']['rabbitGroups'] as List)
-        .map((json) => RabbitsGroup.fromJson(json))
+        .map((json) => RabbitGroup.fromJson(json))
         .toList();
   }
 
@@ -60,7 +60,7 @@ class RabbitsRepository implements IRabbitsRepository {
   }
 
   @override
-  Future<Paginated<RabbitsGroup>> findAll({
+  Future<Paginated<RabbitGroup>> findAll({
     bool totalCount = false,
     int? offset,
     int? limit,
@@ -77,7 +77,7 @@ class RabbitsRepository implements IRabbitsRepository {
       throw Exception(result.exception);
     }
     return Paginated.fromJson(
-        result.data!['rabbitGroups'], RabbitsGroup.fromJson);
+        result.data!['rabbitGroups'], RabbitGroup.fromJson);
   }
 
   @override

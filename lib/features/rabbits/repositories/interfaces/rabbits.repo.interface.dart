@@ -4,9 +4,9 @@ import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 
 abstract interface class IRabbitsRepository {
-  Future<List<RabbitsGroup>> myRabbits();
+  Future<List<RabbitGroup>> myRabbits();
   Future<Rabbit> rabbit(int id);
-  Future<Paginated<RabbitsGroup>> findAll({
+  Future<Paginated<RabbitGroup>> findAll({
     bool totalCount = false,
     int? offset,
     int? limit,

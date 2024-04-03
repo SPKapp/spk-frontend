@@ -16,7 +16,7 @@ void main() {
   group(RabbitsListView, () {
     final MockRabbitsListBloc rabbitsListBloc = MockRabbitsListBloc();
     const rabbitGroups = [
-      RabbitsGroup(id: 1, rabbits: [
+      RabbitGroup(id: 1, rabbits: [
         Rabbit(
           id: 1,
           name: 'Timon',
@@ -32,7 +32,7 @@ void main() {
           confirmedBirthDate: false,
         ),
       ]),
-      RabbitsGroup(id: 2, rabbits: [
+      RabbitGroup(id: 2, rabbits: [
         Rabbit(
           id: 1,
           name: 'Simba',
@@ -41,7 +41,7 @@ void main() {
           confirmedBirthDate: false,
         ),
       ]),
-      RabbitsGroup(id: 3, rabbits: [
+      RabbitGroup(id: 3, rabbits: [
         Rabbit(
           id: 1,
           name: 'Nala',
@@ -52,12 +52,12 @@ void main() {
       ]),
     ];
 
-    testWidgets('should display "Brak królików." when rabbitsGroups is empty',
+    testWidgets('should display "Brak królików." when rabbitGroups is empty',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: RabbitsListView(
-            rabbitsGroups: [],
+            rabbitGroups: [],
             hasReachedMax: true,
           ),
         ),
@@ -73,7 +73,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: RabbitsListView(
-            rabbitsGroups: rabbitGroups,
+            rabbitGroups: rabbitGroups,
             hasReachedMax: false,
           ),
         ),
@@ -82,12 +82,12 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('should display rabbit names when rabbitsGroups is not empty',
+    testWidgets('should display rabbit names when rabbitGroups is not empty',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: RabbitsListView(
-            rabbitsGroups: rabbitGroups,
+            rabbitGroups: rabbitGroups,
             hasReachedMax: true,
           ),
         ),
@@ -106,7 +106,7 @@ void main() {
           home: BlocProvider<RabbitsListBloc>.value(
             value: rabbitsListBloc,
             child: RabbitsListView(
-              rabbitsGroups: rabbitGroups + rabbitGroups,
+              rabbitGroups: rabbitGroups + rabbitGroups,
               hasReachedMax: false,
             ),
           ),
@@ -133,7 +133,7 @@ void main() {
           home: BlocProvider<RabbitsListBloc>.value(
             value: rabbitsListBloc,
             child: const RabbitsListView(
-              rabbitsGroups: rabbitGroups,
+              rabbitGroups: rabbitGroups,
               hasReachedMax: true,
             ),
           ),
@@ -161,7 +161,7 @@ void main() {
           home: BlocProvider<RabbitsListBloc>.value(
             value: rabbitsListBloc,
             child: const RabbitsListView(
-              rabbitsGroups: [],
+              rabbitGroups: [],
               hasReachedMax: true,
             ),
           ),

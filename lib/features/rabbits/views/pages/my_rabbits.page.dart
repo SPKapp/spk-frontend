@@ -28,7 +28,7 @@ class MyRabbitsPage extends StatelessWidget {
               body = const Center(child: Text('Failed to fetch rabbits'));
             case RabbitsListSuccess():
               body = RabbitsListView(
-                rabbitsGroups: state.rabbitsGroups,
+                rabbitGroups: state.rabbitGroups,
                 hasReachedMax: state.hasReachedMax,
               );
           }

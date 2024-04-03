@@ -45,7 +45,7 @@ class RabbitsListPage extends StatelessWidget {
         ],
         child: BlocConsumer<RabbitsListBloc, RabbitsListState>(
           listener: (context, state) {
-            if (state is RabbitsListFailure && state.rabbitsGroups.isNotEmpty) {
+            if (state is RabbitsListFailure && state.rabbitGroups.isNotEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(
@@ -75,7 +75,7 @@ class RabbitsListPage extends StatelessWidget {
                 );
               case RabbitsListSuccess():
                 body = RabbitsListView(
-                  rabbitsGroups: state.rabbitsGroups,
+                  rabbitGroups: state.rabbitGroups,
                   hasReachedMax: state.hasReachedMax,
                 );
             }

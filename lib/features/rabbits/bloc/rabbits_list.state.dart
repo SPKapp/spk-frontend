@@ -2,17 +2,17 @@ part of 'rabbits_list.bloc.dart';
 
 sealed class RabbitsListState extends Equatable {
   const RabbitsListState({
-    this.rabbitsGroups = const [],
+    this.rabbitGroups = const [],
     this.hasReachedMax = false,
     this.totalCount = 0,
   });
 
-  final List<RabbitsGroup> rabbitsGroups;
+  final List<RabbitGroup> rabbitGroups;
   final bool hasReachedMax;
   final int totalCount;
 
   @override
-  List<Object> get props => [rabbitsGroups, hasReachedMax, totalCount];
+  List<Object> get props => [rabbitGroups, hasReachedMax, totalCount];
 }
 
 final class RabbitsListInitial extends RabbitsListState {
@@ -21,7 +21,7 @@ final class RabbitsListInitial extends RabbitsListState {
 
 final class RabbitsListSuccess extends RabbitsListState {
   const RabbitsListSuccess({
-    required super.rabbitsGroups,
+    required super.rabbitGroups,
     required super.hasReachedMax,
     required super.totalCount,
   });
@@ -29,7 +29,7 @@ final class RabbitsListSuccess extends RabbitsListState {
 
 final class RabbitsListFailure extends RabbitsListState {
   const RabbitsListFailure({
-    super.rabbitsGroups,
+    super.rabbitGroups,
     super.hasReachedMax,
     super.totalCount,
   });

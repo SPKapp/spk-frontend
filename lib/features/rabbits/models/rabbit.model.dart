@@ -33,7 +33,7 @@ final class Rabbit extends Equatable {
 
   final double? weight;
 
-  final RabbitsGroup? rabbitGroup;
+  final RabbitGroup? rabbitGroup;
 
   static Rabbit fromJson(Map<String, dynamic> json) {
     return Rabbit(
@@ -60,7 +60,7 @@ final class Rabbit extends Equatable {
           : null,
       weight: json['weight'] != null ? double.parse(json['weight']) : null,
       rabbitGroup: json['rabbitGroup'] != null
-          ? RabbitsGroup.fromJson(json['rabbitGroup'])
+          ? RabbitGroup.fromJson(json['rabbitGroup'])
           : null,
     );
   }
