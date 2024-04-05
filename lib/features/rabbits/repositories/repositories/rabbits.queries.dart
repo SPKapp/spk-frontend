@@ -16,9 +16,9 @@ query MyRabbits {
 }
 ''';
 
-const String _rabbitQuery = r'''
-query GetRabbit($id: Int!) {
-  rabbit(id: $id) {
+String _rabbitQuery(bool admin) => '''
+query GetRabbit(\$id: Int!) {
+  rabbit(id: \$id) {
     id
     name
     color
@@ -35,6 +35,15 @@ query GetRabbit($id: Int!) {
         id
         name
       }
+      ${admin ? '''team {
+        id
+				users {
+					id
+					firstname
+					lastname
+				}
+			}
+      ''' : ''}
     }
   }
 }

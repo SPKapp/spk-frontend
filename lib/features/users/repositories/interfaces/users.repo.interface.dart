@@ -8,6 +8,7 @@ abstract interface class IUsersRepository {
     bool totalCount = false,
     int? offset,
     int? limit,
+    List<int>? regionIds,
   });
   Future<User> fetchUser(int id);
   Future<int> createUser(UserCreateDto user);

@@ -12,7 +12,7 @@ import 'package:spk_app_frontend/features/users/views/pages.dart';
 
 class AppRouter {
   static GoRouter router = GoRouter(
-    initialLocation: '/users',
+    initialLocation: '/myRabbits',
     redirect: _authGuard,
     routes: [
       GoRoute(
@@ -25,7 +25,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/',
-        redirect: (context, state) => '/users',
+        redirect: (context, state) => '/myRabbits',
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => ScaffoldWithNavigation(

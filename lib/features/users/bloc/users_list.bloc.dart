@@ -13,10 +13,15 @@ part 'users_list.state.dart';
 /// It provide [FetchUsers] event to fetch next page of users and [RefreshUsers] event to restart fetching users.
 /// It emits [UsersListInitial] state when the bloc is created, [UsersListSuccess] state when the users are fetched successfully
 /// and [UsersListFailure] state when an error occurs while fetching users, this state also contains previous successful fetched users.
+/// If perPage is not provided, the default value is defined by backend, if set to 0 the backend will return all users.
 class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   UsersListBloc({
     required IUsersRepository usersRepository,
+    int? perPage,
+    List<int>? regionIds,
   })  : _usersRepository = usersRepository,
+        _perPage = perPage,
+        _regionIds = regionIds,
         super(UsersListInitial()) {
     on<FetchUsers>(
       _onFetchUsers,
@@ -26,6 +31,8 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   }
 
   final IUsersRepository _usersRepository;
+  final int? _perPage;
+  final List<int>? _regionIds;
 
   void _onFetchUsers(FetchUsers event, Emitter<UsersListState> emit) async {
     if (state.hasReachedMax) return;
@@ -33,6 +40,8 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
     try {
       final paginatedTeams = await _usersRepository.fetchTeams(
         offset: state.teams.length,
+        limit: _perPage,
+        regionIds: _regionIds,
         totalCount: state is UsersListInitial,
       );
 

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_info.view.dart';
+import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info_actions.dart';
 
 class RabbitInfoPage extends StatelessWidget {
   const RabbitInfoPage({
@@ -44,6 +45,25 @@ class RabbitInfoPage extends StatelessWidget {
                         context.read<RabbitCubit>().fetchRabbit();
                       }
                     },
+                  ),
+                  PopupMenuButton(
+                    itemBuilder: (_) => [
+                      PopupMenuItem(
+                        child: const Text('Zmień DT'),
+                        onTap: () async {
+                          final result = await showModalBottomSheet<bool>(
+                              context: context,
+                              builder: (_) {
+                                return EditVolunteerAction(
+                                  rabbit: state.rabbit,
+                                );
+                              });
+                          if (result != null && result && context.mounted) {
+                            context.read<RabbitCubit>().fetchRabbit();
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ],
                 title: Text(

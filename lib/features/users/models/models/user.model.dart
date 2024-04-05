@@ -26,6 +26,8 @@ final class User extends Equatable {
     );
   }
 
+  String get fullName => '$firstName $lastName';
+
   @override
   List<Object?> get props => [id, firstName, lastName, email, phone];
 }

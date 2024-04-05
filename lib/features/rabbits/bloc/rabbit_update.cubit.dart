@@ -31,4 +31,20 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
       );
     }
   }
+
+  void changeTeam(int rabbitGroupId, int teamId) async {
+    try {
+      await _rabbitsRepository.changeTeam(rabbitGroupId, teamId);
+      emit(
+        const RabbitUpdated(),
+      );
+    } catch (e) {
+      emit(
+        const RabbitUpdateFailure(),
+      );
+      emit(
+        const RabbitUpdateInitial(),
+      );
+    }
+  }
 }

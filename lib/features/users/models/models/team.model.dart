@@ -21,6 +21,8 @@ final class Team extends Equatable {
     );
   }
 
+  String get name => users.map((user) => user.fullName).join(', ');
+
   @override
   List<Object?> get props => [id, users];
 }

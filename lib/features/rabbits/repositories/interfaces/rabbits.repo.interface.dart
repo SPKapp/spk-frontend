@@ -20,4 +20,6 @@ abstract interface class IRabbitsRepository {
     int? offset,
     int? limit,
   });
+
+  Future<void> changeTeam(int rabbitGroupId, int teamId);
 }

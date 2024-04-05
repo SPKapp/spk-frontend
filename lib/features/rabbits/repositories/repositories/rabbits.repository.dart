@@ -26,7 +26,8 @@ class RabbitsRepository implements IRabbitsRepository {
 
   @override
   Future<Rabbit> rabbit(int id) async {
-    final result = await gqlService.query(_rabbitQuery, variables: {'id': id});
+    final result =
+        await gqlService.query(_rabbitQuery(true), variables: {'id': id});
 
     if (result.hasException) {
       throw Exception(result.exception);
@@ -90,11 +91,12 @@ class RabbitsRepository implements IRabbitsRepository {
     return const Paginated(
       data: [
         Rabbit(
-            id: 1,
-            name: 'Timon',
-            gender: Gender.male,
-            confirmedBirthDate: false,
-            admissionType: AdmissionType.found),
+          id: 1,
+          name: 'Timon',
+          gender: Gender.male,
+          confirmedBirthDate: false,
+          admissionType: AdmissionType.found,
+        ),
         Rabbit(
             id: 1,
             name: 'Timon2',
@@ -105,4 +107,7 @@ class RabbitsRepository implements IRabbitsRepository {
       totalCount: 2,
     );
   }
+
+  @override
+  Future<void> changeTeam(int rabbitGroupId, int teamId) async {}
 }

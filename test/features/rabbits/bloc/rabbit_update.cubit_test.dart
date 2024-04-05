@@ -10,7 +10,7 @@ class MockRabbitsRepository extends Mock implements IRabbitsRepository {}
 
 void main() {
   group(RabbitUpdateCubit, () {
-    final rabbitRepository = MockRabbitsRepository();
+    late IRabbitsRepository rabbitRepository;
     late RabbitUpdateCubit rabbitUpdateCubit;
 
     final dto = RabbitUpdateDto(
@@ -21,6 +21,7 @@ void main() {
 
     setUp(() {
       registerFallbackValue(dto);
+      rabbitRepository = MockRabbitsRepository();
       rabbitUpdateCubit = RabbitUpdateCubit(
         rabbitsRepository: rabbitRepository,
       );
@@ -30,30 +31,72 @@ void main() {
       expect(rabbitUpdateCubit.state, equals(const RabbitUpdateInitial()));
     });
 
-    blocTest<RabbitUpdateCubit, RabbitUpdateState>(
-      'emits [RabbitUpdated] when updateRabbit is called',
-      setUp: () {
-        when(() => rabbitRepository.updateRabbit(any()))
-            .thenAnswer((_) async => 1);
-      },
-      build: () => rabbitUpdateCubit,
-      act: (cubit) => cubit.updateRabbit(dto),
-      expect: () => [
-        const RabbitUpdated(),
-      ],
-    );
+    group('updateRabbit', () {
+      blocTest<RabbitUpdateCubit, RabbitUpdateState>(
+        'emits [RabbitUpdated] when updateRabbit is called',
+        setUp: () {
+          when(() => rabbitRepository.updateRabbit(any()))
+              .thenAnswer((_) async => 1);
+        },
+        build: () => rabbitUpdateCubit,
+        act: (cubit) => cubit.updateRabbit(dto),
+        expect: () => [
+          const RabbitUpdated(),
+        ],
+        verify: (_) {
+          verify(() => rabbitRepository.updateRabbit(dto)).called(1);
+        },
+      );
 
-    blocTest<RabbitUpdateCubit, RabbitUpdateState>(
-      'emits [RabbitUpdateFailure] when updateRabbit is called',
-      setUp: () {
-        when(() => rabbitRepository.updateRabbit(any())).thenThrow(Exception());
-      },
-      build: () => rabbitUpdateCubit,
-      act: (cubit) => cubit.updateRabbit(dto),
-      expect: () => [
-        const RabbitUpdateFailure(),
-        const RabbitUpdateInitial(),
-      ],
-    );
+      blocTest<RabbitUpdateCubit, RabbitUpdateState>(
+        'emits [RabbitUpdateFailure] when updateRabbit is called',
+        setUp: () {
+          when(() => rabbitRepository.updateRabbit(any()))
+              .thenThrow(Exception());
+        },
+        build: () => rabbitUpdateCubit,
+        act: (cubit) => cubit.updateRabbit(dto),
+        expect: () => [
+          const RabbitUpdateFailure(),
+          const RabbitUpdateInitial(),
+        ],
+        verify: (_) {
+          verify(() => rabbitRepository.updateRabbit(dto)).called(1);
+        },
+      );
+    });
+
+    group('changeTeam', () {
+      blocTest<RabbitUpdateCubit, RabbitUpdateState>(
+          'emits [RabbitUpdated] when changeTeam is called',
+          setUp: () {
+            when(() => rabbitRepository.changeTeam(any(), any()))
+                .thenAnswer((_) async => 1);
+          },
+          build: () => rabbitUpdateCubit,
+          act: (cubit) => cubit.changeTeam(1, 1),
+          expect: () => [
+                const RabbitUpdated(),
+              ],
+          verify: (_) {
+            verify(() => rabbitRepository.changeTeam(1, 1)).called(1);
+          });
+
+      blocTest<RabbitUpdateCubit, RabbitUpdateState>(
+          'emits [RabbitUpdateFailure] when changeTeam is called',
+          setUp: () {
+            when(() => rabbitRepository.changeTeam(any(), any()))
+                .thenThrow(Exception());
+          },
+          build: () => rabbitUpdateCubit,
+          act: (cubit) => cubit.changeTeam(1, 1),
+          expect: () => [
+                const RabbitUpdateFailure(),
+                const RabbitUpdateInitial(),
+              ],
+          verify: (_) {
+            verify(() => rabbitRepository.changeTeam(1, 1)).called(1);
+          });
+    });
   });
 }
