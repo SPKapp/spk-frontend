@@ -18,10 +18,10 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   UsersListBloc({
     required IUsersRepository usersRepository,
     int? perPage,
-    List<int>? regionIds,
+    List<int>? regionsIds,
   })  : _usersRepository = usersRepository,
         _perPage = perPage,
-        _regionIds = regionIds,
+        _regionsIds = regionsIds,
         super(UsersListInitial()) {
     on<FetchUsers>(
       _onFetchUsers,
@@ -32,7 +32,7 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
 
   final IUsersRepository _usersRepository;
   final int? _perPage;
-  final List<int>? _regionIds;
+  final List<int>? _regionsIds;
 
   void _onFetchUsers(FetchUsers event, Emitter<UsersListState> emit) async {
     if (state.hasReachedMax) return;
@@ -41,7 +41,7 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
       final paginatedTeams = await _usersRepository.fetchTeams(
         offset: state.teams.length,
         limit: _perPage,
-        regionIds: _regionIds,
+        regionsIds: _regionsIds,
         totalCount: state is UsersListInitial,
       );
 

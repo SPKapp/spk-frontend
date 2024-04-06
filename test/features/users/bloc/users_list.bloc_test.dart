@@ -256,7 +256,7 @@ void main() {
           });
     });
 
-    group('regionIds', () {
+    group('regionsIds', () {
       const paginatedResultTotalCountFull = Paginated<Team>(
         totalCount: 2,
         data: [team1, team2],
@@ -265,17 +265,17 @@ void main() {
       setUp(() {
         usersListBloc = UsersListBloc(
           usersRepository: usersRepository,
-          regionIds: [1],
+          regionsIds: [1],
         );
       });
 
       blocTest(
-          'emits [UsersListSuccess] when FetchUsers event is added, and regionIds is set',
+          'emits [UsersListSuccess] when FetchUsers event is added, and regionsIds is set',
           setUp: () {
             when(() => usersRepository.fetchTeams(
                       offset: 0,
                       totalCount: true,
-                      regionIds: [1],
+                      regionsIds: [1],
                     ))
                 .thenAnswer(
                     (invocation) async => paginatedResultTotalCountFull);
@@ -293,7 +293,7 @@ void main() {
             verify(() => usersRepository.fetchTeams(
                   offset: 0,
                   totalCount: true,
-                  regionIds: [1],
+                  regionsIds: [1],
                 )).called(1);
             verifyNoMoreInteractions(usersRepository);
           });

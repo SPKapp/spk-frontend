@@ -17,14 +17,14 @@ final class UsersRepository implements IUsersRepository {
     bool totalCount = false,
     int? offset,
     int? limit,
-    List<int>? regionIds,
+    List<int>? regionsIds,
     List<bool>? active,
   }) async {
     final result =
         await _gqlService.query(_getTeamListQuery(totalCount), variables: {
       if (offset != null) 'offset': offset,
       if (limit != null) 'limit': limit,
-      if (regionIds != null) 'regionIds': regionIds,
+      if (regionsIds != null) 'regionsIds': regionsIds,
     });
 
     if (result.hasException) {

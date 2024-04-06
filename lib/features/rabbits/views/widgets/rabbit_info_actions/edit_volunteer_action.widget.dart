@@ -43,7 +43,7 @@ class _EditVolunteerActionState extends State<EditVolunteerAction> {
                 (context) => UsersListBloc(
                       usersRepository: context.read<IUsersRepository>(),
                       perPage: 0,
-                      regionIds: [widget.rabbit.rabbitGroup!.region!.id],
+                      regionsIds: [widget.rabbit.rabbitGroup!.region!.id],
                     )..add(const FetchUsers()),
           ),
           BlocProvider(
