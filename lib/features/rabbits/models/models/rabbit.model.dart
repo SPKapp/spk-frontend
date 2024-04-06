@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/enums/gender.enum.dart';
 import 'package:spk_app_frontend/features/rabbits/models/enums/admission_type.enum.dart';
+import 'package:spk_app_frontend/features/rabbits/models/enums/rabbit_status.enum.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models/rabbits_group.model.dart';
 
 final class Rabbit extends Equatable {
@@ -18,6 +19,7 @@ final class Rabbit extends Equatable {
     this.fillingDate,
     this.weight,
     this.rabbitGroup,
+    this.stauts,
   });
 
   final int id;
@@ -30,6 +32,7 @@ final class Rabbit extends Equatable {
   final DateTime? admissionDate;
   final AdmissionType admissionType;
   final DateTime? fillingDate;
+  final RabbitStatus? stauts;
 
   final double? weight;
 

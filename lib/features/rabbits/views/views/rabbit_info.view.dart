@@ -27,24 +27,19 @@ class RabbitInfoView extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: LayoutBuilder(
-              builder: (context, constraints) => SizedBox(
-                height: constraints.maxWidth * 0.5,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Expanded(
-                      child: _TopPhotoCard(link: LocalConfig.photoUrl),
-                    ),
-                    Expanded(
-                      child: _TopInfoCard(rabbit: rabbit, infoTheme: infoTheme),
-                    ),
-                  ],
+          Row(
+            children: [
+              Expanded(
+                child: TopPhotoCard(
+                  rabbit: rabbit,
                 ),
               ),
-            ),
+              Expanded(
+                child: TopInfoCard(
+                  rabbit: rabbit,
+                ),
+              ),
+            ],
           ),
           if (rabbit.rabbitGroup!.rabbits.length > 1)
             RabbitGroupCard(
@@ -188,72 +183,6 @@ class _TopPhotoCard extends StatelessWidget {
             height: constraints.maxWidth,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _TopInfoCard extends StatelessWidget {
-  const _TopInfoCard({
-    required this.rabbit,
-    required this.infoTheme,
-  });
-
-  final Rabbit rabbit;
-  final TextStyle? infoTheme;
-
-  @override
-  Widget build(BuildContext context) {
-    int age = 0;
-    int ageInMonths = 0;
-
-    if (rabbit.birthDate != null) {
-      age = DateTime.now().differenceInYears(rabbit.birthDate!);
-      if (age <= 1) {
-        ageInMonths = DateTime.now().differenceInMonths(rabbit.birthDate!);
-        if (ageInMonths >= 12) {
-          ageInMonths = ageInMonths - 12;
-        }
-      }
-    }
-
-    return Card(
-      margin: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text(
-            switch (rabbit.gender) {
-              Gender.male => 'Samiec',
-              Gender.female => 'Samiczka',
-              Gender.unknown => 'Płeć Nieznana',
-            },
-            style: infoTheme,
-          ),
-          Text(
-            switch ((age, ageInMonths)) {
-              (0, 0) => 'Wiek Nieznany',
-              (0, 1) => '1 miesiąc',
-              (0, >= 2 && <= 4) => '$ageInMonths miesiące',
-              (0, _) => '$ageInMonths miesięcy',
-              (1, 0) => 'Rok',
-              (1, 1) => 'Rok 1 miesiąc',
-              (1, >= 2 && <= 4) => 'Rok $ageInMonths miesiące',
-              (1, _) => 'Rok $ageInMonths miesięcy',
-              (>= 2 && <= 4, _) => '$age lata',
-              _ => '$age lat',
-            },
-            style: infoTheme,
-          ),
-          Text(
-            rabbit.breed ?? 'Rasa Nieznana',
-            style: infoTheme,
-          ),
-          Text(
-            'Status', // TODO: Add status to Rabbit model
-            style: infoTheme,
-          ),
-        ],
       ),
     );
   }
