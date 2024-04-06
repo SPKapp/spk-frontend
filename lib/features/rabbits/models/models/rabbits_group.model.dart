@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:spk_app_frontend/features/rabbits/models/rabbit.model.dart';
+import 'package:spk_app_frontend/features/rabbits/models/models/rabbit.model.dart';
 
 import 'package:spk_app_frontend/features/users/models/models.dart';
 

@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:spk_app_frontend/features/rabbits/models/gender.enum.dart';
-import 'package:spk_app_frontend/features/rabbits/models/admission_type.enum.dart';
-import 'package:spk_app_frontend/features/rabbits/models/rabbits_group.model.dart';
+import 'package:spk_app_frontend/features/rabbits/models/enums/gender.enum.dart';
+import 'package:spk_app_frontend/features/rabbits/models/enums/admission_type.enum.dart';
+import 'package:spk_app_frontend/features/rabbits/models/models/rabbits_group.model.dart';
 
 final class Rabbit extends Equatable {
   const Rabbit({

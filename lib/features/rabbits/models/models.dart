@@ -1,7 +1,8 @@
 // Models
-export 'rabbit.model.dart';
-export 'rabbits_group.model.dart';
+export 'models/rabbit.model.dart';
+export 'models/rabbits_group.model.dart';
 
 // Enums
-export 'gender.enum.dart';
-export 'admission_type.enum.dart';
+export 'enums/gender.enum.dart';
+export 'enums/admission_type.enum.dart';
+export 'enums/rabbit_status.enum.dart';

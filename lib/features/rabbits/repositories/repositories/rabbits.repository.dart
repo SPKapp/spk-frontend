@@ -1,6 +1,6 @@
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/common/services/gql.service.dart';
-import 'package:spk_app_frontend/features/rabbits/models/dto/dto.dart';
+import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces/rabbits.repo.interface.dart';
 
