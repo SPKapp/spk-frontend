@@ -109,5 +109,14 @@ class RabbitsRepository implements IRabbitsRepository {
   }
 
   @override
-  Future<void> changeTeam(int rabbitGroupId, int teamId) async {}
+  Future<void> updateTeam(int rabbitGroupId, int teamId) async {
+    final result = await gqlService.mutate(_updateTeamMutation, variables: {
+      'rabbitGroupId': rabbitGroupId,
+      'teamId': teamId,
+    });
+
+    if (result.hasException) {
+      throw result.exception!;
+    }
+  }
 }

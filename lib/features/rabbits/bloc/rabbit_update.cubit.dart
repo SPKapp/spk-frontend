@@ -34,7 +34,7 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
 
   void changeTeam(int rabbitGroupId, int teamId) async {
     try {
-      await _rabbitsRepository.changeTeam(rabbitGroupId, teamId);
+      await _rabbitsRepository.updateTeam(rabbitGroupId, teamId);
       emit(
         const RabbitUpdated(),
       );

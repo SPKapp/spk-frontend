@@ -24,6 +24,7 @@ class GqlService {
   }) {
     return _client.query(QueryOptions(
       operationName: operationName,
+      fetchPolicy: FetchPolicy.noCache,
       document: gql(query),
       variables: variables,
     ));

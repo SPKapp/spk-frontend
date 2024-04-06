@@ -21,5 +21,11 @@ abstract interface class IRabbitsRepository {
     int? limit,
   });
 
-  Future<void> changeTeam(int rabbitGroupId, int teamId);
+  /// Updates the team of a rabbit group.
+  ///
+  /// The [rabbitGroupId] parameter specifies the ID of the rabbit group to update.
+  /// The [teamId] parameter specifies the ID of the new team for the rabbit group.
+  ///
+  /// Throws an exception if the update fails.
+  Future<void> updateTeam(int rabbitGroupId, int teamId);
 }

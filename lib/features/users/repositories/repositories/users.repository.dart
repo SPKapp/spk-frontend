@@ -24,6 +24,7 @@ final class UsersRepository implements IUsersRepository {
         await _gqlService.query(_getTeamListQuery(totalCount), variables: {
       if (offset != null) 'offset': offset,
       if (limit != null) 'limit': limit,
+      if (regionIds != null) 'regionIds': regionIds,
     });
 
     if (result.hasException) {

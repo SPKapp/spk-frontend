@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
-import 'package:spk_app_frontend/config/config.local.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info.dart';
@@ -157,32 +156,6 @@ class _FullInfoCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _TopPhotoCard extends StatelessWidget {
-  const _TopPhotoCard({required this.link});
-
-  final String? link;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Image.network(
-            link ?? LocalConfig.photoUrl,
-            fit: BoxFit.fitHeight,
-            height: constraints.maxWidth,
-          ),
-        ),
       ),
     );
   }

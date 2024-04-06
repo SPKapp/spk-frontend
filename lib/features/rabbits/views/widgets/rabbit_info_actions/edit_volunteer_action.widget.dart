@@ -43,7 +43,7 @@ class _EditVolunteerActionState extends State<EditVolunteerAction> {
                 (context) => UsersListBloc(
                       usersRepository: context.read<IUsersRepository>(),
                       perPage: 0,
-                      regionIds: [widget.rabbit.rabbitGroup!.id],
+                      regionIds: [widget.rabbit.rabbitGroup!.region!.id],
                     )..add(const FetchUsers()),
           ),
           BlocProvider(
@@ -135,7 +135,7 @@ class _EditVolunteerActionState extends State<EditVolunteerAction> {
                                       content: Text('Nie zmieniono opiekuna'),
                                     ),
                                   );
-                                  context.pop(true);
+                                  context.pop();
                                 }
                               },
                               child: const Text('Zapisz'),

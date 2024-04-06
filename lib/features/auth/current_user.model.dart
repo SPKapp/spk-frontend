@@ -25,6 +25,10 @@ class CurrentUser extends Equatable {
   bool get isEmpty => this == CurrentUser.empty;
   bool get isNotEmpty => this != CurrentUser.empty;
 
+  bool get isAdmin => roles.contains(Role.admin);
+  bool get isRegionManager => isAdmin || roles.contains(Role.regionManager);
+  bool get isVolunteer => roles.contains(Role.volunteer);
+
   @override
   List<Object?> get props => [uid, token, email, phone, name, roles];
 }

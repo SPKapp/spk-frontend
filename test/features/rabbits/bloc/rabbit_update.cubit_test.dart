@@ -70,7 +70,7 @@ void main() {
       blocTest<RabbitUpdateCubit, RabbitUpdateState>(
           'emits [RabbitUpdated] when changeTeam is called',
           setUp: () {
-            when(() => rabbitRepository.changeTeam(any(), any()))
+            when(() => rabbitRepository.updateTeam(any(), any()))
                 .thenAnswer((_) async => 1);
           },
           build: () => rabbitUpdateCubit,
@@ -79,13 +79,13 @@ void main() {
                 const RabbitUpdated(),
               ],
           verify: (_) {
-            verify(() => rabbitRepository.changeTeam(1, 1)).called(1);
+            verify(() => rabbitRepository.updateTeam(1, 1)).called(1);
           });
 
       blocTest<RabbitUpdateCubit, RabbitUpdateState>(
           'emits [RabbitUpdateFailure] when changeTeam is called',
           setUp: () {
-            when(() => rabbitRepository.changeTeam(any(), any()))
+            when(() => rabbitRepository.updateTeam(any(), any()))
                 .thenThrow(Exception());
           },
           build: () => rabbitUpdateCubit,
@@ -95,7 +95,7 @@ void main() {
                 const RabbitUpdateInitial(),
               ],
           verify: (_) {
-            verify(() => rabbitRepository.changeTeam(1, 1)).called(1);
+            verify(() => rabbitRepository.updateTeam(1, 1)).called(1);
           });
     });
   });

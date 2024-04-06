@@ -43,6 +43,9 @@ query GetRabbit(\$id: Int!) {
 					lastname
 				}
 			}
+      region {
+				id
+			}
       ''' : ''}
     }
   }
@@ -95,5 +98,13 @@ query GetRabbitGroups(\$offset: Int, \$limit: Int, \$regionId: ID) {
     limit
     ${total ? 'totalCount' : ''}
   }
+}
+''';
+
+String _updateTeamMutation = r'''
+mutation Updateteam($rabbitGroupId: Int!, $teamId: Int!) {
+	updateRabbitGroupTeam(rabbitGroupId: $rabbitGroupId, teamId: $teamId) {
+		id
+	}
 }
 ''';

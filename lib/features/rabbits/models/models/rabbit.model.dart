@@ -80,5 +80,7 @@ final class Rabbit extends Equatable {
         admissionDate,
         admissionType,
         fillingDate,
+        stauts,
+        rabbitGroup,
       ];
 }
