@@ -153,6 +153,22 @@ void main() {
 
         verify(() => rabbitsListBloc.add(const FetchRabbits())).called(1);
       });
+
+      testWidgets('should display AlertDialog on save button press',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(buildWidget());
+
+        await tester.tap(find.byType(DropdownButton<int>));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text(rabbitGroup2.name));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byType(FilledButton));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AlertDialog), findsOneWidget);
+      });
     });
 
     group('save', () {
@@ -175,7 +191,10 @@ void main() {
         await tester.pumpAndSettle();
 
         await tester.tap(find.byType(FilledButton));
-        await tester.pump();
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Zmień'));
+        await tester.pumpAndSettle();
 
         expect(find.text('Zapisano zmiany'), findsOneWidget);
 
@@ -184,6 +203,36 @@ void main() {
               rabbitGroup2.id,
             )).called(1);
         verify(() => goRouter.pop(true)).called(1);
+      });
+
+      testWidgets('cancel button works', (WidgetTester tester) async {
+        whenListen(
+          rabbitUpdateCubit,
+          Stream.fromIterable([
+            const RabbitUpdated(),
+          ]),
+          initialState: const RabbitUpdateInitial(),
+        );
+
+        await tester.pumpWidget(buildWidget());
+
+        await tester.tap(find.byType(DropdownButton<int>));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text(rabbitGroup2.name));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byType(FilledButton));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Anuluj'));
+        await tester.pumpAndSettle();
+
+        verifyNever(() => rabbitUpdateCubit.changeRabbitGroup(
+              rabbit.id,
+              rabbitGroup2.id,
+            ));
+        verify(() => goRouter.pop()).called(1);
       });
 
       testWidgets('save without changing group', (WidgetTester tester) async {

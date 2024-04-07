@@ -119,16 +119,43 @@ class _ChangeRabbitGroupActionState extends State<ChangeRabbitGroupAction> {
                             ),
                             const SizedBox(height: 20),
                             FilledButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 _selectedRabbitGroupId ??= 0;
                                 if (_selectedRabbitGroupId !=
                                     widget.rabbit.rabbitGroup!.id) {
-                                  context
-                                      .read<RabbitUpdateCubit>()
-                                      .changeRabbitGroup(
-                                        widget.rabbit.id,
-                                        _selectedRabbitGroupId!,
-                                      );
+                                  final result = await showDialog<bool>(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) => AlertDialog(
+                                            title: const Text(
+                                                'Czy na pewno chcesz zmienić grupę królika?'),
+                                            content: const Text(
+                                                'Spowoduje to usunięcie królika z obecnej grupy, a jeśli grupa stanie się pusta, zostanie usunięta wraz z wszystkimi informacjami o niej. Czy na pewno chcesz kontynuować?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context)
+                                                        .pop(false),
+                                                child: const Text('Anuluj'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context)
+                                                        .pop(true),
+                                                child: const Text('Zmień'),
+                                              ),
+                                            ],
+                                          ));
+                                  if (result == true && context.mounted) {
+                                    context
+                                        .read<RabbitUpdateCubit>()
+                                        .changeRabbitGroup(
+                                          widget.rabbit.id,
+                                          _selectedRabbitGroupId!,
+                                        );
+                                  } else if (context.mounted) {
+                                    context.pop();
+                                  }
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
