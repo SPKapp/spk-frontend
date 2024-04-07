@@ -1,4 +1,6 @@
-final class Paginated<T> {
+import 'package:equatable/equatable.dart';
+
+final class Paginated<T> extends Equatable {
   const Paginated({
     required this.data,
     this.offset,
@@ -22,4 +24,7 @@ final class Paginated<T> {
       totalCount: json['totalCount'],
     );
   }
+
+  @override
+  List<Object?> get props => [data, offset, limit, totalCount];
 }

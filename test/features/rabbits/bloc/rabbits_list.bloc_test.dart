@@ -266,7 +266,7 @@ void main() {
           });
 
       blocTest<RabbitsListBloc, RabbitsListState>(
-        'emits [UsersListSuccess] when RefreshUsers event is added',
+        'emits [RabbitsListSuccess] when RefreshUsers event is added',
         setUp: () {
           when(() => rabbitRepository.findAll(offset: 0, totalCount: true))
               .thenAnswer((_) async => paginatedResultTotalCount);

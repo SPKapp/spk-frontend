@@ -10,6 +10,7 @@ class CurrentUser extends Equatable {
     this.phone,
     this.name,
     required this.roles,
+    this.regions,
   });
 
   final String uid;
@@ -18,6 +19,7 @@ class CurrentUser extends Equatable {
   final String? phone;
   final String? name;
   final List<Role> roles;
+  final List<int>? regions;
 
   /// Empty user which represents an unauthenticated user.
   static const empty = CurrentUser(uid: '', token: '', roles: []);
@@ -30,5 +32,5 @@ class CurrentUser extends Equatable {
   bool get isVolunteer => roles.contains(Role.volunteer);
 
   @override
-  List<Object?> get props => [uid, token, email, phone, name, roles];
+  List<Object?> get props => [uid, token, email, phone, name, roles, regions];
 }

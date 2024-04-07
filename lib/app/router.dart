@@ -48,7 +48,7 @@ class AppRouter {
             GoRoute(
               path: '/rabbit/add',
               builder: (context, state) {
-                return const RabbitAddPage();
+                return const RabbitCreatePage();
               },
             ),
             GoRoute(

@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/form_fields.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_modify.view.dart';
 
+import 'package:spk_app_frontend/features/regions/models/models.dart';
+
 void main() {
   group(RabbitModifyView, () {
     late FieldControlers fieldControlers;
@@ -16,8 +18,7 @@ void main() {
       fieldControlers.dispose();
     });
 
-    testWidgets('RabbitModifyView should render correctly',
-        (WidgetTester tester) async {
+    testWidgets('should render correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -41,10 +42,10 @@ void main() {
       expect(find.byKey(const Key('admissionDateField')), findsOneWidget);
       expect(find.byKey(const Key('filingDateField')), findsOneWidget);
       expect(find.byType(AdmissionTypeDropdown), findsOneWidget);
+      expect(find.byType(DropdownMenu<Region>), findsNothing);
     });
 
-    testWidgets('RabbitTextField should validate input',
-        (WidgetTester tester) async {
+    testWidgets('should validate input', (WidgetTester tester) async {
       final formKey = GlobalKey<FormState>();
       fieldControlers.nameControler.text = '';
       await tester.pumpWidget(
@@ -64,6 +65,27 @@ void main() {
       await tester.pump();
 
       expect(find.text('Pole nie może być puste'), findsOneWidget);
+    });
+
+    testWidgets('should render RegionDropdown', (WidgetTester tester) async {
+      const regions = [
+        Region(id: 1, name: 'Region 1'),
+        Region(id: 2, name: 'Region 2'),
+        Region(id: 3, name: 'Region 3'),
+      ];
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RabbitModifyView(
+              editControlers: fieldControlers,
+              regions: regions,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(DropdownMenu<Region>), findsOneWidget);
     });
   });
 }

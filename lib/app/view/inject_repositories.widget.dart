@@ -5,6 +5,8 @@ import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/common/services/gql.service.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
+import 'package:spk_app_frontend/features/regions/repositories/interfaces.dart';
+import 'package:spk_app_frontend/features/regions/repositories/repositories.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/users/repositories/repositories.dart';
 
@@ -25,6 +27,9 @@ class InjectRepositories extends StatelessWidget {
         ),
         RepositoryProvider<IUsersRepository>(
           create: (context) => UsersRepository(gqlService),
+        ),
+        RepositoryProvider<IRegionsRepository>(
+          create: (context) => RegionsRepository(gqlService),
         ),
       ],
       child: child,

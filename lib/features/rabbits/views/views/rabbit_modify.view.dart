@@ -6,6 +6,8 @@ import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/form_fields.dart';
 
+import 'package:spk_app_frontend/features/regions/models/models.dart';
+
 class FieldControlers {
   FieldControlers();
 
@@ -18,6 +20,7 @@ class FieldControlers {
   Gender selectedGender = Gender.unknown;
   AdmissionType selectedAdmissionType = AdmissionType.found;
   bool confirmedBirthDate = false;
+  Region? selectedRegion;
 
   void dispose() {
     nameControler.dispose();
@@ -34,9 +37,11 @@ class RabbitModifyView extends StatefulWidget {
   const RabbitModifyView({
     super.key,
     required this.editControlers,
+    this.regions,
   });
 
   final FieldControlers editControlers;
+  final List<Region>? regions;
 
   @override
   State<RabbitModifyView> createState() => _RabbitModifyViewState();
@@ -141,6 +146,18 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
                     });
                   },
                 ),
+                if (widget.regions != null)
+                  RegionDropdown(
+                    key: const Key('regionDropdown'),
+                    regions: widget.regions!,
+                    onSelected: (Region? region) {
+                      if (region != null) {
+                        setState(() {
+                          widget.editControlers.selectedRegion = region;
+                        });
+                      }
+                    },
+                  ),
               ],
             ),
           ),
@@ -149,7 +166,3 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
     );
   }
 }
-
-// TODO: Add group change and region change fields
-// group change should be loaded only for admin and regionManager
-// region change should be loaded only for admin or regionManager with more than one region
