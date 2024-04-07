@@ -287,6 +287,88 @@ void main() {
           verifyNoMoreInteractions(rabbitRepository);
         },
       );
+
+      group('perPage', () {
+        const perPage = 10;
+        setUp(() {
+          rabbitsListBloc = RabbitsListBloc(
+            rabbitsRepository: rabbitRepository,
+            queryType: RabbitsQueryType.all,
+            perPage: perPage,
+          );
+        });
+
+        blocTest<RabbitsListBloc, RabbitsListState>(
+          'emits [RabbitsListSuccess] when FeatchRabbits is added',
+          setUp: () {
+            when(
+              () => rabbitRepository.findAll(
+                offset: 0,
+                limit: perPage,
+                totalCount: true,
+              ),
+            ).thenAnswer((_) async => paginatedResultTotalCount);
+          },
+          build: () => rabbitsListBloc,
+          act: (bloc) => bloc.add(const FetchRabbits()),
+          expect: () => [
+            RabbitsListSuccess(
+              rabbitGroups: paginatedResultTotalCount.data,
+              hasReachedMax: false,
+              totalCount: paginatedResultTotalCount.totalCount!,
+            ),
+          ],
+          verify: (_) {
+            verify(() => rabbitRepository.findAll(
+                  offset: 0,
+                  limit: perPage,
+                  totalCount: true,
+                )).called(1);
+            verifyNoMoreInteractions(rabbitRepository);
+          },
+        );
+      });
+
+      group('regionsIds', () {
+        const regionsIds = [1, 2];
+        setUp(() {
+          rabbitsListBloc = RabbitsListBloc(
+            rabbitsRepository: rabbitRepository,
+            queryType: RabbitsQueryType.all,
+            regionsIds: regionsIds,
+          );
+        });
+
+        blocTest<RabbitsListBloc, RabbitsListState>(
+          'emits [RabbitsListSuccess] when FeatchRabbits is added',
+          setUp: () {
+            when(
+              () => rabbitRepository.findAll(
+                offset: 0,
+                totalCount: true,
+                regionsIds: regionsIds,
+              ),
+            ).thenAnswer((_) async => paginatedResultTotalCount);
+          },
+          build: () => rabbitsListBloc,
+          act: (bloc) => bloc.add(const FetchRabbits()),
+          expect: () => [
+            RabbitsListSuccess(
+              rabbitGroups: paginatedResultTotalCount.data,
+              hasReachedMax: false,
+              totalCount: paginatedResultTotalCount.totalCount!,
+            ),
+          ],
+          verify: (_) {
+            verify(() => rabbitRepository.findAll(
+                  offset: 0,
+                  totalCount: true,
+                  regionsIds: regionsIds,
+                )).called(1);
+            verifyNoMoreInteractions(rabbitRepository);
+          },
+        );
+      });
     });
   });
 }

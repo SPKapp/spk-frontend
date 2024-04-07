@@ -37,5 +37,21 @@ void main() {
             })).called(1);
       });
     });
+
+    group('updateRabbitGroup', () {
+      test('should send a mutation to update a rabbit group of rabbit',
+          () async {
+        when(() => gqlService.mutate(any(), variables: any(named: 'variables')))
+            .thenAnswer((_) async => queryResult);
+        when(() => queryResult.hasException).thenReturn(false);
+
+        await repository.updateRabbitGroup(1, 1);
+
+        verify(() => gqlService.mutate(any(), variables: {
+              'rabbitId': 1,
+              'rabbitGroupId': 1,
+            })).called(1);
+      });
+    });
   });
 }

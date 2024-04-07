@@ -84,9 +84,9 @@ mutation updateRabbit($updateRabbitInput: UpdateRabbitInput!) {
 }
 ''';
 
-String _rabbitsQuery(bool total) => '''
-query GetRabbitGroups(\$offset: Int, \$limit: Int, \$regionId: ID) {
-  rabbitGroups(offset: \$offset, limit: \$limit, regionId: \$regionId) {
+String _getRabbitsListQuery(bool total) => '''
+query GetRabbitGroups(\$offset: Int, \$limit: Int, \$regionsIds: [ID!]) {
+  rabbitGroups(offset: \$offset, limit: \$limit, regionsIds: \$regionsIds) {
     data {
       id
       rabbits {
@@ -102,8 +102,16 @@ query GetRabbitGroups(\$offset: Int, \$limit: Int, \$regionId: ID) {
 ''';
 
 String _updateTeamMutation = r'''
-mutation Updateteam($rabbitGroupId: Int!, $teamId: Int!) {
+mutation UpdateTeam($rabbitGroupId: Int!, $teamId: Int!) {
 	updateRabbitGroupTeam(rabbitGroupId: $rabbitGroupId, teamId: $teamId) {
+		id
+	}
+}
+''';
+
+String _updateRabbitGroupMutation = r'''
+mutation UpdateRabbitRabbitGroup($rabbitId: Int!, $rabbitGroupId: Int) {
+	updateRabbitRabbitGroup(rabbitId: $rabbitId, rabbitGroupId: $rabbitGroupId) {
 		id
 	}
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
+
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_info.view.dart';
@@ -24,6 +26,9 @@ class RabbitInfoPage extends StatelessWidget {
       )..fetchRabbit(),
       child: BlocBuilder<RabbitCubit, RabbitState>(
         builder: (context, state) {
+          final user = context.read<AppBloc>().state.currentUser;
+          final isRegionManager = user.isRegionManager;
+
           late AppBar appBar;
           late Widget body;
 
@@ -48,21 +53,38 @@ class RabbitInfoPage extends StatelessWidget {
                   ),
                   PopupMenuButton(
                     itemBuilder: (_) => [
-                      PopupMenuItem(
-                        child: const Text('Zmień DT'),
-                        onTap: () async {
-                          final result = await showModalBottomSheet<bool>(
-                              context: context,
-                              builder: (_) {
-                                return EditVolunteerAction(
-                                  rabbit: state.rabbit,
-                                );
-                              });
-                          if (result != null && result && context.mounted) {
-                            context.read<RabbitCubit>().fetchRabbit();
-                          }
-                        },
-                      ),
+                      if (isRegionManager) ...[
+                        PopupMenuItem(
+                          child: const Text('Zmień DT'),
+                          onTap: () async {
+                            final result = await showModalBottomSheet<bool>(
+                                context: context,
+                                builder: (_) {
+                                  return ChangeVolunteerAction(
+                                    rabbit: state.rabbit,
+                                  );
+                                });
+                            if (result != null && result && context.mounted) {
+                              context.read<RabbitCubit>().fetchRabbit();
+                            }
+                          },
+                        ),
+                        PopupMenuItem(
+                          child: const Text('Zmień zaprzyjaźnioną grupę'),
+                          onTap: () async {
+                            final result = await showModalBottomSheet<bool>(
+                                context: context,
+                                builder: (_) {
+                                  return ChangeRabbitGroupAction(
+                                    rabbit: state.rabbit,
+                                  );
+                                });
+                            if (result != null && result && context.mounted) {
+                              context.read<RabbitCubit>().fetchRabbit();
+                            }
+                          },
+                        ),
+                      ],
                     ],
                   ),
                 ],
@@ -74,7 +96,10 @@ class RabbitInfoPage extends StatelessWidget {
                       .copyWith(fontWeight: FontWeight.w500),
                 ),
               );
-              body = RabbitInfoView(rabbit: state.rabbit);
+              body = RabbitInfoView(
+                rabbit: state.rabbit,
+                admin: isRegionManager,
+              );
           }
           return Scaffold(
             appBar: appBar,

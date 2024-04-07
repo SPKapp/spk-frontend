@@ -65,12 +65,14 @@ class RabbitsRepository implements IRabbitsRepository {
     bool totalCount = false,
     int? offset,
     int? limit,
+    List<int>? regionsIds,
   }) async {
     final result = await gqlService.query(
-      _rabbitsQuery(totalCount),
+      _getRabbitsListQuery(totalCount),
       variables: {
         if (offset != null) 'offset': offset,
         if (limit != null) 'limit': limit,
+        if (regionsIds != null) 'regionId': regionsIds,
       },
     );
 
@@ -110,10 +112,28 @@ class RabbitsRepository implements IRabbitsRepository {
 
   @override
   Future<void> updateTeam(int rabbitGroupId, int teamId) async {
-    final result = await gqlService.mutate(_updateTeamMutation, variables: {
-      'rabbitGroupId': rabbitGroupId,
-      'teamId': teamId,
-    });
+    final result = await gqlService.mutate(
+      _updateTeamMutation,
+      variables: {
+        'rabbitGroupId': rabbitGroupId,
+        'teamId': teamId,
+      },
+    );
+
+    if (result.hasException) {
+      throw result.exception!;
+    }
+  }
+
+  @override
+  Future<void> updateRabbitGroup(int rabbitId, int rabbitGroupId) async {
+    final result = await gqlService.mutate(
+      _updateRabbitGroupMutation,
+      variables: {
+        'rabbitId': rabbitId,
+        'rabbitGroupId': rabbitGroupId,
+      },
+    );
 
     if (result.hasException) {
       throw result.exception!;

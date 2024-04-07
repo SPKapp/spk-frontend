@@ -10,10 +10,13 @@ part 'users_list.event.dart';
 part 'users_list.state.dart';
 
 /// The [UsersListBloc] class is responsible for managing the state of the users list.
+///
+/// If [perPage] is not provided, the default value is defined by backend, if set to 0 the backend will return all users.
+/// if [regionsIds] is provided, the backend will return only users from these regions.
+///
 /// It provide [FetchUsers] event to fetch next page of users and [RefreshUsers] event to restart fetching users.
 /// It emits [UsersListInitial] state when the bloc is created, [UsersListSuccess] state when the users are fetched successfully
 /// and [UsersListFailure] state when an error occurs while fetching users, this state also contains previous successful fetched users.
-/// If perPage is not provided, the default value is defined by backend, if set to 0 the backend will return all users.
 class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   UsersListBloc({
     required IUsersRepository usersRepository,
@@ -51,7 +54,7 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
           : state.totalCount;
 
       emit(UsersListSuccess(
-        teams: List.of(state.teams)..addAll(teams),
+        teams: state.teams + teams,
         hasReachedMax: state.teams.length + teams.length >= totalCount,
         totalCount: totalCount,
       ));

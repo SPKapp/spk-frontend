@@ -10,6 +10,7 @@ abstract interface class IRabbitsRepository {
     bool totalCount = false,
     int? offset,
     int? limit,
+    List<int>? regionsIds,
   });
   Future<int> createRabbit(RabbitCreateDto rabbit);
   Future<int> updateRabbit(RabbitUpdateDto rabbit);
@@ -28,4 +29,12 @@ abstract interface class IRabbitsRepository {
   ///
   /// Throws an exception if the update fails.
   Future<void> updateTeam(int rabbitGroupId, int teamId);
+
+  /// Updates the rabbit group for a specific rabbit.
+  ///
+  /// The [rabbitId] parameter specifies the ID of the rabbit to update.
+  /// The [rabbitGroupId] parameter specifies the ID of the new rabbit group.
+  ///
+  /// Throws an exception if the update fails.
+  Future<void> updateRabbitGroup(int rabbitId, int rabbitGroupId);
 }

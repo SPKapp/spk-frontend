@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
-import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info_actions/edit_volunteer_action.widget.dart';
+import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info_actions/change_volunteer_action.widget.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
@@ -21,7 +21,7 @@ class MockRabbitUpdateCubit extends MockCubit<RabbitUpdateState>
 class MockGoRouter extends Mock implements GoRouter {}
 
 void main() {
-  group(EditVolunteerAction, () {
+  group(ChangeVolunteerAction, () {
     late UsersListBloc usersListBloc;
     late RabbitUpdateCubit rabbitUpdateCubit;
     late GoRouter goRouter;
@@ -75,7 +75,7 @@ void main() {
         home: InheritedGoRouter(
           goRouter: goRouter,
           child: Scaffold(
-            body: EditVolunteerAction(
+            body: ChangeVolunteerAction(
               rabbit: rabbit,
               usersListBloc: (_) => usersListBloc,
               rabbitUpdateCubit: (_) => rabbitUpdateCubit,
@@ -90,7 +90,7 @@ void main() {
         await tester.pumpWidget(buildWidget());
 
         expect(find.text('Wybierz nowych opiekunów'), findsOneWidget);
-        expect(find.byType(DropdownButton<Team>), findsOneWidget);
+        expect(find.byType(DropdownButton<int>), findsOneWidget);
         expect(find.byType(FilledButton), findsOneWidget);
 
         expect(find.text(team1.name), findsOneWidget);
@@ -101,7 +101,7 @@ void main() {
           (WidgetTester tester) async {
         await tester.pumpWidget(buildWidget());
 
-        final dropdownButton = find.byType(DropdownButton<Team>);
+        final dropdownButton = find.byType(DropdownButton<int>);
         expect(dropdownButton, findsOneWidget);
 
         await tester.tap(dropdownButton);
@@ -171,7 +171,7 @@ void main() {
 
         await tester.pumpWidget(buildWidget());
 
-        final dropdownButton = find.byType(DropdownButton<Team>);
+        final dropdownButton = find.byType(DropdownButton<int>);
         expect(dropdownButton, findsOneWidget);
 
         await tester.tap(dropdownButton);
@@ -215,7 +215,7 @@ void main() {
             ));
 
         expect(find.text('Nie zmieniono opiekuna'), findsOneWidget);
-        verify(() => goRouter.pop(true)).called(1);
+        verify(() => goRouter.pop()).called(1);
       });
 
       testWidgets('shows snackbar when no team selected',
@@ -257,7 +257,7 @@ void main() {
 
         await tester.pumpWidget(buildWidget());
 
-        final dropdownButton = find.byType(DropdownButton<Team>);
+        final dropdownButton = find.byType(DropdownButton<int>);
         expect(dropdownButton, findsOneWidget);
 
         await tester.tap(dropdownButton);

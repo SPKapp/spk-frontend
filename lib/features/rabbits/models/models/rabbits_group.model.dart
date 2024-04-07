@@ -29,6 +29,8 @@ final class RabbitGroup extends Equatable {
     );
   }
 
+  String get name => rabbits.map((rabbit) => rabbit.name).join(', ');
+
   @override
   List<Object?> get props => [
         id,
