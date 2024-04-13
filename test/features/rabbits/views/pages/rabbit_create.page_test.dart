@@ -60,7 +60,7 @@ void main() {
       );
     });
 
-    testWidgets('RabbitCreatePage should render correctly without regions',
+    testWidgets('should render correctly without regions',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(

@@ -19,6 +19,7 @@ class FieldControlers {
   final filingDateControler = TextEditingController();
   Gender selectedGender = Gender.unknown;
   AdmissionType selectedAdmissionType = AdmissionType.found;
+  RabbitStatus selectedStatus = RabbitStatus.unknown;
   bool confirmedBirthDate = false;
   Region? selectedRegion;
 
@@ -38,10 +39,12 @@ class RabbitModifyView extends StatefulWidget {
     super.key,
     required this.editControlers,
     this.regions,
+    required this.privileged,
   });
 
   final FieldControlers editControlers;
   final List<Region>? regions;
+  final bool privileged;
 
   @override
   State<RabbitModifyView> createState() => _RabbitModifyViewState();
@@ -59,14 +62,15 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                AppTextField(
-                    key: const Key('nameTextField'),
-                    controller: widget.editControlers.nameControler,
-                    labelText: 'Imię',
-                    hintText: 'Podaj imię królika',
-                    icon: FontAwesomeIcons.penToSquare,
-                    validator: (value) =>
-                        value!.isEmpty ? 'Pole nie może być puste' : null),
+                if (widget.privileged)
+                  AppTextField(
+                      key: const Key('nameTextField'),
+                      controller: widget.editControlers.nameControler,
+                      labelText: 'Imię',
+                      hintText: 'Podaj imię królika',
+                      icon: FontAwesomeIcons.penToSquare,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Pole nie może być puste' : null),
                 GenderDropdown(
                   onSelected: (Gender? gender) {
                     if (gender != null) {
@@ -107,6 +111,16 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
                   hintText: 'Podaj rasę królika',
                   icon: FontAwesomeIcons.dna,
                 ),
+                RabbitStatusDropdown(
+                  onSelected: (RabbitStatus? status) {
+                    if (status != null) {
+                      setState(() {
+                        widget.editControlers.selectedStatus = status;
+                      });
+                    }
+                  },
+                  initialSelection: widget.editControlers.selectedStatus,
+                ),
                 DateField(
                   key: const Key('admissionDateField'),
                   controller: widget.editControlers.admissionDateControler,
@@ -120,44 +134,46 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
                     });
                   },
                 ),
-                AdmissionTypeDropdown(
-                  onSelected: (AdmissionType? admissionType) {
-                    if (admissionType != null) {
-                      setState(() {
-                        widget.editControlers.selectedAdmissionType =
-                            admissionType;
-                      });
-                    }
-                  },
-                  initialSelection: AdmissionType.found,
-                ),
-                DateField(
-                  key: const Key('filingDateField'),
-                  controller: widget.editControlers.filingDateControler,
-                  labelText: 'Data Zgłoszenia',
-                  hintText: 'Podaj datę zgłoszenia do Fundacji',
-                  icon: FontAwesomeIcons.calendarDay,
-                  daysBefore: 3650,
-                  daysAfter: 0,
-                  onTap: (DateTime date) async {
-                    setState(() {
-                      widget.editControlers.filingDateControler.text =
-                          date.toDateString();
-                    });
-                  },
-                ),
-                if (widget.regions != null)
-                  RegionDropdown(
-                    key: const Key('regionDropdown'),
-                    regions: widget.regions!,
-                    onSelected: (Region? region) {
-                      if (region != null) {
+                if (widget.privileged) ...[
+                  AdmissionTypeDropdown(
+                    onSelected: (AdmissionType? admissionType) {
+                      if (admissionType != null) {
                         setState(() {
-                          widget.editControlers.selectedRegion = region;
+                          widget.editControlers.selectedAdmissionType =
+                              admissionType;
                         });
                       }
                     },
+                    initialSelection: AdmissionType.found,
                   ),
+                  DateField(
+                    key: const Key('filingDateField'),
+                    controller: widget.editControlers.filingDateControler,
+                    labelText: 'Data Zgłoszenia',
+                    hintText: 'Podaj datę zgłoszenia do Fundacji',
+                    icon: FontAwesomeIcons.calendarDay,
+                    daysBefore: 3650,
+                    daysAfter: 0,
+                    onTap: (DateTime date) async {
+                      setState(() {
+                        widget.editControlers.filingDateControler.text =
+                            date.toDateString();
+                      });
+                    },
+                  ),
+                  if (widget.regions != null)
+                    RegionDropdown(
+                      key: const Key('regionDropdown'),
+                      regions: widget.regions!,
+                      onSelected: (Region? region) {
+                        if (region != null) {
+                          setState(() {
+                            widget.editControlers.selectedRegion = region;
+                          });
+                        }
+                      },
+                    ),
+                ],
               ],
             ),
           ),

@@ -1,6 +1,14 @@
+import 'package:intl/intl.dart';
+
+final _dateFormat = DateFormat('yyyy-MM-dd');
+
 extension DateTimeExtension on DateTime {
   String toDateString() {
-    return '$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
+    return _dateFormat.format(this);
+  }
+
+  static DateTime parseFromDate(String date) {
+    return _dateFormat.parseUtc(date);
   }
 
   int differenceInYears(DateTime other) {

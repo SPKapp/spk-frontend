@@ -62,7 +62,7 @@ class AppRouter {
                 GoRoute(
                   path: 'edit',
                   builder: (context, state) {
-                    return RabbitEditPage(
+                    return RabbitUpdatePage(
                       rabbitId: int.parse(state.pathParameters['id']!),
                     );
                   },

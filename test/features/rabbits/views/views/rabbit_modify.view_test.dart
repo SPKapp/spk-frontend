@@ -18,12 +18,14 @@ void main() {
       fieldControlers.dispose();
     });
 
-    testWidgets('should render correctly', (WidgetTester tester) async {
+    testWidgets('should render correctly - privileged',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: RabbitModifyView(
               editControlers: fieldControlers,
+              privileged: true,
             ),
           ),
         ),
@@ -42,6 +44,37 @@ void main() {
       expect(find.byKey(const Key('admissionDateField')), findsOneWidget);
       expect(find.byKey(const Key('filingDateField')), findsOneWidget);
       expect(find.byType(AdmissionTypeDropdown), findsOneWidget);
+      expect(find.byType(RabbitStatusDropdown), findsOneWidget);
+      expect(find.byType(DropdownMenu<Region>), findsNothing);
+    });
+
+    testWidgets('should render correctly - unprivileged',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RabbitModifyView(
+              editControlers: fieldControlers,
+              privileged: false,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
+      expect(find.byType(Card), findsOneWidget);
+      expect(find.byType(Column), findsOneWidget);
+      expect(find.byType(AppTextField), findsNWidgets(2));
+      expect(find.byKey(const Key('nameTextField')), findsNothing);
+      expect(find.byKey(const Key('colorTextField')), findsOneWidget);
+      expect(find.byKey(const Key('breedTextField')), findsOneWidget);
+      expect(find.byType(GenderDropdown), findsOneWidget);
+      expect(find.byType(BirthDateField), findsOneWidget);
+      expect(find.byType(DateField), findsNWidgets(1));
+      expect(find.byKey(const Key('admissionDateField')), findsOneWidget);
+      expect(find.byKey(const Key('filingDateField')), findsNothing);
+      expect(find.byType(AdmissionTypeDropdown), findsNothing);
+      expect(find.byType(RabbitStatusDropdown), findsOneWidget);
       expect(find.byType(DropdownMenu<Region>), findsNothing);
     });
 
@@ -55,6 +88,7 @@ void main() {
               key: formKey,
               child: RabbitModifyView(
                 editControlers: fieldControlers,
+                privileged: true,
               ),
             ),
           ),
@@ -79,6 +113,7 @@ void main() {
           home: Scaffold(
             body: RabbitModifyView(
               editControlers: fieldControlers,
+              privileged: true,
               regions: regions,
             ),
           ),

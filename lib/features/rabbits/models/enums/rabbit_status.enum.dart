@@ -1,4 +1,5 @@
 enum RabbitStatus {
+  unknown('Unknown'),
   forCastration('ForCastration');
 
   const RabbitStatus(this.jsonValue);

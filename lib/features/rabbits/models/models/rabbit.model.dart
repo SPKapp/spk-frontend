@@ -19,7 +19,7 @@ final class Rabbit extends Equatable {
     this.fillingDate,
     this.weight,
     this.rabbitGroup,
-    this.stauts,
+    this.status,
   });
 
   final int id;
@@ -32,7 +32,7 @@ final class Rabbit extends Equatable {
   final DateTime? admissionDate;
   final AdmissionType admissionType;
   final DateTime? fillingDate;
-  final RabbitStatus? stauts;
+  final RabbitStatus? status;
 
   final double? weight;
 
@@ -61,6 +61,9 @@ final class Rabbit extends Equatable {
       fillingDate: json['fillingDate'] != null
           ? DateTime.parse(json['fillingDate'])
           : null,
+      status: json['status'] != null
+          ? RabbitStatus.fromJson(json['status'])
+          : RabbitStatus.unknown,
       weight: json['weight'] != null ? double.parse(json['weight']) : null,
       rabbitGroup: json['rabbitGroup'] != null
           ? RabbitGroup.fromJson(json['rabbitGroup'])
@@ -80,7 +83,7 @@ final class Rabbit extends Equatable {
         admissionDate,
         admissionType,
         fillingDate,
-        stauts,
+        status,
         rabbitGroup,
       ];
 }

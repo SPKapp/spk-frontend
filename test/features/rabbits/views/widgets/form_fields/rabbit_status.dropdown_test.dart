@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
-import 'package:spk_app_frontend/features/rabbits/views/widgets/form_fields/admission_type.dropdown.dart';
+import 'package:spk_app_frontend/features/rabbits/views/widgets/form_fields/rabbit_status.dropdown.dart';
 
 void main() {
-  group(AdmissionTypeDropdown, () {
+  group(RabbitStatusDropdown, () {
     testWidgets('should render correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: AdmissionTypeDropdown(
-              onSelected: (AdmissionType? value) {},
+            body: RabbitStatusDropdown(
+              onSelected: (value) {},
             ),
           ),
         ),
@@ -19,17 +19,17 @@ void main() {
 
       expect(find.byType(Padding), findsWidgets);
       expect(find.byType(Icon), findsWidgets);
-      expect(find.byType(DropdownMenu<AdmissionType>), findsOneWidget);
+      expect(find.byType(DropdownMenu<RabbitStatus>), findsOneWidget);
     });
 
     testWidgets('should call onSelected', (WidgetTester tester) async {
-      AdmissionType? selectedValue;
+      RabbitStatus? selectedValue;
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: AdmissionTypeDropdown(
-              onSelected: (AdmissionType? value) {
+            body: RabbitStatusDropdown(
+              onSelected: (value) {
                 selectedValue = value;
               },
             ),
@@ -37,13 +37,13 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byType(DropdownMenu<AdmissionType>));
+      await tester.tap(find.byType(DropdownMenu<RabbitStatus>));
       await tester.pump();
 
-      await tester.tap(find.text('Oddany').last);
+      await tester.tap(find.text('Do kastracji').last);
       await tester.pump();
 
-      expect(selectedValue, AdmissionType.handedOver);
+      expect(selectedValue, RabbitStatus.forCastration);
     });
 
     testWidgets('should render with initialSelection',
@@ -51,15 +51,15 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: AdmissionTypeDropdown(
-              onSelected: (AdmissionType? value) {},
-              initialSelection: AdmissionType.returned,
+            body: RabbitStatusDropdown(
+              onSelected: (value) {},
+              initialSelection: RabbitStatus.forCastration,
             ),
           ),
         ),
       );
 
-      expect(find.text('Zwrócony'), findsWidgets);
+      expect(find.text('Do kastracji'), findsWidgets);
     });
   });
 }

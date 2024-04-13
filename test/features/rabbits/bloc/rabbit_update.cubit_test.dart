@@ -16,7 +16,6 @@ void main() {
     final dto = RabbitUpdateDto(
       id: 1,
       name: 'name',
-      rabbitGroupId: 1,
     );
 
     setUp(() {

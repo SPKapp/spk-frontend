@@ -104,6 +104,7 @@ class _RabbitCreatePageState extends State<RabbitCreatePage> {
               fillingDate: (_editControlers.filingDateControler.text.isNotEmpty)
                   ? DateTime.parse(_editControlers.filingDateControler.text)
                   : null,
+              status: _editControlers.selectedStatus,
               regionId: _editControlers.selectedRegion?.id,
             ),
           );
@@ -147,6 +148,7 @@ class _RabbitCreatePageState extends State<RabbitCreatePage> {
           key: _formKey,
           child: RabbitModifyView(
             editControlers: _editControlers,
+            privileged: true,
             regions: regions,
           ),
         ),

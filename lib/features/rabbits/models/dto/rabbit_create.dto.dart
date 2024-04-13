@@ -1,6 +1,5 @@
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 
-// TODO: Add Status
 class RabbitCreateDto {
   RabbitCreateDto({
     required this.name,
@@ -14,6 +13,7 @@ class RabbitCreateDto {
     this.fillingDate,
     this.rabbitGroupId,
     this.regionId,
+    this.status,
   });
 
   final String name;
@@ -25,7 +25,7 @@ class RabbitCreateDto {
   final DateTime? admissionDate;
   final AdmissionType? admissionType;
   final DateTime? fillingDate;
-  // final status;
+  final RabbitStatus? status;
   int? rabbitGroupId;
   int? regionId;
 
@@ -41,8 +41,7 @@ class RabbitCreateDto {
         'admissionDate': admissionDate!.toIso8601String(),
       if (admissionType != null) 'admissionType': admissionType,
       if (fillingDate != null) 'fillingDate': fillingDate!.toIso8601String(),
-      // if (status != null)
-      // 'status': status,
+      if (status != null) 'status': status,
       if (rabbitGroupId != null) 'rabbitGroupId': rabbitGroupId,
       if (regionId != null) 'regionId': regionId,
     };

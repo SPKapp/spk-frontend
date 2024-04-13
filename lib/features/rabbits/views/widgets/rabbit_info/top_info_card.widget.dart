@@ -99,7 +99,8 @@ class TopInfoCard extends StatelessWidget {
 
   Widget _statusText(BuildContext context) {
     return Text(
-      switch (rabbit.stauts) {
+      switch (rabbit.status) {
+        RabbitStatus.unknown => 'Nieznany status',
         RabbitStatus.forCastration => 'Do kastracji',
         null => 'Nieznany status',
       },
