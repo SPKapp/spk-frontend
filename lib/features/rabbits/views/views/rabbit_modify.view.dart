@@ -34,6 +34,12 @@ class FieldControlers {
 }
 
 /// A StatefulWidget that represents the view for modifying or creating a rabbit.
+///
+/// This widget is used in the [RabbitUpdatePage] and [RabbitCreatePage] to
+/// display the form fields for modifying or creating a rabbit.
+/// When the user is [privileged], the form fields for the rabbit's name, admission type,
+/// filing date, and region are displayed. Otherwise, only rest of the fields are displayed.
+/// Region dropdown is only displayed when the [regions] are provided.
 class RabbitModifyView extends StatefulWidget {
   const RabbitModifyView({
     super.key,

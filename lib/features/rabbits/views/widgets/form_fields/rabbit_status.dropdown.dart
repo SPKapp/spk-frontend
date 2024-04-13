@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 
+/// A dropdown widget for selecting the status of a rabbit.
 class RabbitStatusDropdown extends StatelessWidget {
   const RabbitStatusDropdown(
       {super.key,

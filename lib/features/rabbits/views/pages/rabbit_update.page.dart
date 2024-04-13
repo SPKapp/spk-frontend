@@ -13,6 +13,7 @@ import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_modify.view.dart';
 
+/// A page for updating a rabbit's information.
 class RabbitUpdatePage extends StatefulWidget {
   const RabbitUpdatePage({
     super.key,
