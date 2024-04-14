@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/features/auth/auth.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_create.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
@@ -44,7 +46,8 @@ class _RabbitCreatePageState extends State<RabbitCreatePage> {
       child: Builder(builder: (context) {
         final currentUser = context.read<AppBloc>().state.currentUser;
 
-        if (currentUser.isAdmin || currentUser.regions!.length > 1) {
+        if (currentUser.checkRole([Role.admin]) ||
+            currentUser.regions!.length > 1) {
           return BlocProvider(
             create: widget.regionsListBloc ??
                 (context) => RegionsListBloc(

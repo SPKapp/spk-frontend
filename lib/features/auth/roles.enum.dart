@@ -1,6 +1,7 @@
 enum Role {
   admin('admin'),
   regionManager('region_manager'),
+  regionRabbitObserver('region_observer'),
   volunteer('volunteer');
 
   const Role(this.jsonValue);
