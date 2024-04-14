@@ -3,29 +3,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
+import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/features/auth/auth.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_info.view.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info_actions.dart';
 
-// TODO: Add tests for RabbitInfoPage
-// TODO: Refactor this page
+/// A page that displays information about a rabbit.
+///
+/// This widget assumes that the [IRabbitsRepository] is provided above by [RepositoryProvider].
 class RabbitInfoPage extends StatelessWidget {
   const RabbitInfoPage({
     super.key,
     required this.rabbitId,
+    this.rabbitCubit,
   });
 
   final int rabbitId;
+  final RabbitCubit Function(BuildContext)? rabbitCubit;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RabbitCubit(
-        rabbitsRepository: context.read<IRabbitsRepository>(),
-        rabbitId: rabbitId,
-      )..fetchRabbit(),
+      create: rabbitCubit ??
+          (context) => RabbitCubit(
+                rabbitsRepository: context.read<IRabbitsRepository>(),
+                rabbitId: rabbitId,
+              )..fetchRabbit(),
       child: BlocBuilder<RabbitCubit, RabbitState>(
         builder: (context, state) {
           final user = context.read<AppBloc>().state.currentUser;
@@ -37,59 +43,75 @@ class RabbitInfoPage extends StatelessWidget {
           switch (state) {
             case RabbitInitial():
               appBar = AppBar();
-              body = const Center(child: CircularProgressIndicator());
+              body = const InitialView();
             case RabbitFailure():
               appBar = AppBar();
-              body = const Center(child: Text('Failed to fetch rabbit'));
+              body = FailureView(
+                message: 'Nie udało się pobrać królika',
+                onPressed: () => context.read<RabbitCubit>().fetchRabbit(),
+              );
             case RabbitSuccess():
+              final editable = isAtLeastRegionManager ||
+                  (user.checkRole([Role.volunteer]) &&
+                      user.teamId == state.rabbit.rabbitGroup!.team?.id);
+
               appBar = AppBar(
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () async {
-                      await context.push('/rabbit/$rabbitId/edit');
-                      if (context.mounted) {
-                        context.read<RabbitCubit>().fetchRabbit();
-                      }
-                    },
-                  ),
-                  PopupMenuButton(
-                    itemBuilder: (_) => [
-                      if (isAtLeastRegionManager) ...[
-                        PopupMenuItem(
-                          child: const Text('Zmień DT'),
-                          onTap: () async {
-                            final result = await showModalBottomSheet<bool>(
-                                context: context,
-                                builder: (_) {
-                                  return ChangeVolunteerAction(
-                                    rabbit: state.rabbit,
-                                  );
-                                });
-                            if (result != null && result && context.mounted) {
+                actions: editable
+                    ? [
+                        IconButton(
+                          key: const Key('rabbit_info_edit_button'),
+                          icon: const Icon(Icons.edit),
+                          onPressed: () async {
+                            await context.push('/rabbit/$rabbitId/edit');
+                            if (context.mounted) {
                               context.read<RabbitCubit>().fetchRabbit();
                             }
                           },
                         ),
-                        PopupMenuItem(
-                          child: const Text('Zmień zaprzyjaźnioną grupę'),
-                          onTap: () async {
-                            final result = await showModalBottomSheet<bool>(
-                                context: context,
-                                builder: (_) {
-                                  return ChangeRabbitGroupAction(
-                                    rabbit: state.rabbit,
-                                  );
-                                });
-                            if (result != null && result && context.mounted) {
-                              context.read<RabbitCubit>().fetchRabbit();
-                            }
-                          },
-                        ),
-                      ],
-                    ],
-                  ),
-                ],
+                        if (isAtLeastRegionManager)
+                          PopupMenuButton(
+                            key: const Key('rabbit_info_popup_menu'),
+                            itemBuilder: (_) => [
+                              PopupMenuItem(
+                                child: const Text('Zmień DT'),
+                                onTap: () async {
+                                  final result =
+                                      await showModalBottomSheet<bool>(
+                                          context: context,
+                                          builder: (_) {
+                                            return ChangeVolunteerAction(
+                                              rabbit: state.rabbit,
+                                            );
+                                          });
+                                  if (result != null &&
+                                      result &&
+                                      context.mounted) {
+                                    context.read<RabbitCubit>().fetchRabbit();
+                                  }
+                                },
+                              ),
+                              PopupMenuItem(
+                                child: const Text('Zmień zaprzyjaźnioną grupę'),
+                                onTap: () async {
+                                  final result =
+                                      await showModalBottomSheet<bool>(
+                                          context: context,
+                                          builder: (_) {
+                                            return ChangeRabbitGroupAction(
+                                              rabbit: state.rabbit,
+                                            );
+                                          });
+                                  if (result != null &&
+                                      result &&
+                                      context.mounted) {
+                                    context.read<RabbitCubit>().fetchRabbit();
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                      ]
+                    : null,
                 title: Text(
                   state.rabbit.name,
                   style: Theme.of(context)

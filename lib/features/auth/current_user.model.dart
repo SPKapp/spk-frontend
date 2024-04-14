@@ -11,6 +11,7 @@ class CurrentUser extends Equatable {
     this.name,
     required this.roles,
     this.regions,
+    this.teamId,
   });
 
   final String uid;
@@ -20,6 +21,7 @@ class CurrentUser extends Equatable {
   final String? name;
   final List<Role> roles;
   final List<int>? regions;
+  final int? teamId;
 
   /// Empty user which represents an unauthenticated user.
   static const empty = CurrentUser(uid: '', token: '', roles: []);

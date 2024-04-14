@@ -49,6 +49,8 @@ extension on User {
       email: email,
       phone: phoneNumber,
       name: displayName,
+      // roles: [Role.regionRabbitObserver],
+      // teamId: 2,
       roles:
           (claims['roles'] as List).map((role) => Role.fromJson(role)).toList(),
     );
