@@ -13,4 +13,17 @@ enum AdmissionType {
   String toJson() {
     return jsonValue;
   }
+
+  String toHumanReadable() {
+    switch (this) {
+      case handedOver:
+        return 'Oddany';
+      case found:
+        return 'Znaleziony';
+      case returned:
+        return 'Zwrócony';
+      default:
+        return 'Nieznany';
+    }
+  }
 }

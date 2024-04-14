@@ -20,8 +20,13 @@ final class Rabbit extends Equatable {
     this.weight,
     this.rabbitGroup,
     this.status,
+    this.chipNumber,
+    this.castrationDate,
+    this.dewormingDate,
+    this.vaccinationDate,
   });
 
+  /// Editable fields
   final int id;
   final String name;
   final String? color;
@@ -34,7 +39,12 @@ final class Rabbit extends Equatable {
   final DateTime? fillingDate;
   final RabbitStatus? status;
 
+  /// Non-editable fields - from MedicalHistory
   final double? weight;
+  final String? chipNumber;
+  final DateTime? castrationDate;
+  final DateTime? dewormingDate;
+  final DateTime? vaccinationDate;
 
   final RabbitGroup? rabbitGroup;
 
@@ -65,6 +75,16 @@ final class Rabbit extends Equatable {
           ? RabbitStatus.fromJson(json['status'])
           : RabbitStatus.unknown,
       weight: json['weight'] != null ? double.parse(json['weight']) : null,
+      chipNumber: json['chipNumber'] as String?,
+      castrationDate: json['castrationDate'] != null
+          ? DateTime.parse(json['castrationDate'])
+          : null,
+      dewormingDate: json['dewormingDate'] != null
+          ? DateTime.parse(json['dewormingDate'])
+          : null,
+      vaccinationDate: json['vaccinationDate'] != null
+          ? DateTime.parse(json['vaccinationDate'])
+          : null,
       rabbitGroup: json['rabbitGroup'] != null
           ? RabbitGroup.fromJson(json['rabbitGroup'])
           : null,
@@ -84,6 +104,11 @@ final class Rabbit extends Equatable {
         admissionType,
         fillingDate,
         status,
+        weight,
+        chipNumber,
+        castrationDate,
+        dewormingDate,
+        vaccinationDate,
         rabbitGroup,
       ];
 }

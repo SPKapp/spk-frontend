@@ -9,6 +9,8 @@ import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_info.view.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info_actions.dart';
 
+// TODO: Add tests for RabbitInfoPage
+// TODO: Refactor this page
 class RabbitInfoPage extends StatelessWidget {
   const RabbitInfoPage({
     super.key,
@@ -27,7 +29,7 @@ class RabbitInfoPage extends StatelessWidget {
       child: BlocBuilder<RabbitCubit, RabbitState>(
         builder: (context, state) {
           final user = context.read<AppBloc>().state.currentUser;
-          final isRegionManager = user.isRegionManager;
+          final isAtLeastRegionManager = user.isAtLeastRegionManager;
 
           late AppBar appBar;
           late Widget body;
@@ -53,7 +55,7 @@ class RabbitInfoPage extends StatelessWidget {
                   ),
                   PopupMenuButton(
                     itemBuilder: (_) => [
-                      if (isRegionManager) ...[
+                      if (isAtLeastRegionManager) ...[
                         PopupMenuItem(
                           child: const Text('Zmień DT'),
                           onTap: () async {
@@ -98,7 +100,7 @@ class RabbitInfoPage extends StatelessWidget {
               );
               body = RabbitInfoView(
                 rabbit: state.rabbit,
-                admin: isRegionManager,
+                admin: isAtLeastRegionManager,
               );
           }
           return Scaffold(

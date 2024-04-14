@@ -18,10 +18,6 @@ class RabbitCreateCubit extends Cubit<RabbitCreateState> {
   /// Sends an create request for the [rabbit].
   void createRabbit(RabbitCreateDto rabbit) async {
     try {
-      if (rabbit.rabbitGroupId == null) {
-        // TODO: add correct group id and region id
-        rabbit.regionId = 1;
-      }
       final id = await _rabbitsRepository.createRabbit(rabbit);
       emit(
         RabbitCreated(

@@ -25,10 +25,16 @@ class AdmissionTypeDropdown extends StatelessWidget {
           width: constraints.maxWidth,
           onSelected: onSelected,
           initialSelection: initialSelection,
-          dropdownMenuEntries: const [
-            DropdownMenuEntry(value: AdmissionType.found, label: 'Znaleziony'),
-            DropdownMenuEntry(value: AdmissionType.handedOver, label: 'Oddany'),
-            DropdownMenuEntry(value: AdmissionType.returned, label: 'Zwrócony'),
+          dropdownMenuEntries: [
+            DropdownMenuEntry(
+                value: AdmissionType.found,
+                label: AdmissionType.found.toHumanReadable()),
+            DropdownMenuEntry(
+                value: AdmissionType.handedOver,
+                label: AdmissionType.handedOver.toHumanReadable()),
+            DropdownMenuEntry(
+                value: AdmissionType.returned,
+                label: AdmissionType.returned.toHumanReadable()),
           ],
         ),
       ),
