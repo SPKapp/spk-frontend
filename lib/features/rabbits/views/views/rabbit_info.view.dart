@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info.dart';
@@ -46,14 +47,24 @@ class RabbitInfoView extends StatelessWidget {
             children: [
               Expanded(
                 child: RabbitInfoButton(
-                  onPressed: () {}, // TODO: Implement this
+                  key: const Key('vet-visit-button'),
+                  onPressed: () =>
+                      context.push('/rabbit/${rabbit.id}/notes', extra: {
+                    'rabbitName': rabbit.name,
+                    'isVetVisit': true,
+                  }),
                   text: 'Historia Leczenia',
                   right: false,
                 ),
               ),
               Expanded(
                 child: RabbitInfoButton(
-                  onPressed: () {}, // TODO: Implement this
+                  key: const Key('notes-button'),
+                  onPressed: () =>
+                      context.push('/rabbit/${rabbit.id}/notes', extra: {
+                    'rabbitName': rabbit.name,
+                    'isVetVisit': false,
+                  }),
                   text: 'Notatki',
                   right: true,
                 ),

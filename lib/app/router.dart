@@ -7,6 +7,7 @@ import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/app/view/view.dart';
 
 import 'package:spk_app_frontend/example2.dart';
+import 'package:spk_app_frontend/features/rabbit-notes/views/pages.dart';
 import 'package:spk_app_frontend/features/rabbits/views/pages.dart';
 import 'package:spk_app_frontend/features/users/views/pages.dart';
 
@@ -65,6 +66,17 @@ class AppRouter {
                     return RabbitUpdatePage(
                       rabbitId: int.parse(state.pathParameters['id']!),
                     );
+                  },
+                ),
+                GoRoute(
+                  path: 'notes',
+                  builder: (context, state) {
+                    final extra = state.extra as dynamic;
+
+                    return RabbitNotesListPage(
+                        rabbitId: int.parse(state.pathParameters['id']!),
+                        rabbitName: extra?['rabbitName'],
+                        isVetVisit: extra?['isVetVisit']);
                   },
                 ),
               ],
