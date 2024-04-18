@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/common/views/widgets/lists/list_card.widget.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits_list.bloc.dart';
@@ -11,101 +12,40 @@ import 'package:spk_app_frontend/features/rabbits/views/widgets/list_items.dart'
 /// This widget assumes that the [RabbitsListBloc] is already provided above in the widget tree.
 /// If [rabbitGroups] is empty, it displays a message "Brak królików.".
 /// If [hasReachedMax] is false, it displays a [CircularProgressIndicator] at the end of the list.
-class RabbitsListView extends StatefulWidget {
-  const RabbitsListView(
-      {super.key, required this.rabbitGroups, required this.hasReachedMax});
+class RabbitsListView extends StatelessWidget {
+  const RabbitsListView({
+    super.key,
+    required this.rabbitGroups,
+    required this.hasReachedMax,
+  });
 
   final List<RabbitGroup> rabbitGroups;
   final bool hasReachedMax;
 
   @override
-  State<RabbitsListView> createState() => _RabbitsListViewState();
-}
-
-class _RabbitsListViewState extends State<RabbitsListView> {
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
+  Widget build(BuildContext context) {
+    return AppListView<RabbitGroup>(
+      items: rabbitGroups,
+      hasReachedMax: hasReachedMax,
+      onRefresh: () async {
+        Future bloc = context.read<RabbitsListBloc>().stream.first;
+        context.read<RabbitsListBloc>().add(const RefreshRabbits());
+        return bloc;
+      },
+      onFetch: () {
+        context.read<RabbitsListBloc>().add(const FetchRabbits());
+      },
+      emptyMessage: 'Brak królików.',
+      itemBuilder: (dynamic rabbitGroup) => ListCard(
+        itemCount: rabbitGroup.rabbits.length,
+        itemBuilder: (context, index) {
+          final rabbit = rabbitGroup.rabbits[index];
+          return RabbitListItem(
+            id: rabbit.id,
+            name: rabbit.name,
+          );
+        },
+      ),
+    );
   }
-
-  @override
-  void dispose() {
-    _scrollController
-      ..removeListener(_onScroll)
-      ..dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    if (_isBottom) {
-      context.read<RabbitsListBloc>().add(const FetchRabbits());
-    }
-  }
-
-  bool get _isBottom {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
-  }
-
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => RefreshIndicator(
-          onRefresh: () async {
-            Future bloc = context.read<RabbitsListBloc>().stream.first;
-            context.read<RabbitsListBloc>().add(const RefreshRabbits());
-            return bloc;
-          },
-          child: Builder(builder: (context) {
-            if (widget.rabbitGroups.isEmpty) {
-              return SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: const Center(
-                    child: Text('Brak królików.'),
-                  ),
-                ),
-              );
-            }
-            return ListView.builder(
-              key: const Key('rabbitsListView'),
-              controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: widget.hasReachedMax
-                  ? widget.rabbitGroups.length
-                  : widget.rabbitGroups.length + 1,
-              itemBuilder: (context, index) {
-                if (index == widget.rabbitGroups.length) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextButton(
-                      onPressed: () => context
-                          .read<RabbitsListBloc>()
-                          .add(const FetchRabbits()),
-                      child: const Center(child: CircularProgressIndicator()),
-                    ),
-                  );
-                } else {
-                  return ListCard(
-                    itemCount: widget.rabbitGroups[index].rabbits.length,
-                    itemBuilder: (context, rabbitIndex) {
-                      final rabbit =
-                          widget.rabbitGroups[index].rabbits[rabbitIndex];
-                      return RabbitListItem(
-                        id: rabbit.id,
-                        name: rabbit.name,
-                      );
-                    },
-                  );
-                }
-              },
-            );
-          }),
-        ),
-      );
 }

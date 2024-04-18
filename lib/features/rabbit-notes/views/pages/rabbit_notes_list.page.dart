@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spk_app_frontend/common/views/views.dart';
 
+import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bloc.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
+import 'package:spk_app_frontend/features/rabbit-notes/views/views/rabbit_notes_list_view.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/widgets/list_page/rabbit_notes_list_filters.widget.dart';
 
+/// A page that displays a list of rabbit notes.
+///
+/// If [rabbitName] is not provided, it displays a default title "Historia Notatek". Otherwise, it displays the provided name.
+///
+/// This page assumes that the [IRabbitNoteRepository] is already provided above in the widget tree.
 class RabbitNotesListPage extends StatelessWidget {
   const RabbitNotesListPage({
     super.key,
@@ -31,7 +37,20 @@ class RabbitNotesListPage extends StatelessWidget {
                     isVetVisit: isVetVisit,
                   ),
                 )..add(const FetchRabbitNotes()),
-        child: BlocBuilder<RabbitNotesListBloc, RabbitNotesListState>(
+        child: BlocConsumer<RabbitNotesListBloc, RabbitNotesListState>(
+          listener: (context, state) {
+            if (state is RabbitNotesListFailure &&
+                state.rabbitNotes.isNotEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  key: Key('errorSnackBar'),
+                  content: Text(
+                    'Wystąpił błąd podczas pobierania notatek.',
+                  ),
+                ),
+              );
+            }
+          },
           buildWhen: (previous, current) =>
               previous is! RabbitNotesListSuccess ||
               current is RabbitNotesListSuccess,
@@ -49,9 +68,9 @@ class RabbitNotesListPage extends StatelessWidget {
                       .add(const RefreshRabbitNotes(null)),
                 );
               case RabbitNotesListSuccess():
-                body = Center(
-                  child: Text(
-                      'Rabbit Notes List Page rabbitId: $rabbitId rabbitName: $rabbitName isVetVisit: $isVetVisit state: $state'),
+                body = RabbitNotesListView(
+                  rabbitNotes: state.rabbitNotes,
+                  hasReachedMax: state.hasReachedMax,
                 );
             }
 
@@ -60,6 +79,7 @@ class RabbitNotesListPage extends StatelessWidget {
                 title: Text(rabbitName ?? 'Historia Notatek'),
                 actions: [
                   IconButton(
+                    key: const Key('filterAction'),
                     icon: const Icon(Icons.filter_alt),
                     onPressed: () => showModalBottomSheet(
                       context: context,

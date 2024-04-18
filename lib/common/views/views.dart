@@ -1,2 +1,3 @@
-export 'views/failure.view.dart';
-export 'views/initial.view.dart';
+export './views/failure.view.dart';
+export './views/initial.view.dart';
+export './views/list.view.dart';

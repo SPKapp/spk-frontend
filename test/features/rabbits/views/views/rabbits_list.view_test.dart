@@ -101,12 +101,15 @@ void main() {
 
     testWidgets('should call FetchRabbits event when scroll reaches the end',
         (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(500, 500);
+      addTearDown(tester.view.resetPhysicalSize);
+
       await tester.pumpWidget(
         MaterialApp(
           home: BlocProvider<RabbitsListBloc>.value(
             value: rabbitsListBloc,
-            child: RabbitsListView(
-              rabbitGroups: rabbitGroups + rabbitGroups,
+            child: const RabbitsListView(
+              rabbitGroups: rabbitGroups,
               hasReachedMax: false,
             ),
           ),
@@ -115,11 +118,9 @@ void main() {
 
       await tester.dragUntilVisible(
         find.byType(CircularProgressIndicator),
-        find.byKey(const Key('rabbitsListView')),
-        const Offset(0, -300),
+        find.byKey(const Key('appListView')),
+        const Offset(0, -200),
       );
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      await tester.pump();
 
       verify(() => rabbitsListBloc.add(const FetchRabbits())).called(1);
     });
