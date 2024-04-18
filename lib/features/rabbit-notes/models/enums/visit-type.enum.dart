@@ -17,4 +17,23 @@ enum VisitType {
   String toJson() {
     return jsonValue;
   }
+
+  String get displayName {
+    switch (this) {
+      case VisitType.control:
+        return 'Kontrola';
+      case VisitType.caccination:
+        return 'Szczepienie';
+      case VisitType.deworming:
+        return 'Odrobaczanie';
+      case VisitType.treatment:
+        return 'Leczenie';
+      case VisitType.operation:
+        return 'Operacja';
+      case VisitType.castration:
+        return 'Kastracja';
+      case VisitType.chip:
+        return 'Chipowanie';
+    }
+  }
 }

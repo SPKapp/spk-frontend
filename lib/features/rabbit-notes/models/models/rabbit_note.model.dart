@@ -24,7 +24,9 @@ final class RabbitNote extends Equatable {
     return RabbitNote(
       id: int.parse(json['id']),
       description: json['description'] as String?,
-      weight: json['weight'] as double?,
+      weight: json['weight'] is int
+          ? (json['weight'] as int).toDouble()
+          : json['weight'] as double?,
       vetVisit:
           json['vetVisit'] != null ? VetVisit.fromJson(json['vetVisit']) : null,
       createdAt:

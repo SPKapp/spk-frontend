@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 
 import 'package:spk_app_frontend/common/services/gql.service.dart';
+import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
+import 'package:spk_app_frontend/features/rabbit-notes/repositories/repositories.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/repositories.dart';
 import 'package:spk_app_frontend/features/regions/repositories/interfaces.dart';
@@ -30,6 +32,9 @@ class InjectRepositories extends StatelessWidget {
         ),
         RepositoryProvider<IRegionsRepository>(
           create: (context) => RegionsRepository(gqlService),
+        ),
+        RepositoryProvider<IRabbitNoteRepository>(
+          create: (context) => GqlRabbitNotesRepository(gqlService),
         ),
       ],
       child: child,

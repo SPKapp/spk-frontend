@@ -36,13 +36,15 @@ class RabbitNotesListBloc
   final IRabbitNoteRepository _rabbitNoteRepository;
   FindRabbitNotesArgs _args;
 
+  FindRabbitNotesArgs get args => _args;
+
   void _onFetch(
       FetchRabbitNotes event, Emitter<RabbitNotesListState> emit) async {
     if (state.hasReachedMax) return;
 
     try {
       final paginatedResult = await _rabbitNoteRepository.findAll(
-        _args.copyWith(offset: state.rabbitNotes.length),
+        _args.copyWith(offset: () => state.rabbitNotes.length),
         state.totalCount == 0,
       );
 
