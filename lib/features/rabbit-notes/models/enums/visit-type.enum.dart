@@ -1,6 +1,9 @@
-enum VisitType {
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+enum VisitType implements Comparable<VisitType> {
   control('Control'),
-  caccination('Vaccination'),
+  vaccination('Vaccination'),
   deworming('Deworming'),
   treatment('Treatment'),
   operation('Operation'),
@@ -22,7 +25,7 @@ enum VisitType {
     switch (this) {
       case VisitType.control:
         return 'Kontrola';
-      case VisitType.caccination:
+      case VisitType.vaccination:
         return 'Szczepienie';
       case VisitType.deworming:
         return 'Odrobaczanie';
@@ -35,5 +38,29 @@ enum VisitType {
       case VisitType.chip:
         return 'Chipowanie';
     }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case VisitType.control:
+        return FontAwesomeIcons.fileMedical;
+      case VisitType.vaccination:
+        return FontAwesomeIcons.syringe;
+      case VisitType.deworming:
+        return FontAwesomeIcons.bugSlash;
+      case VisitType.treatment:
+        return FontAwesomeIcons.briefcaseMedical;
+      case VisitType.operation:
+        return FontAwesomeIcons.fileWaveform;
+      case VisitType.castration:
+        return FontAwesomeIcons.circleXmark;
+      case VisitType.chip:
+        return FontAwesomeIcons.microchip;
+    }
+  }
+
+  @override
+  int compareTo(VisitType other) {
+    return index.compareTo(other.index);
   }
 }

@@ -29,7 +29,8 @@ class UsersListView extends StatelessWidget {
       items: teams,
       hasReachedMax: hasReachedMax,
       onRefresh: () async {
-        Future bloc = context.read<UsersListBloc>().stream.first;
+        // skip initial state
+        Future bloc = context.read<UsersListBloc>().stream.skip(1).first;
         context.read<UsersListBloc>().add(const RefreshUsers());
         return bloc;
       },

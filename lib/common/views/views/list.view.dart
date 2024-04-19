@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+/// A widget providing a scrollable view with a refresh indicator
+/// and fetching more items when reaching the bottom of the list.
 class AppListView<T> extends StatefulWidget {
   const AppListView({
     super.key,
@@ -72,9 +74,7 @@ class _AppListViewState extends State<AppListView> {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return RefreshIndicator(
-        onRefresh: () async {
-          return widget.onRefresh();
-        },
+        onRefresh: widget.onRefresh,
         child: Builder(builder: (context) {
           if (widget.items.isEmpty) {
             return SingleChildScrollView(

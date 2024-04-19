@@ -220,7 +220,8 @@ class _RabbitNotesListFiltersState extends State<RabbitNotesListFilters> {
                           createdAtTo: () => null,
                           vetVisit: () =>
                               args.vetVisit?.copyWith(
-                                visitTypes: () => filters.toList(),
+                                visitTypes: () =>
+                                    filters.isEmpty ? filters.toList() : null,
                               ) ??
                               VetVisitArgs(
                                 visitTypes: filters.toList(),

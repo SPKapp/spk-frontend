@@ -111,7 +111,17 @@ void main() {
 
     testWidgets('should call RefreshUsers event when pull to refresh',
         (WidgetTester tester) async {
-      whenListen(usersListBloc, Stream.fromIterable([UsersListInitial()]));
+      whenListen(
+        usersListBloc,
+        Stream.fromIterable([
+          UsersListInitial(),
+          UsersListSuccess(
+            teams: const [],
+            hasReachedMax: true,
+            totalCount: 0,
+          ),
+        ]),
+      );
 
       await tester.pumpWidget(
         MaterialApp(
@@ -138,7 +148,18 @@ void main() {
     testWidgets(
         'should call RefreshUsers event when RefreshIndicator is pulled and no teams are displayed',
         (WidgetTester tester) async {
-      whenListen(usersListBloc, Stream.fromIterable([UsersListInitial()]));
+      whenListen(
+        usersListBloc,
+        Stream.fromIterable([
+          UsersListInitial(),
+          UsersListSuccess(
+            teams: const [],
+            hasReachedMax: true,
+            totalCount: 0,
+          ),
+        ]),
+      );
+
       await tester.pumpWidget(
         MaterialApp(
           home: BlocProvider<UsersListBloc>.value(

@@ -65,7 +65,7 @@ class FullInfoCard extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(FontAwesomeIcons.notesMedical),
+            leading: const Icon(FontAwesomeIcons.circleXmark),
             title: const Text('Data Kastracji:'),
             subtitle: Text(
               rabbit.castrationDate?.toDateString() ?? 'Brak danych',
@@ -81,7 +81,7 @@ class FullInfoCard extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(FontAwesomeIcons.bug),
+            leading: const Icon(FontAwesomeIcons.bugSlash),
             title: const Text('Data Odrobaczania:'),
             subtitle: Text(
               rabbit.dewormingDate?.toDateString() ?? 'Brak danych',

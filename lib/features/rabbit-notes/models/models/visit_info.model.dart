@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:spk_app_frontend/features/rabbit-notes/models/enums/visit-type.enum.dart';
 
-final class VisitInfo extends Equatable {
+final class VisitInfo extends Equatable implements Comparable<VisitInfo> {
   const VisitInfo({
     required this.visitType,
     this.additionalInfo,
@@ -19,5 +19,10 @@ final class VisitInfo extends Equatable {
       visitType: VisitType.fromJson(json['visitType']),
       additionalInfo: json['additionalInfo'] as String?,
     );
+  }
+
+  @override
+  int compareTo(VisitInfo other) {
+    return visitType.compareTo(other.visitType);
   }
 }

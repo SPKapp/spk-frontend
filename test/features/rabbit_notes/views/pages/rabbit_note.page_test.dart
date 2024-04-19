@@ -87,7 +87,7 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(buildWidget(rabbitName: 'Królik'));
 
-      expect(find.text('Notatka'), findsNothing);
+      expect(find.text('Notatka'), findsOneWidget);
       expect(find.text('Królik'), findsOneWidget);
       expect(find.byType(InitialView), findsNothing);
       expect(find.byType(FailureView), findsNothing);

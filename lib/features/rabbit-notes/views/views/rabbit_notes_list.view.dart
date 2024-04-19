@@ -28,7 +28,8 @@ class RabbitNotesListView extends StatelessWidget {
       items: rabbitNotes,
       hasReachedMax: hasReachedMax,
       onRefresh: () async {
-        Future bloc = context.read<RabbitNotesListBloc>().stream.first;
+        // skip initial state
+        Future bloc = context.read<RabbitNotesListBloc>().stream.skip(1).first;
         context.read<RabbitNotesListBloc>().add(const RefreshRabbitNotes(null));
         return bloc;
       },

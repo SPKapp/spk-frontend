@@ -119,7 +119,14 @@ void main() {
         (WidgetTester tester) async {
       whenListen(
         rabbitNotesListBloc,
-        Stream.fromIterable([const RabbitNotesListInitial()]),
+        Stream.fromIterable([
+          const RabbitNotesListInitial(),
+          const RabbitNotesListSuccess(
+            rabbitNotes: [],
+            hasReachedMax: true,
+            totalCount: 0,
+          ),
+        ]),
       );
 
       await tester.pumpWidget(
