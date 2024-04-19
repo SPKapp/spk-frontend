@@ -52,12 +52,8 @@ void main() {
 
     testWidgets('should navigate to note details when tapped',
         (WidgetTester tester) async {
-      const rabbitNote = RabbitNote(
-        id: 1,
-      );
-
-      when(() => goRouter.push(any(), extra: any(named: 'extra')))
-          .thenAnswer((_) async => Object());
+      when(() => goRouter.push<dynamic>(any(), extra: any(named: 'extra')))
+          .thenAnswer((_) async => {});
 
       await tester.pumpWidget(
         MaterialApp(
@@ -65,7 +61,9 @@ void main() {
             goRouter: goRouter,
             child: const Scaffold(
               body: RabbitNoteListItem(
-                rabbitNote: rabbitNote,
+                rabbitNote: RabbitNote(
+                  id: 1,
+                ),
                 rabbitName: 'Fluffy',
               ),
             ),
@@ -76,7 +74,37 @@ void main() {
       await tester.tap(find.byType(ListTile));
       await tester.pumpAndSettle();
 
-      verify(() => goRouter.push('/note/1', extra: {'rabbitName': 'Fluffy'}));
+      verify(() =>
+          goRouter.push<dynamic>('/note/1', extra: {'rabbitName': 'Fluffy'}));
+    });
+
+    testWidgets('should be invisible when rabbit note was deleted',
+        (WidgetTester tester) async {
+      when(() => goRouter.push<dynamic>(any(), extra: any(named: 'extra')))
+          .thenAnswer((_) async => {'deleted': true});
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: InheritedGoRouter(
+            goRouter: goRouter,
+            child: const Scaffold(
+              body: RabbitNoteListItem(
+                rabbitNote: RabbitNote(
+                  id: 1,
+                ),
+                rabbitName: 'Fluffy',
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(ListTile));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListTile), findsNothing);
+
+      expect(find.text('Notatka została usunięta'), findsOne);
     });
   });
 }

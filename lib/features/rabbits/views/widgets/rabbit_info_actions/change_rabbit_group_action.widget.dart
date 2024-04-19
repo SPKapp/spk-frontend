@@ -130,7 +130,9 @@ class _ChangeRabbitGroupActionState extends State<ChangeRabbitGroupAction> {
                                             title: const Text(
                                                 'Czy na pewno chcesz zmienić grupę królika?'),
                                             content: const Text(
-                                                'Spowoduje to usunięcie królika z obecnej grupy, a jeśli grupa stanie się pusta, zostanie usunięta wraz z wszystkimi informacjami o niej. Czy na pewno chcesz kontynuować?'),
+                                              'Spowoduje to usunięcie królika z obecnej grupy, a jeśli grupa stanie się pusta, zostanie usunięta wraz z wszystkimi informacjami o niej. Czy na pewno chcesz kontynuować?',
+                                              textAlign: TextAlign.justify,
+                                            ),
                                             actions: [
                                               TextButton(
                                                 onPressed: () =>

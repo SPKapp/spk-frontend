@@ -12,4 +12,7 @@ abstract interface class IRabbitNotesRepository {
 
   /// Retrieves a single [RabbitNote] object based on the provided [id].
   Future<RabbitNote> findOne(int id);
+
+  /// Remove a [RabbitNote] from the database based on the provided [id].
+  Future<void> remove(int id);
 }

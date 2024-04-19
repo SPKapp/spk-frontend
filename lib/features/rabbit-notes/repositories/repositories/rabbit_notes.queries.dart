@@ -62,3 +62,14 @@ query $operationName(\$id: Int!) {
 }
 ''';
 }
+
+abstract class RemoveRabbitNoteMutation {
+  static const String operationName = 'RemoveRabbitNote';
+  static const String document = '''
+mutation $operationName(\$id: ID!) {
+	removeRabbitNote(id: \$id) {
+		id
+	}
+}
+''';
+}

@@ -11,12 +11,16 @@ part 'rabbit_notes_list.state.dart';
 
 /// A bloc that manages the state of a list with rabbitNotes.
 ///
-/// A bloc needs a [rabbitNoteRepository] to fetch the rabbitNotes and [args] to configure initial filter arguments, this arguments can be changed later with [RefreshRabbitNotes] event.
+/// Available signals:
+/// - [FetchRabbitNotes] - fetches the next page of rabbitNotes
+/// it uses the previous arguments to fetch the next page
+/// - [RefreshRabbitNotes] - restarts fetching the rabbitNotes with the given arguments
+///  if no arguments are provided it will use the previous arguments otherwise new arguments will be used
 ///
-/// The bloc provides [FetchRabbitNotes] event to fetch next page and [RefreshRabbitNotes] event to restart fetching to first page.
-/// If [RefreshRabbitNotes] event is dispatched with [args] the bloc will use this new arguments otherwise it will previous arguments.
-///
-/// It emits [RabbitNotesListInitial] state when the bloc is created or refreshed, [RabbitNotesListSuccess] state when the rabbitNotes are fetched successfully and [RabbitNotesListFailure] state when an error occurs while fetching rabbitNotes, this state also contains previous successful fetched rabbitNotes.
+/// Available states:
+/// - [RabbitNotesListInitial] - initial state
+/// - [RabbitNotesListSuccess] - the rabbitNotes have been fetched successfully
+/// - [RabbitNotesListFailure] - an error occurred while fetching the rabbitNotes
 class RabbitNotesListBloc
     extends Bloc<RabbitNotesListEvent, RabbitNotesListState> {
   RabbitNotesListBloc({

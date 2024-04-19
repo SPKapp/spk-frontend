@@ -8,12 +8,14 @@ part 'rabbit_note.state.dart';
 
 /// A Cubit that manages the state of a RabbitNote.
 ///
-/// A cubit needs a [IRabbitNotesRepository] and [rabbitNoteId] to fetch the RabbitNote.
+/// Available functions:
+/// - [fetchRabbitNote] - fetches the RabbitNote with the given [rabbitNoteId]
+/// - [refreshRabbitNote] - restarts fetching the RabbitNote
 ///
-/// It provides [fetchRabbitNote] method to fetch - this mettod emits
-/// new state only if data was changed.
-/// It also provides [refreshRabbitNote] method to restart fetching,
-/// this metod emits [RabbitNoteInitial] state before fetching.
+/// Available states:
+/// - [RabbitNoteInitial] - initial state
+/// - [RabbitNoteSuccess] - the RabbitNote has been fetched successfully
+/// - [RabbitNoteFailure] - an error occurred while fetching the RabbitNote
 class RabbitNoteCubit extends Cubit<RabbitNoteState> {
   RabbitNoteCubit({
     required this.rabbitNoteId,
@@ -24,6 +26,8 @@ class RabbitNoteCubit extends Cubit<RabbitNoteState> {
   final int rabbitNoteId;
   final IRabbitNotesRepository _rabbitNotesRepository;
 
+  /// Fetches the RabbitNote with the given [rabbitNoteId].
+  /// Emits new state only if data was changed.
   void fetchRabbitNote() async {
     try {
       final rabbitNote = await _rabbitNotesRepository.findOne(
@@ -41,6 +45,8 @@ class RabbitNoteCubit extends Cubit<RabbitNoteState> {
     }
   }
 
+  /// Restarts fetching the RabbitNote.
+  /// Always emits new state.
   void refreshRabbitNote() async {
     emit(
       const RabbitNoteInitial(),

@@ -30,9 +30,13 @@ class GqlService {
     ));
   }
 
-  Future<QueryResult> mutate(String mutation,
-      {Map<String, dynamic> variables = const {}}) {
+  Future<QueryResult> mutate(
+    String mutation, {
+    Map<String, dynamic> variables = const {},
+    String? operationName,
+  }) {
     return _client.mutate(MutationOptions(
+      operationName: operationName,
       document: gql(mutation),
       variables: variables,
     ));

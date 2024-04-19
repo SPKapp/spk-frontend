@@ -42,4 +42,17 @@ class GqlRabbitNotesRepository implements IRabbitNotesRepository {
 
     return RabbitNote.fromJson(result.data!['rabbitNote']);
   }
+
+  @override
+  Future<void> remove(int id) async {
+    final result = await _gqlService.mutate(
+      RemoveRabbitNoteMutation.document,
+      operationName: RemoveRabbitNoteMutation.operationName,
+      variables: {'id': id},
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+  }
 }

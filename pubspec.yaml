@@ -50,6 +50,7 @@ dev_dependencies:
   bloc_test: ^9.1.6
   mocktail: ^1.0.3
   mocktail_image_network: ^1.1.0
+  mockingjay: ^0.5.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
