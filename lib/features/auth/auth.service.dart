@@ -43,6 +43,8 @@ extension on User {
       throw Exception('Claims are null');
     }
 
+    //TODO: Load user data from the backend
+
     return CurrentUser(
       uid: uid,
       token: token,

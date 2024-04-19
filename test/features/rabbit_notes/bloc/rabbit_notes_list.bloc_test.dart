@@ -3,17 +3,16 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
-
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bloc.dart';
 
-class MockRabbitNoteRepository extends Mock implements IRabbitNoteRepository {}
+class MockRabbitNoteRepository extends Mock implements IRabbitNotesRepository {}
 
 void main() {
   group(RabbitNotesListBloc, () {
-    late IRabbitNoteRepository rabbitNoteRepository;
+    late IRabbitNotesRepository rabbitNoteRepository;
     late RabbitNotesListBloc rabbitNotesListBloc;
 
     const args1 = FindRabbitNotesArgs(rabbitId: 1);

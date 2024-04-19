@@ -12,7 +12,7 @@ import 'package:spk_app_frontend/features/rabbit-notes/views/widgets/list_page/r
 ///
 /// If [rabbitName] is not provided, it displays a default title "Historia Notatek". Otherwise, it displays the provided name.
 ///
-/// This page assumes that the [IRabbitNoteRepository] is already provided above in the widget tree.
+/// This page assumes that the [IRabbitNotesRepository] is already provided above in the widget tree.
 class RabbitNotesListPage extends StatelessWidget {
   const RabbitNotesListPage({
     super.key,
@@ -31,7 +31,7 @@ class RabbitNotesListPage extends StatelessWidget {
   Widget build(BuildContext context) => BlocProvider(
         create: rabbitNotesListBloc ??
             (context) => RabbitNotesListBloc(
-                  rabbitNoteRepository: context.read<IRabbitNoteRepository>(),
+                  rabbitNoteRepository: context.read<IRabbitNotesRepository>(),
                   args: FindRabbitNotesArgs(
                     rabbitId: rabbitId,
                     isVetVisit: isVetVisit,

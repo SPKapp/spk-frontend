@@ -4,6 +4,7 @@ import 'package:spk_app_frontend/features/auth/roles.enum.dart';
 
 class CurrentUser extends Equatable {
   const CurrentUser({
+    this.id,
     required this.uid,
     required this.token,
     this.email,
@@ -14,6 +15,7 @@ class CurrentUser extends Equatable {
     this.teamId,
   });
 
+  final int? id;
   final String uid;
   final String token;
   final String? email;
@@ -35,6 +37,8 @@ class CurrentUser extends Equatable {
 
   bool checkRole(List<Role> role) =>
       roles.any((element) => role.contains(element));
+
+  bool checkId(int? id) => id != null && this.id == id;
 
   @override
   List<Object?> get props => [uid, token, email, phone, name, roles, regions];

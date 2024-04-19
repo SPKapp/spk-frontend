@@ -9,6 +9,8 @@ import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bl
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 
+/// A widget that represents the filters for the Rabbit Notes list.
+/// This widget is used to filter the Rabbit Notes list based on certain criteria.
 class RabbitNotesListFilters extends StatefulWidget {
   const RabbitNotesListFilters({
     super.key,

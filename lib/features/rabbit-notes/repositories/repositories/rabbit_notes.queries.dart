@@ -39,3 +39,26 @@ query $operationName(
 }
 ''';
 }
+
+abstract class GetRabbitNoteQuery {
+  static const String operationName = 'GetRabbitNote';
+  static const String document = '''
+query $operationName(\$id: Int!) {
+	rabbitNote(id: \$id) {
+		id
+		rabbitId
+		description
+		weight
+		vetVisit {
+			date
+			visitInfo {
+				visitType
+				additionalInfo
+			}
+		}
+		createdAt
+		createdBy
+	}
+}
+''';
+}

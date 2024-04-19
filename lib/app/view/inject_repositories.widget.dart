@@ -33,7 +33,7 @@ class InjectRepositories extends StatelessWidget {
         RepositoryProvider<IRegionsRepository>(
           create: (context) => RegionsRepository(gqlService),
         ),
-        RepositoryProvider<IRabbitNoteRepository>(
+        RepositoryProvider<IRabbitNotesRepository>(
           create: (context) => GqlRabbitNotesRepository(gqlService),
         ),
       ],

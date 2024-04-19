@@ -6,6 +6,12 @@ import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 
+/// A widget representing a single item in the Rabbit Notes list.
+///
+/// This widget displays a single item in the Rabbit Notes list. It displays the type of the note, the description, and the date of creation.
+/// If the note is a vet visit, it displays the visit type and the date of the visit.
+///
+/// if the [rabbitName] is provided, it will be passed to the rabbitNote page when the item is clicked.
 class RabbitNoteListItem extends StatelessWidget {
   const RabbitNoteListItem({
     super.key,

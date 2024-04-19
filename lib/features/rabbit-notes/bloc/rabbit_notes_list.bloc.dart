@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:spk_app_frontend/common/bloc/debounce.transformer.dart';
-
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
@@ -21,7 +20,7 @@ part 'rabbit_notes_list.state.dart';
 class RabbitNotesListBloc
     extends Bloc<RabbitNotesListEvent, RabbitNotesListState> {
   RabbitNotesListBloc({
-    required IRabbitNoteRepository rabbitNoteRepository,
+    required IRabbitNotesRepository rabbitNoteRepository,
     required FindRabbitNotesArgs args,
   })  : _rabbitNoteRepository = rabbitNoteRepository,
         _args = args,
@@ -33,7 +32,7 @@ class RabbitNotesListBloc
     on<RefreshRabbitNotes>(_onRefresh);
   }
 
-  final IRabbitNoteRepository _rabbitNoteRepository;
+  final IRabbitNotesRepository _rabbitNoteRepository;
   FindRabbitNotesArgs _args;
 
   FindRabbitNotesArgs get args => _args;
