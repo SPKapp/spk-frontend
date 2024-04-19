@@ -26,14 +26,13 @@ query $operationName(
 		data {
 			id
 			description
-			weight
 			vetVisit {
 				date
 				visitInfo {
 					visitType
-					additionalInfo
 				}
 			}
+			createdAt
 		}
 		${totalCount ? 'totalCount' : ''}
 	}

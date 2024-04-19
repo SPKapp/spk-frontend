@@ -5,7 +5,7 @@ import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bloc.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
-import 'package:spk_app_frontend/features/rabbit-notes/views/views/rabbit_notes_list_view.dart';
+import 'package:spk_app_frontend/features/rabbit-notes/views/views/rabbit_notes_list.view.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/widgets/list_page/rabbit_notes_list_filters.widget.dart';
 
 /// A page that displays a list of rabbit notes.
@@ -71,6 +71,7 @@ class RabbitNotesListPage extends StatelessWidget {
                 body = RabbitNotesListView(
                   rabbitNotes: state.rabbitNotes,
                   hasReachedMax: state.hasReachedMax,
+                  rabbitName: rabbitName,
                 );
             }
 

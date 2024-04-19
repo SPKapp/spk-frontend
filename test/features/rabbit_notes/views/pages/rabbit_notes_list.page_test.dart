@@ -9,7 +9,7 @@ import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bl
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/pages/rabbit_notes_list.page.dart';
-import 'package:spk_app_frontend/features/rabbit-notes/views/views/rabbit_notes_list_view.dart';
+import 'package:spk_app_frontend/features/rabbit-notes/views/views/rabbit_notes_list.view.dart';
 
 class MockRabbitNotesListBloc
     extends MockBloc<RabbitNotesListEvent, RabbitNotesListState>

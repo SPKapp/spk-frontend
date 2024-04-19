@@ -51,7 +51,6 @@ final class UsersRepository implements IUsersRepository {
 
   @override
   Future<int> createUser(UserCreateDto userCreateDto) async {
-    print(userCreateDto.toJson());
     return 1;
   }
 

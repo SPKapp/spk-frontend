@@ -5,6 +5,8 @@ import 'package:spk_app_frontend/features/rabbit-notes/models/models/vet_visit.m
 final class RabbitNote extends Equatable {
   const RabbitNote({
     required this.id,
+    this.rabbitId,
+    this.createdBy,
     this.description,
     this.weight,
     this.vetVisit,
@@ -12,6 +14,8 @@ final class RabbitNote extends Equatable {
   });
 
   final int id;
+  final int? rabbitId;
+  final int? createdBy;
   final String? description;
   final double? weight;
   final VetVisit? vetVisit;
@@ -23,6 +27,8 @@ final class RabbitNote extends Equatable {
   static RabbitNote fromJson(Map<String, dynamic> json) {
     return RabbitNote(
       id: int.parse(json['id']),
+      rabbitId: int.tryParse(json['rabbitId'] ?? ''),
+      createdBy: int.tryParse(json['createdBy'] ?? ''),
       description: json['description'] as String?,
       weight: json['weight'] is int
           ? (json['weight'] as int).toDouble()

@@ -82,6 +82,19 @@ class AppRouter {
               ],
             ),
             GoRoute(
+                path: '/note/:id',
+                builder: (context, state) {
+                  final extra = state.extra as dynamic;
+
+                  return Center(
+                    child: Text(
+                        'Note: ${state.pathParameters['id']} extra: $extra'),
+                  );
+                  // return RabbitNotePage(
+                  //   rabbitNoteId: int.parse(state.pathParameters['id']!),
+                  // );
+                }),
+            GoRoute(
               path: '/users',
               builder: (context, state) {
                 return const UsersListPage(
