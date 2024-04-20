@@ -94,15 +94,26 @@ class AppRouter {
               ],
             ),
             GoRoute(
-                path: '/note/:id',
-                builder: (context, state) {
-                  final extra = state.extra as dynamic;
+              path: '/note/:id',
+              builder: (context, state) {
+                final extra = state.extra as dynamic;
 
-                  return RabbitNotePage(
-                    id: int.parse(state.pathParameters['id']!),
-                    rabbitName: extra?['rabbitName'],
-                  );
-                }),
+                return RabbitNotePage(
+                  id: int.parse(state.pathParameters['id']!),
+                  rabbitName: extra?['rabbitName'],
+                );
+              },
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) {
+                    return RabbitNoteUpdatePage(
+                      rabbitNoteId: int.parse(state.pathParameters['id']!),
+                    );
+                  },
+                ),
+              ],
+            ),
             GoRoute(
               path: '/users',
               builder: (context, state) {

@@ -31,10 +31,10 @@ class _RabbitNoteListItemState extends State<RabbitNoteListItem> {
 
   @override
   Widget build(BuildContext context) {
-    late Widget icon;
-    late String title;
-    late String subtitle;
-    late String date;
+    late final Widget icon;
+    late final String title;
+    late final String subtitle;
+    late final String date;
     if (widget.rabbitNote.vetVisit != null) {
       icon = const Icon(FontAwesomeIcons.stethoscope);
       title = 'Wizyta Weterynaryjna';

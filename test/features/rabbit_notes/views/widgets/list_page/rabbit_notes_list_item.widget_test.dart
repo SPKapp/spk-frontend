@@ -47,7 +47,7 @@ void main() {
           find.text(
               '${rabbitNote.vetVisit!.visitInfo[0].visitType.displayName}, ${rabbitNote.vetVisit!.visitInfo[1].visitType.displayName}'),
           findsOneWidget);
-      expect(find.text('2024-01-01\n00:00'), findsOneWidget);
+      expect(find.text('2024-01-01'), findsOneWidget);
     });
 
     testWidgets('should navigate to note details when tapped',

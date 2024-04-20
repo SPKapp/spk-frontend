@@ -52,7 +52,7 @@ class RabbitNoteView extends StatelessWidget {
                     ),
                     Text(
                       (isVetVisit
-                              ? rabbitNote.vetVisit?.date?.toDateTimeString()
+                              ? rabbitNote.vetVisit?.date?.toDateString()
                               : rabbitNote.createdAt?.toDateTimeString()) ??
                           'Nieznana',
                     ),

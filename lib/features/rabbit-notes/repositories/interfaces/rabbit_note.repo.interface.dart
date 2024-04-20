@@ -19,4 +19,7 @@ abstract interface class IRabbitNotesRepository {
   /// Create a new [RabbitNote] object based on the provided [dto].
   /// Returns the id of the created object.
   Future<int> create(RabbitNoteCreateDto dto);
+
+  /// Update a [RabbitNote] object based on the provided [id] and [dto].
+  Future<void> update(RabbitNoteUpdateDto dto);
 }

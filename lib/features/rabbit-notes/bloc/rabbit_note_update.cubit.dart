@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
 
 part 'rabbit_note_update.state.dart';
@@ -25,6 +26,26 @@ class RabbitNoteUpdateCubit extends Cubit<RabbitNoteUpdateState> {
 
   final int rabbitNoteId;
   final IRabbitNotesRepository _rabbitNotesRepository;
+
+  /// Updates the RabbitNote with the given [rabbitNoteId] using the provided [dto].
+  void updateRabbitNote(RabbitNoteUpdateDto dto) async {
+    if (dto.id != rabbitNoteId) {
+      emit(
+        const RabbitNoteUpdateFailure(),
+      );
+      return;
+    }
+    try {
+      await _rabbitNotesRepository.update(dto);
+      emit(
+        const RabbitNoteUpdated(),
+      );
+    } catch (e) {
+      emit(
+        const RabbitNoteUpdateFailure(),
+      );
+    }
+  }
 
   /// Removes the RabbitNote with the given [rabbitNoteId].
   void removeRabbitNote() async {

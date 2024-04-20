@@ -263,7 +263,7 @@ class _RabbitNoteModifyViewState extends State<RabbitNoteModifyView> {
         keyboardType: TextInputType.number,
         onTapOutside: (event) => FocusScope.of(context).unfocus(),
         inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
+          FilteringTextInputFormatter.allow(RegExp(r'^\d{1,2}(\.\d{0,3})?')),
         ],
       ),
     );

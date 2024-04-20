@@ -41,7 +41,7 @@ class RabbitNotePage extends StatelessWidget {
           bool editable = false;
           final isAtLeastRegionManager = user.isAtLeastRegionManager;
 
-          late Widget body;
+          late final Widget body;
 
           switch (state) {
             case RabbitNoteInitial():
@@ -68,7 +68,12 @@ class RabbitNotePage extends StatelessWidget {
                         key: const Key('rabbitNoteEditButton'),
                         icon: const Icon(Icons.edit),
                         onPressed: () async {
-                          // TODO: Navigate to edit page
+                          final result = await context.push<bool>(
+                            '/note/$id/edit',
+                          );
+                          if (context.mounted && result == true) {
+                            context.read<RabbitNoteCubit>().fetchRabbitNote();
+                          }
                         },
                       ),
                       IconButton(
@@ -89,9 +94,7 @@ class RabbitNotePage extends StatelessWidget {
                                 'deleted': true,
                               });
                             } else {
-                              context
-                                  .read<RabbitNoteCubit>()
-                                  .refreshRabbitNote();
+                              context.read<RabbitNoteCubit>().fetchRabbitNote();
                             }
                           }
                         },

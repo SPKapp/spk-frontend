@@ -56,7 +56,7 @@ class RabbitNotesListPage extends StatelessWidget {
               previous is! RabbitNotesListSuccess ||
               current is RabbitNotesListSuccess,
           builder: (context, state) {
-            late Widget body;
+            late final Widget body;
 
             switch (state) {
               case RabbitNotesListInitial():

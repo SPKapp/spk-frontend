@@ -72,4 +72,19 @@ class GqlRabbitNotesRepository implements IRabbitNotesRepository {
 
     return int.parse(result.data!['createRabbitNote']['id']);
   }
+
+  @override
+  Future<void> update(RabbitNoteUpdateDto dto) async {
+    final result = await _gqlService.mutate(
+      UpdateRabbitNoteMutation.document,
+      operationName: UpdateRabbitNoteMutation.operationName,
+      variables: {
+        'updateRabbitNoteInput': dto.toJson(),
+      },
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+  }
 }
