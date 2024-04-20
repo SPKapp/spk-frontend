@@ -9,6 +9,7 @@ part 'rabbit_note_update.state.dart';
 /// A cubit that handles the state management for updating a RabbitNote.
 ///
 /// Available functions:
+/// - [updateRabbitNote] - updates the RabbitNote with the given [rabbitNoteId] using the provided [dto]
 /// - [removeRabbitNote] - removes the RabbitNote with the given [rabbitNoteId]
 /// - [resetState] - resets the state to the initial state
 ///
