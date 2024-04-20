@@ -11,6 +11,7 @@ class DateField extends StatelessWidget {
     required this.onTap,
     this.daysBefore = 3650,
     this.daysAfter = 365,
+    this.validator,
   });
 
   final TextEditingController controller;
@@ -20,6 +21,7 @@ class DateField extends StatelessWidget {
   final void Function(DateTime) onTap;
   final int daysBefore;
   final int daysAfter;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,7 @@ class DateField extends StatelessWidget {
             onTap(date);
           }
         },
+        validator: validator,
       ),
     );
   }

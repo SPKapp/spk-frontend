@@ -15,4 +15,8 @@ abstract interface class IRabbitNotesRepository {
 
   /// Remove a [RabbitNote] from the database based on the provided [id].
   Future<void> remove(int id);
+
+  /// Create a new [RabbitNote] object based on the provided [dto].
+  /// Returns the id of the created object.
+  Future<int> create(RabbitNoteCreateDto dto);
 }

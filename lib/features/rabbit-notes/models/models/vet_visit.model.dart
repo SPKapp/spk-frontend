@@ -14,7 +14,7 @@ final class VetVisit extends Equatable {
   @override
   List<Object?> get props => [date, visitInfo];
 
-  static VetVisit fromJson(Map<String, dynamic> json) {
+  factory VetVisit.fromJson(Map<String, dynamic> json) {
     return VetVisit(
       date: json['date'] != null ? DateTime.parse(json['date']) : null,
       visitInfo: (json['visitInfo'] as List)
@@ -22,4 +22,10 @@ final class VetVisit extends Equatable {
           .toList(),
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        if (date != null) 'date': date?.toIso8601String(),
+        if (visitInfo.isNotEmpty)
+          'visitInfo': visitInfo.map((info) => info.toJson()).toList(),
+      };
 }

@@ -14,12 +14,17 @@ final class VisitInfo extends Equatable implements Comparable<VisitInfo> {
   @override
   List<Object?> get props => [visitType, additionalInfo];
 
-  static VisitInfo fromJson(Map<String, dynamic> json) {
+  factory VisitInfo.fromJson(Map<String, dynamic> json) {
     return VisitInfo(
       visitType: VisitType.fromJson(json['visitType']),
       additionalInfo: json['additionalInfo'] as String?,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'visitType': visitType.toJson(),
+        if (additionalInfo != null) 'additionalInfo': additionalInfo,
+      };
 
   @override
   int compareTo(VisitInfo other) {

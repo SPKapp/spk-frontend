@@ -24,7 +24,7 @@ final class RabbitNote extends Equatable {
   @override
   List<Object?> get props => [id, description, weight, vetVisit, createdAt];
 
-  static RabbitNote fromJson(Map<String, dynamic> json) {
+  factory RabbitNote.fromJson(Map<String, dynamic> json) {
     return RabbitNote(
       id: int.parse(json['id']),
       rabbitId: int.tryParse(json['rabbitId'] ?? ''),

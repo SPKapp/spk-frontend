@@ -42,7 +42,7 @@ class _RabbitNoteListItemState extends State<RabbitNoteListItem> {
           .map((e) => e.visitType.displayName)
           .join(', ');
       date = widget.rabbitNote.vetVisit!.date != null
-          ? '${widget.rabbitNote.vetVisit!.date!.toDateString()}\n${widget.rabbitNote.vetVisit!.date!.toTimeString()}'
+          ? widget.rabbitNote.vetVisit!.date!.toDateString()
           : 'Nieznana\ndata wizyty';
     } else {
       icon = const Icon(FontAwesomeIcons.noteSticky);

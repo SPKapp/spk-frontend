@@ -73,3 +73,14 @@ mutation $operationName(\$id: ID!) {
 }
 ''';
 }
+
+abstract class CreateRabbitNoteMutation {
+  static const String operationName = 'CreateRabbitNote';
+  static const String document = '''
+mutation $operationName(\$createRabbitNoteInput: CreateRabbitNoteInput!) {
+	createRabbitNote(createRabbitNoteInput: \$createRabbitNoteInput) {
+		id
+	}
+}
+''';
+}

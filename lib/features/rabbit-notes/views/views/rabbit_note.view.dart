@@ -121,7 +121,8 @@ class RabbitNoteView extends StatelessWidget {
                           leading: Icon(info.visitType.icon),
                           title: Text(info.visitType.displayName),
                           subtitle: info.additionalInfo != null
-                              ? Text(info.additionalInfo!)
+                              ? Text(info.additionalInfo!,
+                                  textAlign: TextAlign.justify)
                               : null,
                         ),
                       ),

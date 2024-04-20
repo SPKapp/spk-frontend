@@ -14,7 +14,7 @@ enum VisitType implements Comparable<VisitType> {
 
   final String jsonValue;
 
-  static VisitType fromJson(jsonValue) =>
+  factory VisitType.fromJson(jsonValue) =>
       VisitType.values.firstWhere((element) => jsonValue == element.jsonValue);
 
   String toJson() {

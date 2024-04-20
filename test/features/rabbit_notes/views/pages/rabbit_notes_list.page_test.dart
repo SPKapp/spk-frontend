@@ -3,6 +3,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bloc.dart';
@@ -15,21 +16,28 @@ class MockRabbitNotesListBloc
     extends MockBloc<RabbitNotesListEvent, RabbitNotesListState>
     implements RabbitNotesListBloc {}
 
+class MockGoRouter extends Mock implements GoRouter {}
+
 void main() {
   group(RabbitNotesListPage, () {
     late RabbitNotesListBloc rabbitNotesListBloc;
+    late GoRouter goRouter;
 
     setUp(() {
       rabbitNotesListBloc = MockRabbitNotesListBloc();
+      goRouter = MockGoRouter();
     });
 
     Widget buildWidget({String? name, bool? isVetVisit}) {
       return MaterialApp(
-        home: RabbitNotesListPage(
-          rabbitId: 1,
-          rabbitName: name,
-          isVetVisit: isVetVisit,
-          rabbitNotesListBloc: (context) => rabbitNotesListBloc,
+        home: InheritedGoRouter(
+          goRouter: goRouter,
+          child: RabbitNotesListPage(
+            rabbitId: 1,
+            rabbitName: name,
+            isVetVisit: isVetVisit,
+            rabbitNotesListBloc: (context) => rabbitNotesListBloc,
+          ),
         ),
       );
     }
@@ -204,6 +212,72 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(BottomSheet), findsOneWidget);
+    });
+
+    testWidgets(
+        'should navigate to create note page when add note button is pressed',
+        (WidgetTester tester) async {
+      when(() => rabbitNotesListBloc.state).thenReturn(
+        const RabbitNotesListSuccess(
+          rabbitNotes: [],
+          hasReachedMax: true,
+          totalCount: 0,
+        ),
+      );
+      when(() => rabbitNotesListBloc.args)
+          .thenReturn(const FindRabbitNotesArgs(rabbitId: 1));
+
+      when(
+        () =>
+            goRouter.push('/rabbit/1/note/create', extra: any(named: 'extra')),
+      ).thenAnswer((_) async => Object());
+
+      await tester.pumpWidget(
+        buildWidget(name: 'Test Rabbit'),
+      );
+
+      await tester.tap(find.byKey(const Key('addNoteButton')));
+      await tester.pumpAndSettle();
+
+      verify(
+        () => goRouter.push('/rabbit/1/note/create', extra: {
+          'isVetVisit': false,
+          'rabbitName': 'Test Rabbit',
+        }),
+      ).called(1);
+    });
+
+    testWidgets(
+        'should navigate to create note page with isVetVisit extra when add note button is pressed',
+        (WidgetTester tester) async {
+      when(() => rabbitNotesListBloc.state).thenReturn(
+        const RabbitNotesListSuccess(
+          rabbitNotes: [],
+          hasReachedMax: true,
+          totalCount: 0,
+        ),
+      );
+      when(() => rabbitNotesListBloc.args)
+          .thenReturn(const FindRabbitNotesArgs(rabbitId: 1, isVetVisit: true));
+
+      when(
+        () =>
+            goRouter.push('/rabbit/1/note/create', extra: any(named: 'extra')),
+      ).thenAnswer((_) async => Object());
+
+      await tester.pumpWidget(
+        buildWidget(name: 'Test Rabbit', isVetVisit: true),
+      );
+
+      await tester.tap(find.byKey(const Key('addNoteButton')));
+      await tester.pumpAndSettle();
+
+      verify(
+        () => goRouter.push('/rabbit/1/note/create', extra: {
+          'isVetVisit': true,
+          'rabbitName': 'Test Rabbit',
+        }),
+      ).called(1);
     });
   });
 }

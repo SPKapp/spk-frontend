@@ -79,6 +79,18 @@ class AppRouter {
                         isVetVisit: extra?['isVetVisit']);
                   },
                 ),
+                GoRoute(
+                  path: 'note/create',
+                  builder: (context, state) {
+                    final extra = state.extra as dynamic;
+
+                    return RabbitNoteCreatePage(
+                      rabbitId: int.parse(state.pathParameters['id']!),
+                      isVetVisitInitial: extra?['isVetVisit'],
+                      rabbitName: extra?['rabbitName'],
+                    );
+                  },
+                ),
               ],
             ),
             GoRoute(

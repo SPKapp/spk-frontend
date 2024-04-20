@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bloc.dart';
@@ -94,6 +95,17 @@ class RabbitNotesListPage extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+              floatingActionButton: FloatingActionButton(
+                key: const Key('addNoteButton'),
+                onPressed: () =>
+                    context.push('/rabbit/$rabbitId/note/create', extra: {
+                  'isVetVisit':
+                      context.read<RabbitNotesListBloc>().args.isVetVisit ==
+                          true,
+                  'rabbitName': rabbitName,
+                }),
+                child: const Icon(Icons.add),
               ),
               body: body,
             );
