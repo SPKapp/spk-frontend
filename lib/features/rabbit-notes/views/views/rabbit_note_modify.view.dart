@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
@@ -203,10 +204,26 @@ class _RabbitNoteModifyViewState extends State<RabbitNoteModifyView> {
                         child: TextFormField(
                           key: const Key('chipInput'),
                           controller: widget.editControlers.chipControler,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Numer chipa',
                             hintText: 'Wprawdź numer chipa',
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: const Icon(FontAwesomeIcons.barcode),
+                              onPressed: () async {
+                                final result = await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const _Scanner(),
+                                  ),
+                                );
+                                if (result != null) {
+                                  setState(() {
+                                    widget.editControlers.chipControler.text =
+                                        result.toString();
+                                  });
+                                }
+                              },
+                            ),
                           ),
                           keyboardType: TextInputType.number,
                           onTapOutside: (event) =>
@@ -265,6 +282,37 @@ class _RabbitNoteModifyViewState extends State<RabbitNoteModifyView> {
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'^\d{1,2}(\.\d{0,3})?')),
         ],
+      ),
+    );
+  }
+}
+
+class _Scanner extends StatefulWidget {
+  const _Scanner();
+
+  @override
+  State<_Scanner> createState() => _ScannerState();
+}
+
+class _ScannerState extends State<_Scanner> {
+  bool returned = false;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Skaner'),
+      ),
+      body: MobileScanner(
+        onDetect: (capture) {
+          final List<Barcode> barcodes = capture.barcodes;
+          for (Barcode barcode in barcodes) {
+            if (!returned && barcode.format == BarcodeFormat.code128) {
+              Navigator.of(context).pop(barcode.rawValue);
+              returned = true;
+              return;
+            }
+          }
+        },
       ),
     );
   }
