@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info.dart';
@@ -17,7 +20,13 @@ class RabbitInfoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return ItemView(
+      onRefresh: () async {
+        // skip initial state
+        Future cubit = context.read<RabbitCubit>().stream.skip(1).first;
+        context.read<RabbitCubit>().refreshRabbit();
+        return cubit;
+      },
       child: Column(
         children: [
           Row(

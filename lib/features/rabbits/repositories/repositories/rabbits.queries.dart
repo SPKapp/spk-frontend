@@ -16,8 +16,10 @@ query MyRabbits {
 }
 ''';
 
-String _rabbitQuery(bool admin) => '''
-query GetRabbit(\$id: Int!) {
+abstract class GetRabbitQuery {
+  static const String operationName = 'GetRabbit';
+  static String document = '''
+query $operationName(\$id: Int!) {
   rabbit(id: \$id) {
     id
     name
@@ -29,28 +31,33 @@ query GetRabbit(\$id: Int!) {
     admissionDate
     admissionType
     fillingDate
+    weight
+		chipNumber
+		castrationDate
+		dewormingDate
+		vaccinationDate
     rabbitGroup {
-      id
-      rabbits {
-        id
-        name
-      }
-      ${admin ? '''team {
-        id
+			id
+			rabbits {
+				id
+				name
+			}
+			team {
+				id
 				users {
 					id
 					firstname
 					lastname
 				}
 			}
-      region {
+			region {
 				id
 			}
-      ''' : ''}
-    }
-  }
+		}
+	}
 }
 ''';
+}
 
 const String _createRabbitMutation = '''
 mutation CreateRabbit(\$createRabbitInput: CreateRabbitInput!) {

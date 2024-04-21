@@ -74,7 +74,9 @@ final class Rabbit extends Equatable {
       status: json['status'] != null
           ? RabbitStatus.fromJson(json['status'])
           : RabbitStatus.unknown,
-      weight: json['weight'] != null ? double.parse(json['weight']) : null,
+      weight: json['weight'] is int
+          ? (json['weight'] as int).toDouble()
+          : json['weight'] as double?,
       chipNumber: json['chipNumber'] as String?,
       castrationDate: json['castrationDate'] != null
           ? DateTime.parse(json['castrationDate'])

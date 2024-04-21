@@ -26,8 +26,11 @@ class RabbitsRepository implements IRabbitsRepository {
 
   @override
   Future<Rabbit> rabbit(int id) async {
-    final result =
-        await gqlService.query(_rabbitQuery(true), variables: {'id': id});
+    final result = await gqlService.query(
+      GetRabbitQuery.document,
+      operationName: GetRabbitQuery.operationName,
+      variables: {'id': id},
+    );
 
     if (result.hasException) {
       throw Exception(result.exception);

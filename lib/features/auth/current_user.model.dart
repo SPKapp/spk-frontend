@@ -40,6 +40,8 @@ class CurrentUser extends Equatable {
 
   bool checkId(int? id) => id != null && this.id == id;
 
+  bool checkTeamId(int? teamId) => teamId != null && this.teamId == teamId;
+
   @override
   List<Object?> get props => [uid, token, email, phone, name, roles, regions];
 }

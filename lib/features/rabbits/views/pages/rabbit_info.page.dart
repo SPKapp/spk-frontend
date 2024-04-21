@@ -53,7 +53,7 @@ class RabbitInfoPage extends StatelessWidget {
             case RabbitSuccess():
               final editable = isAtLeastRegionManager ||
                   (user.checkRole([Role.volunteer]) &&
-                      user.teamId == state.rabbit.rabbitGroup!.team?.id);
+                      user.checkTeamId(state.rabbit.rabbitGroup?.team?.id));
 
               appBar = AppBar(
                 actions: editable

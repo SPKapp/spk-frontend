@@ -26,6 +26,7 @@ query $operationName(
 		data {
 			id
 			description
+      weight
 			vetVisit {
 				date
 				visitInfo {
