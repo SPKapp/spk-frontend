@@ -107,7 +107,7 @@ void main() {
         expect(find.text('Wizyta weterynaryjna'), findsOneWidget);
         expect(find.text('Data Wizyty:'), findsOneWidget);
         expect(
-          find.text(DateTime(2024, 1, 1).toDateTimeString()),
+          find.text(DateTime(2024, 1, 1).toDateString()),
           findsOneWidget,
         );
         expect(find.text('Opis:'), findsOneWidget);

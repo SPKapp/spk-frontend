@@ -25,7 +25,7 @@ class RabbitsRepository implements IRabbitsRepository {
   }
 
   @override
-  Future<Rabbit> rabbit(int id) async {
+  Future<Rabbit> findOne(int id) async {
     final result = await gqlService.query(
       GetRabbitQuery.document,
       operationName: GetRabbitQuery.operationName,
@@ -41,8 +41,11 @@ class RabbitsRepository implements IRabbitsRepository {
 
   @override
   Future<int> createRabbit(RabbitCreateDto rabbit) async {
-    final result = await gqlService.mutate(_createRabbitMutation,
-        variables: {'createRabbitInput': rabbit});
+    final result = await gqlService.mutate(
+      CreateRabbitMutation.document,
+      operationName: CreateRabbitMutation.operationName,
+      variables: {'createRabbitInput': rabbit},
+    );
 
     if (result.hasException) {
       throw Exception(result.exception);
@@ -52,15 +55,61 @@ class RabbitsRepository implements IRabbitsRepository {
   }
 
   @override
-  Future<int> updateRabbit(RabbitUpdateDto rabbit) async {
-    final result = await gqlService.mutate(_updateRabbitMutation,
-        variables: {'updateRabbitInput': rabbit});
+  Future<void> updateRabbit(RabbitUpdateDto rabbit) async {
+    final result = await gqlService.mutate(
+      UpdateRabbitMutation.document,
+      operationName: UpdateRabbitMutation.operationName,
+      variables: {'updateRabbitInput': rabbit},
+    );
 
     if (result.hasException) {
       throw Exception(result.exception);
     }
+  }
 
-    return int.parse(result.data!['updateRabbit']['id']);
+  @override
+  Future<void> updateTeam(int rabbitGroupId, int teamId) async {
+    final result = await gqlService.mutate(
+      UpdateTeamMutation.document,
+      operationName: UpdateTeamMutation.operationName,
+      variables: {
+        'rabbitGroupId': rabbitGroupId,
+        'teamId': teamId,
+      },
+    );
+
+    if (result.hasException) {
+      throw result.exception!;
+    }
+  }
+
+  @override
+  Future<void> updateRabbitGroup(int rabbitId, int rabbitGroupId) async {
+    final result = await gqlService.mutate(
+      UpdateRabbitGroupMutation.document,
+      operationName: UpdateRabbitGroupMutation.operationName,
+      variables: {
+        'rabbitId': rabbitId,
+        'rabbitGroupId': rabbitGroupId,
+      },
+    );
+
+    if (result.hasException) {
+      throw result.exception!;
+    }
+  }
+
+  @override
+  Future<void> removeRabbit(int rabbitId) async {
+    final result = await gqlService.mutate(
+      RemoveRabbitMutation.document,
+      operationName: RemoveRabbitMutation.operationName,
+      variables: {'id': rabbitId},
+    );
+
+    if (result.hasException) {
+      throw result.exception!;
+    }
   }
 
   @override
@@ -111,35 +160,5 @@ class RabbitsRepository implements IRabbitsRepository {
       ],
       totalCount: 2,
     );
-  }
-
-  @override
-  Future<void> updateTeam(int rabbitGroupId, int teamId) async {
-    final result = await gqlService.mutate(
-      _updateTeamMutation,
-      variables: {
-        'rabbitGroupId': rabbitGroupId,
-        'teamId': teamId,
-      },
-    );
-
-    if (result.hasException) {
-      throw result.exception!;
-    }
-  }
-
-  @override
-  Future<void> updateRabbitGroup(int rabbitId, int rabbitGroupId) async {
-    final result = await gqlService.mutate(
-      _updateRabbitGroupMutation,
-      variables: {
-        'rabbitId': rabbitId,
-        'rabbitGroupId': rabbitGroupId,
-      },
-    );
-
-    if (result.hasException) {
-      throw result.exception!;
-    }
   }
 }

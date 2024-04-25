@@ -36,7 +36,7 @@ void main() {
     blocTest<RabbitCubit, RabbitState>(
       'emits [RabbitSuccess] when fetchRabbit is called',
       setUp: () {
-        when(() => rabbitRepository.rabbit(rabbit.id))
+        when(() => rabbitRepository.findOne(rabbit.id))
             .thenAnswer((_) async => rabbit);
       },
       build: () => rabbitCubit,
@@ -45,7 +45,7 @@ void main() {
         const RabbitSuccess(rabbit: rabbit),
       ],
       verify: (_) {
-        verify(() => rabbitRepository.rabbit(rabbit.id)).called(1);
+        verify(() => rabbitRepository.findOne(rabbit.id)).called(1);
         verifyNoMoreInteractions(rabbitRepository);
       },
     );
@@ -53,7 +53,7 @@ void main() {
     blocTest<RabbitCubit, RabbitState>(
       'emits [RabbitFailure] when fetchRabbit is called',
       setUp: () {
-        when(() => rabbitRepository.rabbit(rabbit.id)).thenThrow(Exception());
+        when(() => rabbitRepository.findOne(rabbit.id)).thenThrow(Exception());
       },
       build: () => rabbitCubit,
       act: (cubit) => cubit.fetchRabbit(),
@@ -61,7 +61,7 @@ void main() {
         const RabbitFailure(),
       ],
       verify: (_) {
-        verify(() => rabbitRepository.rabbit(rabbit.id)).called(1);
+        verify(() => rabbitRepository.findOne(rabbit.id)).called(1);
         verifyNoMoreInteractions(rabbitRepository);
       },
     );

@@ -5,15 +5,13 @@ import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 
 abstract interface class IRabbitsRepository {
   Future<List<RabbitGroup>> myRabbits();
-  Future<Rabbit> rabbit(int id);
+
   Future<Paginated<RabbitGroup>> findAll({
     bool totalCount = false,
     int? offset,
     int? limit,
     List<int>? regionsIds,
   });
-  Future<int> createRabbit(RabbitCreateDto rabbit);
-  Future<int> updateRabbit(RabbitUpdateDto rabbit);
 
   Future<Paginated<Rabbit>> findRabbitsByName(
     String name, {
@@ -21,6 +19,15 @@ abstract interface class IRabbitsRepository {
     int? offset,
     int? limit,
   });
+
+  /// Retrieves a single [Rabbit] object based on the provided [id].
+  Future<Rabbit> findOne(int id);
+
+  /// Creates a new rabbit.
+  Future<int> createRabbit(RabbitCreateDto rabbit);
+
+  /// Updates a rabbit.
+  Future<void> updateRabbit(RabbitUpdateDto rabbit);
 
   /// Updates the team of a rabbit group.
   ///
@@ -37,4 +44,7 @@ abstract interface class IRabbitsRepository {
   ///
   /// Throws an exception if the update fails.
   Future<void> updateRabbitGroup(int rabbitId, int rabbitGroupId);
+
+  /// Removes a rabbit with the given [id].
+  Future<void> removeRabbit(int id);
 }

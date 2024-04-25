@@ -7,6 +7,15 @@ import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 part 'rabbit_create.state.dart';
 
 /// A cubit that handles the state management for adding a rabbit.
+///
+/// Available functions:
+/// - [createRabbit] - sends an create request for the [rabbit]
+///
+/// Available states:
+/// - [RabbitCreateInitial] - initial state
+/// - [RabbitCreated] - the rabbit has been created successfully
+/// - [RabbitCreateFailure] - an error occurred while creating the rabbit
+///
 class RabbitCreateCubit extends Cubit<RabbitCreateState> {
   RabbitCreateCubit({
     required IRabbitsRepository rabbitsRepository,

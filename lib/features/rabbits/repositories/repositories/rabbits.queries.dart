@@ -59,37 +59,60 @@ query $operationName(\$id: Int!) {
 ''';
 }
 
-const String _createRabbitMutation = '''
-mutation CreateRabbit(\$createRabbitInput: CreateRabbitInput!) {
+abstract class CreateRabbitMutation {
+  static const String operationName = 'CreateRabbit';
+  static String document = '''
+mutation $operationName(\$createRabbitInput: CreateRabbitInput!) {
   createRabbit(createRabbitInput: \$createRabbitInput) {
     id
   }
 }
 ''';
+}
 
-const String _updateRabbitMutation = r'''
-mutation updateRabbit($updateRabbitInput: UpdateRabbitInput!) {
-  updateRabbit(updateRabbitInput: $updateRabbitInput) {
+abstract class UpdateRabbitMutation {
+  static const String operationName = 'UpdateRabbit';
+  static String document = '''
+mutation $operationName(\$updateRabbitInput: UpdateRabbitInput!) {
+  updateRabbit(updateRabbitInput: \$updateRabbitInput) {
     id
-    name
-    color
-    breed
-    gender
-    birthDate
-    confirmedBirthDate
-    admissionDate
-    admissionType
-    fillingDate
-    rabbitGroup {
-      id
-      rabbits {
-        id
-        name
-      }
-    }
   }
 }
 ''';
+}
+
+abstract class UpdateTeamMutation {
+  static const String operationName = 'UpdateTeam';
+  static String document = '''
+mutation $operationName(\$rabbitGroupId: Int!, \$teamId: Int!) {
+	updateRabbitGroupTeam(rabbitGroupId: \$rabbitGroupId, teamId: \$teamId) {
+		id
+	}
+}
+''';
+}
+
+abstract class UpdateRabbitGroupMutation {
+  static const String operationName = 'UpdateRabbitRabbitGroup';
+  static String document = '''
+mutation $operationName(\$rabbitId: Int!, \$rabbitGroupId: Int) {
+	updateRabbitRabbitGroup(rabbitId: \$rabbitId, rabbitGroupId: \$rabbitGroupId) {
+		id
+	}
+}
+''';
+}
+
+abstract class RemoveRabbitMutation {
+  static const String operationName = 'RemoveRabbit';
+  static String document = '''
+mutation $operationName(\$id: Int!) {
+	removeRabbit(id: \$id) {
+		id
+	}
+}
+''';
+}
 
 String _getRabbitsListQuery(bool total) => '''
 query GetRabbitGroups(\$offset: Int, \$limit: Int, \$regionsIds: [ID!]) {
@@ -105,21 +128,5 @@ query GetRabbitGroups(\$offset: Int, \$limit: Int, \$regionsIds: [ID!]) {
     limit
     ${total ? 'totalCount' : ''}
   }
-}
-''';
-
-String _updateTeamMutation = r'''
-mutation UpdateTeam($rabbitGroupId: Int!, $teamId: Int!) {
-	updateRabbitGroupTeam(rabbitGroupId: $rabbitGroupId, teamId: $teamId) {
-		id
-	}
-}
-''';
-
-String _updateRabbitGroupMutation = r'''
-mutation UpdateRabbitRabbitGroup($rabbitId: Int!, $rabbitGroupId: Int) {
-	updateRabbitRabbitGroup(rabbitId: $rabbitId, rabbitGroupId: $rabbitGroupId) {
-		id
-	}
 }
 ''';

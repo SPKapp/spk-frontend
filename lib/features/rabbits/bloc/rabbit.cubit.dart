@@ -31,14 +31,13 @@ class RabbitCubit extends Cubit<RabbitState> {
   /// Emits new state only if data was changed.
   void fetchRabbit() async {
     try {
-      final rabbit = await _rabbitsRepository.rabbit(rabbitId);
+      final rabbit = await _rabbitsRepository.findOne(rabbitId);
       emit(
         RabbitSuccess(
           rabbit: rabbit,
         ),
       );
     } catch (e) {
-      print(e);
       emit(
         const RabbitFailure(),
       );

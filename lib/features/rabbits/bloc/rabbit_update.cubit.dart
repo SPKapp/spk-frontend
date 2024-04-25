@@ -7,6 +7,19 @@ import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 part 'rabbit_update.state.dart';
 
 /// A cubit that handles the state management for updating a rabbit.
+///
+/// Available functions:
+/// - [updateRabbit] - updates the rabbit with the given [rabbit]
+/// - [changeTeam] - changes the team of the rabbit with the given [rabbitGroupId] to the team with the given [teamId]
+/// - [changeRabbitGroup] - changes the rabbit group of the rabbit with the given [rabbitId] to the rabbit group with the given [rabbitGroupId]
+/// - [removeRabbit] - removes the rabbit with the given [rabbitId]
+/// - [resetState] - resets the state to the initial state
+///
+/// Available states:
+/// - [RabbitUpdateInitial] - initial state
+/// - [RabbitUpdated] - the rabbit has been updated successfully
+/// - [RabbitUpdateFailure] - an error occurred while updating the rabbit
+///
 class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
   RabbitUpdateCubit({
     required IRabbitsRepository rabbitsRepository,
@@ -32,6 +45,7 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
     }
   }
 
+  /// Changes the team of the rabbit group with the given [rabbitGroupId] to the team with the given [teamId].
   void changeTeam(int rabbitGroupId, int teamId) async {
     try {
       await _rabbitsRepository.updateTeam(rabbitGroupId, teamId);
@@ -48,6 +62,7 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
     }
   }
 
+  /// Changes the rabbit group of the rabbit with the given [rabbitId] to the rabbit group with the given [rabbitGroupId].
   void changeRabbitGroup(int rabbitId, int rabbitGroupId) async {
     try {
       await _rabbitsRepository.updateRabbitGroup(rabbitId, rabbitGroupId);
@@ -62,5 +77,27 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
         const RabbitUpdateInitial(),
       );
     }
+  }
+
+  /// Removes the rabbit with the given [rabbitId].
+  void removeRabbit(int rabbitId) async {
+    try {
+      await _rabbitsRepository.removeRabbit(rabbitId);
+      emit(
+        const RabbitUpdated(),
+      );
+    } catch (e) {
+      emit(
+        const RabbitUpdateFailure(),
+      );
+      emit(
+        const RabbitUpdateInitial(),
+      );
+    }
+  }
+
+  /// Resets the state to the initial state.
+  void resetState() {
+    emit(const RabbitUpdateInitial());
   }
 }

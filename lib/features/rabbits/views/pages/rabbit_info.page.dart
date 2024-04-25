@@ -108,6 +108,28 @@ class RabbitInfoPage extends StatelessWidget {
                                   }
                                 },
                               ),
+                              PopupMenuItem(
+                                  child: const Text('Usuń Królika'),
+                                  onTap: () async {
+                                    final result = await showDialog<bool>(
+                                        context: context,
+                                        builder: (_) {
+                                          return RemoveRabbitAction(
+                                            rabbitId: state.rabbit.id,
+                                          );
+                                        });
+                                    if (context.mounted && result == true) {
+                                      if (context.canPop()) {
+                                        context.pop({
+                                          'deleted': true,
+                                        });
+                                      } else {
+                                        context
+                                            .read<RabbitCubit>()
+                                            .fetchRabbit();
+                                      }
+                                    }
+                                  })
                             ],
                           ),
                       ]
