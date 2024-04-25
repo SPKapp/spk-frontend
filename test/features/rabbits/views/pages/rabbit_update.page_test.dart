@@ -166,6 +166,7 @@ void main() {
       when(() => goRouter.pop(any())).thenAnswer((_) async => Object());
 
       final editControlers = FieldControlers();
+      addTearDown(() => editControlers.dispose());
       editControlers.nameControler.text = 'rabbitName';
 
       await tester.pumpWidget(buildWidget());

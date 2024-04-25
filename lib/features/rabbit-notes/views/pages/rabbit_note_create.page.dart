@@ -38,6 +38,12 @@ class _RabbitNoteCreatePageState extends State<RabbitNoteCreatePage> {
       FieldControlers(isVetVisit: widget.isVetVisitInitial == true);
 
   @override
+  void dispose() {
+    _editControlers.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: widget.rabbitNoteCreateCubit ??

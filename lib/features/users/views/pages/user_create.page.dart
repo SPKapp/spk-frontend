@@ -27,6 +27,12 @@ class _UserCreatePageState extends State<UserCreatePage> {
   final FieldControlers _editControlers = FieldControlers();
 
   @override
+  void dispose() {
+    _editControlers.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider<UserCreateCubit>(
       create: widget.cubitCreate ??

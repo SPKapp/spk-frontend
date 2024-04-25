@@ -34,6 +34,12 @@ class _RabbitNoteUpdatePageState extends State<RabbitNoteUpdatePage> {
   late final _editControlers = FieldControlers();
 
   @override
+  void dispose() {
+    _editControlers.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [

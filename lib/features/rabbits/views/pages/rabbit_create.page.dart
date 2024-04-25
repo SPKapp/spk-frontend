@@ -37,6 +37,12 @@ class _RabbitCreatePageState extends State<RabbitCreatePage> {
       widget.editControlers ?? FieldControlers();
 
   @override
+  void dispose() {
+    _editControlers.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: widget.rabbitCreateCubit ??

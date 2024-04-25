@@ -15,6 +15,10 @@ void main() {
       formKey = GlobalKey<FormState>();
     });
 
+    tearDown(() {
+      editControlers.dispose();
+    });
+
     Widget buildWidget(Widget child) {
       return MaterialApp(
         home: Scaffold(
