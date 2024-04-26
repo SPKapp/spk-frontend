@@ -4,7 +4,7 @@ sealed class RabbitsListEvent extends Equatable {
   const RabbitsListEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class FetchRabbits extends RabbitsListEvent {
@@ -12,5 +12,10 @@ final class FetchRabbits extends RabbitsListEvent {
 }
 
 final class RefreshRabbits extends RabbitsListEvent {
-  const RefreshRabbits();
+  const RefreshRabbits(this.args);
+
+  final FindRabbitsArgs? args;
+
+  @override
+  List<Object?> get props => [args];
 }

@@ -12,16 +12,19 @@ class RabbitsRepository implements IRabbitsRepository {
   final GqlService gqlService;
 
   @override
-  Future<List<RabbitGroup>> myRabbits() async {
-    final result = await gqlService.query(_myRabbitsQuery);
+  Future<Paginated<RabbitGroup>> findAll(
+      FindRabbitsArgs args, bool totalCount) async {
+    final result = await gqlService.query(
+      GetRabbitsListQuery.document(totalCount),
+      operationName: GetRabbitsListQuery.operationName,
+      variables: args.toJson(),
+    );
 
     if (result.hasException) {
       throw Exception(result.exception);
     }
-
-    return (result.data?['myProfile']['team']['rabbitGroups'] as List)
-        .map((json) => RabbitGroup.fromJson(json))
-        .toList();
+    return Paginated.fromJson(
+        result.data!['rabbitGroups'], RabbitGroup.fromJson);
   }
 
   @override
@@ -110,55 +113,5 @@ class RabbitsRepository implements IRabbitsRepository {
     if (result.hasException) {
       throw result.exception!;
     }
-  }
-
-  @override
-  Future<Paginated<RabbitGroup>> findAll({
-    bool totalCount = false,
-    int? offset,
-    int? limit,
-    List<int>? regionsIds,
-  }) async {
-    final result = await gqlService.query(
-      _getRabbitsListQuery(totalCount),
-      variables: {
-        if (offset != null) 'offset': offset,
-        if (limit != null) 'limit': limit,
-        if (regionsIds != null) 'regionId': regionsIds,
-      },
-    );
-
-    if (result.hasException) {
-      throw Exception(result.exception);
-    }
-    return Paginated.fromJson(
-        result.data!['rabbitGroups'], RabbitGroup.fromJson);
-  }
-
-  @override
-  Future<Paginated<Rabbit>> findRabbitsByName(
-    String name, {
-    bool totalCount = false,
-    int? offset,
-    int? limit,
-  }) async {
-    return const Paginated(
-      data: [
-        Rabbit(
-          id: 1,
-          name: 'Timon',
-          gender: Gender.male,
-          confirmedBirthDate: false,
-          admissionType: AdmissionType.found,
-        ),
-        Rabbit(
-            id: 1,
-            name: 'Timon2',
-            gender: Gender.male,
-            confirmedBirthDate: false,
-            admissionType: AdmissionType.found)
-      ],
-      totalCount: 2,
-    );
   }
 }

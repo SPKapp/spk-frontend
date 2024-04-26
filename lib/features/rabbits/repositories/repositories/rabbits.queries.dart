@@ -1,20 +1,24 @@
 part of 'rabbits.repository.dart';
 
-const String _myRabbitsQuery = '''
-query MyRabbits {
-  myProfile {
-    team {
-      rabbitGroups {
-        id
-        rabbits {
+abstract class GetRabbitsListQuery {
+  static const String operationName = 'GetRabbitGroups';
+  static String document(bool total) => '''
+query $operationName(\$offset: Int, \$limit: Int, \$regionsIds: [ID!], \$teamsIds: [ID!], \$name: String) {
+  rabbitGroups(offset: \$offset, limit: \$limit, regionsIds: \$regionsIds, teamIds: \$teamsIds, name: \$name) {
+    data {
+      id
+      rabbits {
           id
           name
         }
-      }
     }
+    offset
+    limit
+    ${total ? 'totalCount' : ''}
   }
 }
 ''';
+}
 
 abstract class GetRabbitQuery {
   static const String operationName = 'GetRabbit';
@@ -113,20 +117,3 @@ mutation $operationName(\$id: Int!) {
 }
 ''';
 }
-
-String _getRabbitsListQuery(bool total) => '''
-query GetRabbitGroups(\$offset: Int, \$limit: Int, \$regionsIds: [ID!]) {
-  rabbitGroups(offset: \$offset, limit: \$limit, regionsIds: \$regionsIds) {
-    data {
-      id
-      rabbits {
-          id
-          name
-        }
-    }
-    offset
-    limit
-    ${total ? 'totalCount' : ''}
-  }
-}
-''';

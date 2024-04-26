@@ -8,8 +8,8 @@ sealed class RabbitsSearchEvent extends Equatable {
 }
 
 /// Get first page of search results
-final class RabbitsSearchQueryChanged extends RabbitsSearchEvent {
-  const RabbitsSearchQueryChanged(this.query);
+final class RabbitsSearchRefresh extends RabbitsSearchEvent {
+  const RabbitsSearchRefresh(this.query);
 
   final String query;
 

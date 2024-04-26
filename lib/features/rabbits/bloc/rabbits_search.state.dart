@@ -1,39 +1,41 @@
 part of 'rabbits_search.bloc.dart';
 
 sealed class RabbitsSearchState extends Equatable {
-  const RabbitsSearchState({
+  RabbitsSearchState({
     this.query = '',
-    this.rabbits = const [],
+    this.rabbitGroups = const [],
     this.hasReachedMax = false,
     this.totalCount = 0,
-  });
+  }) : _rabbits = rabbitGroups.expand((group) => group.rabbits).toList();
 
   final String query;
-  final List<Rabbit> rabbits;
+  final List<RabbitGroup> rabbitGroups;
+  final List<Rabbit> _rabbits;
   final bool hasReachedMax;
   final int totalCount;
 
+  List<Rabbit> get rabbits => _rabbits;
   @override
-  List<Object> get props => [query, rabbits, hasReachedMax, totalCount];
+  List<Object> get props => [query, rabbitGroups, hasReachedMax, totalCount];
 }
 
 final class RabbitsSearchInitial extends RabbitsSearchState {
-  const RabbitsSearchInitial();
+  RabbitsSearchInitial();
 }
 
 final class RabbitsSearchSuccess extends RabbitsSearchState {
-  const RabbitsSearchSuccess({
+  RabbitsSearchSuccess({
     required super.query,
-    required super.rabbits,
+    required super.rabbitGroups,
     required super.hasReachedMax,
     required super.totalCount,
   });
 }
 
 final class RabbitsSearchFailure extends RabbitsSearchState {
-  const RabbitsSearchFailure({
+  RabbitsSearchFailure({
     super.query,
-    super.rabbits,
+    super.rabbitGroups,
     super.hasReachedMax,
     super.totalCount,
   });

@@ -6,6 +6,7 @@ import 'package:spk_app_frontend/common/views/views.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits_list.bloc.dart';
+import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 
@@ -39,9 +40,10 @@ class _ChangeRabbitGroupActionState extends State<ChangeRabbitGroupAction> {
             create: widget.rabbitsListBloc ??
                 (context) => RabbitsListBloc(
                       rabbitsRepository: context.read<IRabbitsRepository>(),
-                      queryType: RabbitsQueryType.all,
-                      perPage: 0,
-                      regionsIds: [widget.rabbit.rabbitGroup!.region!.id],
+                      args: FindRabbitsArgs(
+                        limit: 0,
+                        regionsIds: [widget.rabbit.rabbitGroup!.region!.id],
+                      ),
                     )..add(const FetchRabbits()),
           ),
           BlocProvider(

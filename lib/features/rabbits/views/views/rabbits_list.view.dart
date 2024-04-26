@@ -30,7 +30,7 @@ class RabbitsListView extends StatelessWidget {
       onRefresh: () async {
         // skip initial state
         Future bloc = context.read<RabbitsListBloc>().stream.skip(1).first;
-        context.read<RabbitsListBloc>().add(const RefreshRabbits());
+        context.read<RabbitsListBloc>().add(const RefreshRabbits(null));
         return bloc;
       },
       onFetch: () {

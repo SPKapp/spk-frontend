@@ -4,21 +4,10 @@ import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 
 abstract interface class IRabbitsRepository {
-  Future<List<RabbitGroup>> myRabbits();
-
-  Future<Paginated<RabbitGroup>> findAll({
-    bool totalCount = false,
-    int? offset,
-    int? limit,
-    List<int>? regionsIds,
-  });
-
-  Future<Paginated<Rabbit>> findRabbitsByName(
-    String name, {
-    bool totalCount = false,
-    int? offset,
-    int? limit,
-  });
+  /// Retrieves a list of [RabbitGroup] objects based on the provided arguments.
+  ///
+  /// The [args] parameter specifies the criteria for filtering the [RabbitGroup] objects. The [totalCount] parameter specifies whether the total number of objects should be included in the result, otherwise it will be null.
+  Future<Paginated<RabbitGroup>> findAll(FindRabbitsArgs args, bool totalCount);
 
   /// Retrieves a single [Rabbit] object based on the provided [id].
   Future<Rabbit> findOne(int id);

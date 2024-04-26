@@ -13,7 +13,6 @@ import 'package:spk_app_frontend/features/users/views/pages.dart';
 
 class AppRouter {
   static GoRouter router = GoRouter(
-    initialLocation: '/myRabbits',
     redirect: _authGuard,
     routes: [
       GoRoute(
@@ -26,7 +25,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/',
-        redirect: (context, state) => '/myRabbits',
+        redirect: (context, state) => '/rabbits',
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => ScaffoldWithNavigation(
@@ -35,17 +34,15 @@ class AppRouter {
         branches: [
           StatefulShellBranch(routes: [
             GoRoute(
-              path: '/myRabbits',
-              builder: (context, state) => const MyRabbitsPage(
-                drawer: AppDrawer(),
-              ),
-            ),
-            GoRoute(
-              path: '/rabbits',
-              builder: (context, state) => const RabbitsListPage(
-                drawer: AppDrawer(),
-              ),
-            ),
+                path: '/rabbits',
+                builder: (context, state) {
+                  final extra = state.extra as dynamic;
+
+                  return RabbitsListPage(
+                    drawer: const AppDrawer(),
+                    volunteerView: extra?['volunteerView'] ?? true,
+                  );
+                }),
             GoRoute(
               path: '/rabbit/add',
               builder: (context, state) {

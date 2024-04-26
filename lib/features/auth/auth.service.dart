@@ -52,7 +52,7 @@ extension on User {
       phone: phoneNumber,
       name: displayName,
       // roles: [Role.regionRabbitObserver],
-      // teamId: 2,
+      teamId: 2,
       roles:
           (claims['roles'] as List).map((role) => Role.fromJson(role)).toList(),
     );

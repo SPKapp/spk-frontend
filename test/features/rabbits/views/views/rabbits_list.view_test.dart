@@ -156,7 +156,7 @@ void main() {
           1000);
       await tester.pumpAndSettle();
 
-      verify(() => rabbitsListBloc.add(const RefreshRabbits())).called(1);
+      verify(() => rabbitsListBloc.add(const RefreshRabbits(null))).called(1);
     });
 
     testWidgets(
@@ -187,7 +187,7 @@ void main() {
           find.text('Brak królików.'), const Offset(0, 400), 1000);
       await tester.pumpAndSettle();
 
-      verify(() => rabbitsListBloc.add(const RefreshRabbits())).called(1);
+      verify(() => rabbitsListBloc.add(const RefreshRabbits(null))).called(1);
     });
   });
 }
