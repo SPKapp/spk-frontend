@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -9,7 +8,7 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final roles = context.read<AppBloc>().state.currentUser.roles;
+    final currentUser = context.read<AuthCubit>().currentUser;
 
     final List<Widget> regionManagerList = [
       const Center(child: Text('RegionManager')),
@@ -51,13 +50,12 @@ class AppDrawer extends StatelessWidget {
 
           ListTile(
             title: const Text('Wyloguj się'),
-            onTap: () =>
-                context.read<AppBloc>().add(const AppLogoutRequested()),
+            onTap: () => context.read<AuthCubit>().logout(),
           ),
-          if (roles.contains(Role.volunteer)) ...volunteerList,
-          if (roles.contains(Role.admin))
+          if (currentUser.checkRole([Role.volunteer])) ...volunteerList,
+          if (currentUser.checkRole([Role.admin]))
             ...adminList
-          else if (roles.contains(Role.regionManager))
+          else if (currentUser.checkRole([Role.regionManager]))
             ...regionManagerList,
           // const AboutListTile(),
         ],

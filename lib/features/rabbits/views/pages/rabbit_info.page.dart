@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
@@ -34,8 +33,9 @@ class RabbitInfoPage extends StatelessWidget {
               )..fetchRabbit(),
       child: BlocBuilder<RabbitCubit, RabbitState>(
         builder: (context, state) {
-          final user = context.read<AppBloc>().state.currentUser;
-          final isAtLeastRegionManager = user.isAtLeastRegionManager;
+          final user = context.read<AuthCubit>().currentUser;
+          final isAtLeastRegionManager =
+              user.checkRole([Role.regionManager, Role.admin]);
 
           late AppBar appBar;
           late Widget body;

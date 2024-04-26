@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
@@ -28,22 +27,17 @@ class RabbitsListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Check this when AppBloc will be changed
-    final isVolunteer = context
-        .read<AppBloc>()
-        .state
-        .currentUser
-        .roles
-        .contains(Role.volunteer);
+    final teamIds = volunteerView &&
+            context.read<AuthCubit>().currentUser.checkRole([Role.volunteer])
+        ? [context.read<AuthCubit>().currentUser.teamId!]
+        : null;
 
     return BlocProvider(
       create: rabbitsListBloc ??
           (context) => RabbitsListBloc(
                 rabbitsRepository: context.read<IRabbitsRepository>(),
                 args: FindRabbitsArgs(
-                  teamsIds: volunteerView && isVolunteer
-                      ? [context.read<AppBloc>().state.currentUser.teamId!]
-                      : null,
+                  teamsIds: teamIds,
                 ),
               )..add(const FetchRabbits()),
       child: BlocConsumer<RabbitsListBloc, RabbitsListState>(

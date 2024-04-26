@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/features/auth/auth.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart';
@@ -83,7 +83,7 @@ class _RabbitUpdatePageState extends State<RabbitUpdatePage> {
             late AppBar appBar;
             late Widget body;
 
-            final currentUser = context.read<AppBloc>().state.currentUser;
+            final currentUser = context.read<AuthCubit>().currentUser;
 
             switch (state) {
               case RabbitInitial():
@@ -117,7 +117,8 @@ class _RabbitUpdatePageState extends State<RabbitUpdatePage> {
                   key: _formKey,
                   child: RabbitModifyView(
                     editControlers: _editControlers,
-                    privileged: currentUser.isAtLeastRegionManager,
+                    privileged:
+                        currentUser.checkRole([Role.regionManager, Role.admin]),
                   ),
                 );
             }

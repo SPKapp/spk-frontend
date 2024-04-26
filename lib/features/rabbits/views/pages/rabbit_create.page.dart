@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
@@ -20,12 +19,10 @@ class RabbitCreatePage extends StatefulWidget {
     super.key,
     this.rabbitCreateCubit,
     this.regionsListBloc,
-    this.editControlers,
   });
 
   final RabbitCreateCubit Function(BuildContext)? rabbitCreateCubit;
   final RegionsListBloc Function(BuildContext)? regionsListBloc;
-  final FieldControlers? editControlers;
 
   @override
   State<RabbitCreatePage> createState() => _RabbitCreatePageState();
@@ -33,8 +30,7 @@ class RabbitCreatePage extends StatefulWidget {
 
 class _RabbitCreatePageState extends State<RabbitCreatePage> {
   final _formKey = GlobalKey<FormState>();
-  late final FieldControlers _editControlers =
-      widget.editControlers ?? FieldControlers();
+  final _editControlers = FieldControlers();
 
   @override
   void dispose() {
@@ -50,10 +46,10 @@ class _RabbitCreatePageState extends State<RabbitCreatePage> {
                 rabbitsRepository: context.read<IRabbitsRepository>(),
               ),
       child: Builder(builder: (context) {
-        final currentUser = context.read<AppBloc>().state.currentUser;
+        final currentUser = context.read<AuthCubit>().currentUser;
 
         if (currentUser.checkRole([Role.admin]) ||
-            currentUser.regions!.length > 1) {
+            currentUser.managerRegions!.length > 1) {
           return BlocProvider(
             create: widget.regionsListBloc ??
                 (context) => RegionsListBloc(
@@ -80,7 +76,7 @@ class _RabbitCreatePageState extends State<RabbitCreatePage> {
           );
         } else {
           _editControlers.selectedRegion =
-              Region(id: currentUser.regions!.first);
+              Region(id: currentUser.managerRegions!.first);
           return Builder(
             builder: (context) => _buildForm(context),
           );

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_note.cubit.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/views/rabbit_note.view.dart';
@@ -37,9 +37,10 @@ class RabbitNotePage extends StatelessWidget {
               )..fetchRabbitNote(),
       child: BlocBuilder<RabbitNoteCubit, RabbitNoteState>(
         builder: (context, state) {
-          final user = context.read<AppBloc>().state.currentUser;
+          final user = context.read<AuthCubit>().currentUser;
           bool editable = false;
-          final isAtLeastRegionManager = user.isAtLeastRegionManager;
+          final isAtLeastRegionManager =
+              user.checkRole([Role.regionManager, Role.admin]);
 
           late final Widget body;
 

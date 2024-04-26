@@ -16,10 +16,6 @@ class AuthService {
     });
   }
 
-  Future<CurrentUser> get currentUser async {
-    return await _auth.currentUser?.toCurrentUser ?? CurrentUser.empty;
-  }
-
   Future<void> logout() async {
     try {
       await _auth.signOut();
@@ -43,18 +39,22 @@ extension on User {
       throw Exception('Claims are null');
     }
 
-    //TODO: Load user data from the backend
-
     return CurrentUser(
+      id: claims['userId'],
       uid: uid,
       token: token,
       email: email,
       phone: phoneNumber,
       name: displayName,
-      // roles: [Role.regionRabbitObserver],
-      teamId: 2,
+      teamId: claims['teamId'],
       roles:
           (claims['roles'] as List).map((role) => Role.fromJson(role)).toList(),
+      managerRegions: claims['managerRegions'] != null
+          ? (claims['managerRegions'] as List).map((e) => e as int).toList()
+          : null,
+      observerRegions: claims['observerRegions'] != null
+          ? (claims['observerRegions'] as List).map((e) => e as int).toList()
+          : null,
     );
   }
 }

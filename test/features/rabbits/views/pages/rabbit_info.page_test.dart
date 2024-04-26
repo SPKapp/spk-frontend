@@ -6,7 +6,6 @@ import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
@@ -18,12 +17,12 @@ import 'package:spk_app_frontend/features/users/models/models.dart';
 
 class MockRabbitCubit extends MockCubit<RabbitState> implements RabbitCubit {}
 
-class MockAppBloc extends MockBloc<AppEvent, AppState> implements AppBloc {}
+class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
 void main() {
   group(RabbitInfoPage, () {
     late RabbitCubit rabbitCubit;
-    late AppBloc appBloc;
+    late AuthCubit authCubit;
 
     const rabbit = Rabbit(
       id: 1,
@@ -37,27 +36,25 @@ void main() {
 
     setUp(() {
       rabbitCubit = MockRabbitCubit();
-      appBloc = MockAppBloc();
+      authCubit = MockAuthCubit();
 
       when(() => rabbitCubit.state)
           .thenReturn(const RabbitSuccess(rabbit: rabbit));
 
-      when(() => appBloc.state).thenAnswer(
-        (_) => const AppState.authenticated(
-          CurrentUser(
-            uid: '1',
-            token: 'token',
-            roles: [Role.regionManager],
-            regions: [1],
-          ),
+      when(() => authCubit.currentUser).thenAnswer(
+        (_) => const CurrentUser(
+          uid: '1',
+          token: 'token',
+          roles: [Role.regionManager],
+          managerRegions: [1],
         ),
       );
     });
 
     Widget buildWidget() {
       return MaterialApp(
-        home: BlocProvider<AppBloc>.value(
-          value: appBloc,
+        home: BlocProvider<AuthCubit>.value(
+          value: authCubit,
           child: RabbitInfoPage(
             rabbitId: 1,
             rabbitCubit: (_) => rabbitCubit,
@@ -114,14 +111,12 @@ void main() {
 
     testWidgets('should render RabbitInfoView when RabbitSuccess - volunteer',
         (tester) async {
-      when(() => appBloc.state).thenAnswer(
-        (_) => const AppState.authenticated(
-          CurrentUser(
-            uid: '1',
-            token: 'token',
-            roles: [Role.volunteer],
-            teamId: 1,
-          ),
+      when(() => authCubit.currentUser).thenAnswer(
+        (_) => const CurrentUser(
+          uid: '1',
+          token: 'token',
+          roles: [Role.volunteer],
+          teamId: 1,
         ),
       );
 
@@ -137,14 +132,12 @@ void main() {
 
     testWidgets('should render RabbitInfoView when RabbitSuccess - observer',
         (tester) async {
-      when(() => appBloc.state).thenAnswer(
-        (_) => const AppState.authenticated(
-          CurrentUser(
-            uid: '1',
-            token: 'token',
-            roles: [Role.regionRabbitObserver],
-            regions: [1],
-          ),
+      when(() => authCubit.currentUser).thenAnswer(
+        (_) => const CurrentUser(
+          uid: '1',
+          token: 'token',
+          roles: [Role.regionRabbitObserver],
+          observerRegions: [1],
         ),
       );
 

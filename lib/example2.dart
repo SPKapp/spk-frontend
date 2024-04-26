@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
+import 'package:spk_app_frontend/features/auth/auth.dart';
 
 class MyHomePage2 extends StatefulWidget {
   const MyHomePage2({super.key, this.title = 'Example2'});
@@ -71,10 +71,11 @@ class _MyHomePage2State extends State<MyHomePage2> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextButton(
-                onPressed: () =>
-                    context.read<AppBloc>().add(const AppLogoutRequested()),
-                child: const Text('Logout')),
+            Text(
+              'Informacje o użytkowniku: ${context.read<AuthCubit>().currentUser.debugString}',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
             const Text(
               'You have pushed the button this many times:',
             ),

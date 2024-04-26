@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/app/view/view.dart';
 
 import 'package:spk_app_frontend/example2.dart';
+import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/pages.dart';
 import 'package:spk_app_frontend/features/rabbits/views/pages.dart';
 import 'package:spk_app_frontend/features/users/views/pages.dart';
@@ -140,23 +140,19 @@ class AppRouter {
   );
 
   static String? _authGuard(BuildContext context, GoRouterState state) {
-    final authStatus = context.read<AppBloc>().state.status;
-
-    switch (authStatus) {
-      case AppStatus.authenticated:
+    switch (context.read<AuthCubit>().state) {
+      case Authenticated():
         return null;
-      case AppStatus.unauthenticated:
+      case Unauthenticated():
         return '/signIn';
     }
   }
 
   static String? _signInRedirect(BuildContext context, GoRouterState state) {
-    final authStatus = context.read<AppBloc>().state.status;
-
-    switch (authStatus) {
-      case AppStatus.authenticated:
+    switch (context.read<AuthCubit>().state) {
+      case Authenticated():
         return '/';
-      case AppStatus.unauthenticated:
+      case Unauthenticated():
         return null;
     }
   }

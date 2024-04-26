@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
@@ -23,7 +22,7 @@ class MockRabbitCubit extends MockCubit<RabbitState> implements RabbitCubit {}
 class MockRabbitUpdateCubit extends MockCubit<RabbitUpdateState>
     implements RabbitUpdateCubit {}
 
-class MockAppBloc extends MockBloc<AppEvent, AppState> implements AppBloc {}
+class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
 class MockGoRouter extends Mock implements GoRouter {}
 
@@ -31,7 +30,7 @@ void main() {
   group(RabbitUpdatePage, () {
     late RabbitCubit rabbitCubit;
     late RabbitUpdateCubit rabbitUpdateCubit;
-    late AppBloc appBloc;
+    late AuthCubit authCubit;
     late GoRouter goRouter;
 
     const rabbit = Rabbit(
@@ -49,7 +48,7 @@ void main() {
     setUp(() {
       rabbitCubit = MockRabbitCubit();
       rabbitUpdateCubit = MockRabbitUpdateCubit();
-      appBloc = MockAppBloc();
+      authCubit = MockAuthCubit();
       goRouter = MockGoRouter();
 
       when(() => rabbitCubit.state)
@@ -58,14 +57,12 @@ void main() {
       when(() => rabbitUpdateCubit.state)
           .thenAnswer((_) => const RabbitUpdateInitial());
 
-      when(() => appBloc.state).thenAnswer(
-        (_) => const AppState.authenticated(
-          CurrentUser(
-            uid: '1',
-            token: 'token',
-            roles: [Role.regionManager],
-            regions: [1],
-          ),
+      when(() => authCubit.currentUser).thenAnswer(
+        (_) => const CurrentUser(
+          uid: '1',
+          token: 'token',
+          roles: [Role.regionManager],
+          managerRegions: [1],
         ),
       );
     });
@@ -74,8 +71,8 @@ void main() {
       return MaterialApp(
         home: InheritedGoRouter(
           goRouter: goRouter,
-          child: BlocProvider<AppBloc>.value(
-            value: appBloc,
+          child: BlocProvider<AuthCubit>.value(
+            value: authCubit,
             child: RabbitUpdatePage(
               rabbitId: 1,
               rabbitCubit: (_) => rabbitCubit,
@@ -104,13 +101,12 @@ void main() {
 
     testWidgets('should renders correctly - unprivileged',
         (WidgetTester tester) async {
-      when(() => appBloc.state).thenAnswer(
-        (_) => const AppState.authenticated(
-          CurrentUser(
-            uid: '1',
-            token: 'token',
-            roles: [Role.volunteer],
-          ),
+      when(() => authCubit.currentUser).thenAnswer(
+        (_) => const CurrentUser(
+          uid: '1',
+          token: 'token',
+          roles: [Role.volunteer],
+          teamId: 1,
         ),
       );
 

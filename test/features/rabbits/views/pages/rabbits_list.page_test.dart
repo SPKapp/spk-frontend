@@ -5,7 +5,6 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits_list.bloc.dart';
@@ -17,26 +16,26 @@ import 'package:spk_app_frontend/features/rabbits/views/views/rabbits_list.view.
 class MockRabbitsListBloc extends MockBloc<RabbitsListEvent, RabbitsListState>
     implements RabbitsListBloc {}
 
-class MockAppBlock extends MockBloc<AppEvent, AppState> implements AppBloc {}
+class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
 void main() {
   group(RabbitsListPage, () {
     late RabbitsListBloc rabbitsListBloc;
-    late AppBloc appBloc;
+    late AuthCubit authCubit;
 
     setUp(() {
       rabbitsListBloc = MockRabbitsListBloc();
-      appBloc = MockAppBlock();
+      authCubit = MockAuthCubit();
 
-      when(() => appBloc.state).thenReturn(const AppState.authenticated(
-        CurrentUser(
+      when(() => authCubit.currentUser).thenReturn(
+        const CurrentUser(
           id: 1,
           uid: '123',
           token: '123',
           roles: [Role.volunteer],
           teamId: 1,
         ),
-      ));
+      );
 
       when(() => rabbitsListBloc.args).thenReturn(const FindRabbitsArgs());
     });
@@ -44,7 +43,7 @@ void main() {
     Widget buildWidget() {
       return MaterialApp(
         home: BlocProvider.value(
-          value: appBloc,
+          value: authCubit,
           child: RabbitsListPage(
             rabbitsListBloc: (_) => rabbitsListBloc,
           ),

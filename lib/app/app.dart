@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:spk_app_frontend/app/router.dart';
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/app/view/inject_repositories.widget.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
@@ -13,9 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AppBloc(authService: AuthService()),
-      child: BlocListener<AppBloc, AppState>(
-          listener: (BuildContext context, AppState state) {
+      create: (_) => AuthCubit(),
+      child: BlocListener<AuthCubit, AuthState>(
+          listener: (BuildContext context, AuthState state) {
             AppRouter.router.refresh();
           },
           child: InjectRepositories(

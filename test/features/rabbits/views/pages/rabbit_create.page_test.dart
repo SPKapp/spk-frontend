@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:spk_app_frontend/app/bloc/app.bloc.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
@@ -24,7 +23,7 @@ class MockRabbitCreateCubbit extends MockCubit<RabbitCreateState>
 class MockRegionsListBloc extends MockBloc<RegionsListEvent, RegionsListState>
     implements RegionsListBloc {}
 
-class MockAppBloc extends MockBloc<AppEvent, AppState> implements AppBloc {}
+class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
 class MockGoRouter extends Mock implements GoRouter {}
 
@@ -32,7 +31,7 @@ void main() {
   group(RabbitCreatePage, () {
     late RabbitCreateCubit rabbitCreateCubit;
     late RegionsListBloc regionsListBloc;
-    late AppBloc appBloc;
+    late AuthCubit authCubit;
     late GoRouter goRouter;
 
     setUpAll(() {
@@ -42,36 +41,40 @@ void main() {
     setUp(() {
       rabbitCreateCubit = MockRabbitCreateCubbit();
       regionsListBloc = MockRegionsListBloc();
-      appBloc = MockAppBloc();
+      authCubit = MockAuthCubit();
       goRouter = MockGoRouter();
 
       when(() => rabbitCreateCubit.state)
           .thenAnswer((_) => const RabbitCreateInitial());
 
-      when(() => appBloc.state).thenAnswer(
-        (_) => const AppState.authenticated(
-          CurrentUser(
-            uid: '1',
-            token: 'token',
-            roles: [Role.regionManager],
-            regions: [1],
-          ),
+      when(() => authCubit.currentUser).thenAnswer(
+        (_) => const CurrentUser(
+          uid: '1',
+          token: 'token',
+          roles: [Role.regionManager],
+          managerRegions: [1],
         ),
       );
     });
 
-    testWidgets('should render correctly without regions',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: BlocProvider<AppBloc>.value(
-            value: appBloc,
+    Widget buildWidget() {
+      return MaterialApp(
+        home: InheritedGoRouter(
+          goRouter: goRouter,
+          child: BlocProvider<AuthCubit>.value(
+            value: authCubit,
             child: RabbitCreatePage(
               rabbitCreateCubit: (_) => rabbitCreateCubit,
+              regionsListBloc: (_) => regionsListBloc,
             ),
           ),
         ),
       );
+    }
+
+    testWidgets('should render correctly without regions',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(buildWidget());
 
       expect(find.text('Dodaj królika'), findsOneWidget);
       expect(find.byType(Form), findsOneWidget);
@@ -83,14 +86,11 @@ void main() {
 
     group('with regions', () {
       setUp(() {
-        when(() => appBloc.state).thenAnswer(
-          (_) => const AppState.authenticated(
-            CurrentUser(
-              uid: '1',
-              token: 'token',
-              roles: [Role.admin],
-              regions: [1, 2],
-            ),
+        when(() => authCubit.currentUser).thenAnswer(
+          (_) => const CurrentUser(
+            uid: '1',
+            token: 'token',
+            roles: [Role.admin],
           ),
         );
       });
@@ -101,17 +101,7 @@ void main() {
           (_) => const RegionsListInitial(),
         );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: BlocProvider<AppBloc>.value(
-              value: appBloc,
-              child: RabbitCreatePage(
-                rabbitCreateCubit: (_) => rabbitCreateCubit,
-                regionsListBloc: (_) => regionsListBloc,
-              ),
-            ),
-          ),
-        );
+        await tester.pumpWidget(buildWidget());
 
         expect(find.byType(InitialView), findsOneWidget);
       });
@@ -122,17 +112,7 @@ void main() {
           (_) => const RegionsListFailure(),
         );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: BlocProvider<AppBloc>.value(
-              value: appBloc,
-              child: RabbitCreatePage(
-                rabbitCreateCubit: (_) => rabbitCreateCubit,
-                regionsListBloc: (_) => regionsListBloc,
-              ),
-            ),
-          ),
-        );
+        await tester.pumpWidget(buildWidget());
 
         expect(find.byType(FailureView), findsOneWidget);
       });
@@ -143,17 +123,7 @@ void main() {
           (_) => const RegionsListFailure(),
         );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: BlocProvider<AppBloc>.value(
-              value: appBloc,
-              child: RabbitCreatePage(
-                rabbitCreateCubit: (_) => rabbitCreateCubit,
-                regionsListBloc: (_) => regionsListBloc,
-              ),
-            ),
-          ),
-        );
+        await tester.pumpWidget(buildWidget());
 
         await tester.tap(find.text('Spróbuj ponownie'));
 
@@ -173,17 +143,7 @@ void main() {
           ),
         );
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: BlocProvider<AppBloc>.value(
-              value: appBloc,
-              child: RabbitCreatePage(
-                rabbitCreateCubit: (_) => rabbitCreateCubit,
-                regionsListBloc: (_) => regionsListBloc,
-              ),
-            ),
-          ),
-        );
+        await tester.pumpWidget(buildWidget());
 
         expect(find.text('Dodaj królika'), findsOneWidget);
         expect(find.byType(Form), findsOneWidget);
@@ -209,23 +169,10 @@ void main() {
       when(() => goRouter.pushReplacement(any()))
           .thenAnswer((_) async => Object());
 
-      final editControlers = FieldControlers();
-      editControlers.nameControler.text = 'rabbitName';
+      await tester.pumpWidget(buildWidget());
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: InheritedGoRouter(
-            goRouter: goRouter,
-            child: BlocProvider<AppBloc>.value(
-              value: appBloc,
-              child: RabbitCreatePage(
-                rabbitCreateCubit: (_) => rabbitCreateCubit,
-                editControlers: editControlers,
-              ),
-            ),
-          ),
-        ),
-      );
+      await tester.enterText(
+          find.byKey(const Key('nameTextField')), 'rabbitName');
 
       final sendButton = find.byIcon(Icons.send_rounded);
       await tester.tap(sendButton);
@@ -252,16 +199,7 @@ void main() {
         initialState: const RabbitCreateInitial(),
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: BlocProvider<AppBloc>.value(
-            value: appBloc,
-            child: RabbitCreatePage(
-              rabbitCreateCubit: (_) => rabbitCreateCubit,
-            ),
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildWidget());
 
       final sendButton = find.byIcon(Icons.send_rounded);
       await tester.tap(sendButton);
