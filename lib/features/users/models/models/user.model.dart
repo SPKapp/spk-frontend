@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'package:spk_app_frontend/features/auth/auth.dart';
+
 final class User extends Equatable {
   const User({
     required this.id,
@@ -7,6 +9,7 @@ final class User extends Equatable {
     required this.lastName,
     this.email,
     this.phone,
+    this.roles,
   });
 
   final int id;
@@ -14,6 +17,7 @@ final class User extends Equatable {
   final String lastName;
   final String? email;
   final String? phone;
+  final List<Role>? roles;
 
   static User fromJson(Map<String, dynamic> json) {
     return User(
@@ -22,11 +26,14 @@ final class User extends Equatable {
       lastName: json['lastname'] as String,
       email: json['email'] as String?,
       phone: json['phone'] as String?,
+      roles: (json['roles'] as List<dynamic>?)
+          ?.map((role) => Role.fromJson(role))
+          .toList(),
     );
   }
 
   String get fullName => '$firstName $lastName';
 
   @override
-  List<Object?> get props => [id, firstName, lastName, email, phone];
+  List<Object?> get props => [id, firstName, lastName, email, phone, roles];
 }

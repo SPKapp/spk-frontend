@@ -13,7 +13,6 @@ class RabbitCreateDto {
     this.fillingDate,
     this.rabbitGroupId,
     this.regionId,
-    this.status,
   });
 
   final String name;
@@ -25,7 +24,6 @@ class RabbitCreateDto {
   final DateTime? admissionDate;
   final AdmissionType? admissionType;
   final DateTime? fillingDate;
-  final RabbitStatus? status;
   int? rabbitGroupId;
   int? regionId;
 
@@ -41,7 +39,6 @@ class RabbitCreateDto {
         'admissionDate': admissionDate!.toIso8601String(),
       if (admissionType != null) 'admissionType': admissionType,
       if (fillingDate != null) 'fillingDate': fillingDate!.toIso8601String(),
-      if (status != null) 'status': status,
       if (rabbitGroupId != null) 'rabbitGroupId': rabbitGroupId,
       if (regionId != null) 'regionId': regionId,
     };

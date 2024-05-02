@@ -144,9 +144,6 @@ class _RabbitUpdatePageState extends State<RabbitUpdatePage> {
         rabbit.fillingDate?.toDateString() ?? '';
     _editControlers.selectedGender = rabbit.gender;
     _editControlers.selectedAdmissionType = rabbit.admissionType;
-    if (rabbit.status != null) {
-      _editControlers.selectedStatus = rabbit.status!;
-    }
     _editControlers.confirmedBirthDate = rabbit.confirmedBirthDate;
   }
 
@@ -196,9 +193,6 @@ class _RabbitUpdatePageState extends State<RabbitUpdatePage> {
                       : null,
               fillingDate:
                   fillingDate != rabbit.fillingDate ? fillingDate : null,
-              status: _editControlers.selectedStatus != rabbit.status
-                  ? _editControlers.selectedStatus
-                  : null,
             ),
           );
     }

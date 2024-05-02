@@ -129,7 +129,7 @@ class _ChangeVolunteerActionState extends State<ChangeVolunteerAction> {
                                   );
                                   context.pop();
                                 } else if (_selectedTeamId !=
-                                    widget.rabbit.rabbitGroup!.team!.id) {
+                                    widget.rabbit.rabbitGroup!.team?.id) {
                                   context.read<RabbitUpdateCubit>().changeTeam(
                                         widget.rabbit.rabbitGroup!.id,
                                         _selectedTeamId!,

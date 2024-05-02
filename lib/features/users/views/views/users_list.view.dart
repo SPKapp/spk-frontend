@@ -41,15 +41,15 @@ class UsersListView extends StatelessWidget {
       itemBuilder: (dynamic team) => ListCard(
         itemCount: team.users.length,
         itemBuilder: (context, index) {
-          final user = team.users[index];
+          final user = (team.users[index] as User);
           return ListTile(
             leading: const Icon(Icons.person),
             onTap: () => context.push('/user/${user.id}'),
             title: Text(
               '${user.firstName} ${user.lastName}',
             ),
-            subtitle: // TODO: Add role
-                const Text('Rola'),
+            subtitle: Text(
+                user.roles?.map((e) => e.toHumanReadable()).join(', ') ?? ''),
           );
         },
       ),

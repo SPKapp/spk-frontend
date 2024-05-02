@@ -1,8 +1,8 @@
 enum Role {
-  admin('admin'),
-  regionManager('region_manager'),
-  regionRabbitObserver('region_observer'),
-  volunteer('volunteer');
+  admin('Admin'),
+  regionManager('RegionManager'),
+  regionRabbitObserver('RegionObserver'),
+  volunteer('Volunteer');
 
   const Role(this.jsonValue);
 
@@ -10,4 +10,19 @@ enum Role {
 
   static Role fromJson(jsonValue) =>
       Role.values.firstWhere((element) => jsonValue == element.jsonValue);
+
+  String toHumanReadable() {
+    switch (this) {
+      case Role.admin:
+        return 'Administrator';
+      case Role.regionManager:
+        return 'Kierownik regionu';
+      case Role.regionRabbitObserver:
+        return 'Obserwator regionu';
+      case Role.volunteer:
+        return 'Wolontariusz';
+      default:
+        return 'Nieznana rola';
+    }
+  }
 }

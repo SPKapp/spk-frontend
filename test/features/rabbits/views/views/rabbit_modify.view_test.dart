@@ -44,7 +44,6 @@ void main() {
       expect(find.byKey(const Key('admissionDateField')), findsOneWidget);
       expect(find.byKey(const Key('filingDateField')), findsOneWidget);
       expect(find.byType(AdmissionTypeDropdown), findsOneWidget);
-      expect(find.byType(RabbitStatusDropdown), findsOneWidget);
       expect(find.byType(DropdownMenu<Region>), findsNothing);
     });
 
@@ -74,7 +73,6 @@ void main() {
       expect(find.byKey(const Key('admissionDateField')), findsOneWidget);
       expect(find.byKey(const Key('filingDateField')), findsNothing);
       expect(find.byType(AdmissionTypeDropdown), findsNothing);
-      expect(find.byType(RabbitStatusDropdown), findsOneWidget);
       expect(find.byType(DropdownMenu<Region>), findsNothing);
     });
 

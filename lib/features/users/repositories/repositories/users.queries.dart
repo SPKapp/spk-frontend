@@ -11,11 +11,12 @@ query $operationName(\$offset: Int, \$limit: Int, \$regionsIds: [ID!], \$isActiv
 				id
 				firstname
 				lastname
+        roles
 			}
 		}
 		offset
 		limit
-     ${total ? 'totalCount' : ''}
+    ${total ? 'totalCount' : ''}
 	}
 }
 ''';

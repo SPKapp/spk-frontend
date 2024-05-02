@@ -19,7 +19,6 @@ class FieldControlers {
   final filingDateControler = TextEditingController();
   Gender selectedGender = Gender.unknown;
   AdmissionType selectedAdmissionType = AdmissionType.found;
-  RabbitStatus selectedStatus = RabbitStatus.unknown;
   bool confirmedBirthDate = false;
   Region? selectedRegion;
 
@@ -116,16 +115,6 @@ class _RabbitModifyViewState extends State<RabbitModifyView> {
                   labelText: 'Rasa',
                   hintText: 'Podaj rasę królika',
                   icon: FontAwesomeIcons.dna,
-                ),
-                RabbitStatusDropdown(
-                  onSelected: (RabbitStatus? status) {
-                    if (status != null) {
-                      setState(() {
-                        widget.editControlers.selectedStatus = status;
-                      });
-                    }
-                  },
-                  initialSelection: widget.editControlers.selectedStatus,
                 ),
                 DateField(
                   key: const Key('admissionDateField'),
