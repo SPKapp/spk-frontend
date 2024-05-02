@@ -4,7 +4,7 @@ sealed class UsersListEvent extends Equatable {
   const UsersListEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class FetchUsers extends UsersListEvent {
@@ -12,5 +12,10 @@ final class FetchUsers extends UsersListEvent {
 }
 
 final class RefreshUsers extends UsersListEvent {
-  const RefreshUsers();
+  const RefreshUsers(this.args);
+
+  final FindUsersArgs? args;
+
+  @override
+  List<Object?> get props => [args];
 }

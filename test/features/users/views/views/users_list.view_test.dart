@@ -142,7 +142,7 @@ void main() {
           1000);
       await tester.pumpAndSettle();
 
-      verify(() => usersListBloc.add(const RefreshUsers())).called(1);
+      verify(() => usersListBloc.add(const RefreshUsers(null))).called(1);
     });
 
     testWidgets(
@@ -176,7 +176,7 @@ void main() {
           find.text('Brak użytkowników.'), const Offset(0, 400), 1000);
       await tester.pumpAndSettle();
 
-      verify(() => usersListBloc.add(const RefreshUsers())).called(1);
+      verify(() => usersListBloc.add(const RefreshUsers(null))).called(1);
     });
   });
 }

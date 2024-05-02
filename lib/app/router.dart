@@ -25,7 +25,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/',
-        redirect: (context, state) => '/rabbits',
+        redirect: (context, state) => '/myRabbits',
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => ScaffoldWithNavigation(
@@ -34,13 +34,19 @@ class AppRouter {
         branches: [
           StatefulShellBranch(routes: [
             GoRoute(
+                path: '/myRabbits',
+                builder: (context, state) {
+                  return const RabbitsListPage(
+                    drawer: AppDrawer(),
+                    volunteerView: true,
+                  );
+                }),
+            GoRoute(
                 path: '/rabbits',
                 builder: (context, state) {
-                  final extra = state.extra as dynamic;
-
-                  return RabbitsListPage(
-                    drawer: const AppDrawer(),
-                    volunteerView: extra?['volunteerView'] ?? true,
+                  return const RabbitsListPage(
+                    drawer: AppDrawer(),
+                    volunteerView: false,
                   );
                 }),
             GoRoute(

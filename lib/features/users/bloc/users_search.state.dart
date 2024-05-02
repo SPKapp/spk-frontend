@@ -1,39 +1,41 @@
 part of 'users_search.bloc.dart';
 
 sealed class UsersSearchState extends Equatable {
-  const UsersSearchState({
+  UsersSearchState({
     this.query = '',
-    this.users = const [],
+    this.teams = const [],
     this.hasReachedMax = false,
     this.totalCount = 0,
-  });
+  }) : _users = teams.expand((team) => team.users).toList();
 
   final String query;
-  final List<User> users;
+  final List<Team> teams;
+  final List<User> _users;
   final bool hasReachedMax;
   final int totalCount;
 
+  List<User> get users => _users;
   @override
-  List<Object> get props => [query, users, hasReachedMax, totalCount];
+  List<Object> get props => [query, teams, hasReachedMax, totalCount];
 }
 
 final class UsersSearchInitial extends UsersSearchState {
-  const UsersSearchInitial();
+  UsersSearchInitial();
 }
 
 final class UsersSearchSuccess extends UsersSearchState {
-  const UsersSearchSuccess({
+  UsersSearchSuccess({
     required super.query,
-    required super.users,
+    required super.teams,
     required super.hasReachedMax,
     required super.totalCount,
   });
 }
 
 final class UsersSearchFailure extends UsersSearchState {
-  const UsersSearchFailure({
+  UsersSearchFailure({
     super.query,
-    super.users,
+    super.teams,
     super.hasReachedMax,
     super.totalCount,
   });

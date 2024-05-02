@@ -8,8 +8,8 @@ sealed class UsersSearchEvent extends Equatable {
 }
 
 /// Get first page of search results
-final class UsersSearchQueryChanged extends UsersSearchEvent {
-  const UsersSearchQueryChanged(this.query);
+final class UsersSearchRefresh extends UsersSearchEvent {
+  const UsersSearchRefresh(this.query);
 
   final String query;
 

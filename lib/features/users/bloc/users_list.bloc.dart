@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:spk_app_frontend/common/bloc/debounce.transformer.dart';
+import 'package:spk_app_frontend/features/users/models/dto.dart';
 
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
@@ -9,22 +10,27 @@ import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 part 'users_list.event.dart';
 part 'users_list.state.dart';
 
-/// The [UsersListBloc] class is responsible for managing the state of the users list.
+/// A bloc that manages the state of a list with teams.
 ///
-/// If [perPage] is not provided, the default value is defined by backend, if set to 0 the backend will return all users.
-/// if [regionsIds] is provided, the backend will return only users from these regions.
+/// Available functions:
+/// - [FetchUsers] - fetches the next page of teams
+/// it uses the previous arguments to fetch the next page
+/// - [RefreshUsers] - restarts fetching the teams with the given arguments
+/// if no arguments are provided it will use the previous arguments otherwise new arguments will be used
 ///
-/// It provide [FetchUsers] event to fetch next page of users and [RefreshUsers] event to restart fetching users.
-/// It emits [UsersListInitial] state when the bloc is created, [UsersListSuccess] state when the users are fetched successfully
-/// and [UsersListFailure] state when an error occurs while fetching users, this state also contains previous successful fetched users.
+/// Available states:
+/// - [UsersListInitial] - initial state
+/// - [UsersListSuccess] - the teams have been fetched successfully
+/// - [UsersListFailure] - an error occurred while fetching the teams
+///
 class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   UsersListBloc({
     required IUsersRepository usersRepository,
+    required FindUsersArgs args,
     int? perPage,
     List<int>? regionsIds,
   })  : _usersRepository = usersRepository,
-        _perPage = perPage,
-        _regionsIds = regionsIds,
+        _args = args,
         super(UsersListInitial()) {
     on<FetchUsers>(
       _onFetchUsers,
@@ -34,28 +40,25 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   }
 
   final IUsersRepository _usersRepository;
-  final int? _perPage;
-  final List<int>? _regionsIds;
+  FindUsersArgs _args;
+
+  FindUsersArgs get args => _args;
 
   void _onFetchUsers(FetchUsers event, Emitter<UsersListState> emit) async {
     if (state.hasReachedMax) return;
 
     try {
-      final paginatedTeams = await _usersRepository.fetchTeams(
-        offset: state.teams.length,
-        limit: _perPage,
-        regionsIds: _regionsIds,
-        totalCount: state is UsersListInitial,
+      final paginatedResult = await _usersRepository.findAll(
+        _args.copyWith(offset: () => state.teams.length),
+        state.totalCount == 0,
       );
 
-      final teams = paginatedTeams.data;
-      final totalCount = (state is UsersListInitial)
-          ? paginatedTeams.totalCount!
-          : state.totalCount;
+      final totalCount = paginatedResult.totalCount ?? state.totalCount;
+      final newData = state.teams + paginatedResult.data;
 
       emit(UsersListSuccess(
-        teams: state.teams + teams,
-        hasReachedMax: state.teams.length + teams.length >= totalCount,
+        teams: newData,
+        hasReachedMax: newData.length >= totalCount,
         totalCount: totalCount,
       ));
     } catch (e) {
@@ -68,6 +71,7 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   }
 
   void _onRefreshUsers(RefreshUsers event, Emitter<UsersListState> emit) async {
+    _args = event.args ?? _args;
     emit(UsersListInitial());
     add(const FetchUsers());
   }

@@ -13,22 +13,14 @@ final class UsersRepository implements IUsersRepository {
   final GqlService _gqlService;
 
   @override
-  Future<Paginated<Team>> fetchTeams({
-    bool totalCount = false,
-    int? offset,
-    int? limit,
-    List<int>? regionsIds,
-    List<bool>? active,
-  }) async {
-    final result =
-        await _gqlService.query(_getTeamListQuery(totalCount), variables: {
-      if (offset != null) 'offset': offset,
-      if (limit != null) 'limit': limit,
-      if (regionsIds != null) 'regionsIds': regionsIds,
-    });
+  Future<Paginated<Team>> findAll(
+    FindUsersArgs args,
+    bool totalCount,
+  ) async {
+    final result = await _gqlService.query(GetTeamQuery.document(totalCount),
+        operationName: GetTeamQuery.operationName, variables: args.toJson());
 
     if (result.hasException) {
-      // TODO: add exception handling
       throw Exception(result.exception);
     }
 

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
-import 'package:spk_app_frontend/common/views/widgets/actions.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
-import 'package:spk_app_frontend/features/users/bloc/users_search.bloc.dart';
+import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/users/views/views/users_list.view.dart';
-import 'package:spk_app_frontend/features/users/views/views/users_search_list.view.dart';
+import 'package:spk_app_frontend/features/users/views/widgets/list_actions.dart';
 
 /// Represents a page that displays a list of users.
 ///
@@ -19,29 +17,18 @@ class UsersListPage extends StatelessWidget {
     super.key,
     this.drawer,
     this.usersListBloc,
-    this.usersSearchBloc,
   });
 
   final Widget? drawer;
   final UsersListBloc Function(BuildContext)? usersListBloc;
-  final UsersSearchBloc Function(BuildContext)? usersSearchBloc;
 
   @override
-  Widget build(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: usersListBloc ??
-                (context) => UsersListBloc(
-                      usersRepository: context.read<IUsersRepository>(),
-                    )..add(const FetchUsers()),
-          ),
-          BlocProvider(
-            create: usersSearchBloc ??
-                (context) => UsersSearchBloc(
-                      usersRepository: context.read<IUsersRepository>(),
-                    ),
-          ),
-        ],
+  Widget build(BuildContext context) => BlocProvider(
+        create: usersListBloc ??
+            (context) => UsersListBloc(
+                  usersRepository: context.read<IUsersRepository>(),
+                  args: const FindUsersArgs(),
+                )..add(const FetchUsers()),
         child: BlocConsumer<UsersListBloc, UsersListState>(
           listener: (context, state) {
             if (state is UsersListFailure && state.teams.isNotEmpty) {
@@ -55,8 +42,7 @@ class UsersListPage extends StatelessWidget {
             }
           },
           buildWhen: (previous, current) =>
-              !(previous is UsersListSuccess && current is UsersListFailure) &&
-              !(previous is UsersListSuccess && current is UsersListInitial),
+              previous is! UsersListSuccess || current is UsersListSuccess,
           builder: (context, state) {
             late Widget body;
 
@@ -66,8 +52,9 @@ class UsersListPage extends StatelessWidget {
               case UsersListFailure():
                 body = FailureView(
                   message: 'Wystąpił błąd podczas pobierania użytkowników.',
-                  onPressed: () =>
-                      context.read<UsersListBloc>().add(const RefreshUsers()),
+                  onPressed: () => context
+                      .read<UsersListBloc>()
+                      .add(const RefreshUsers(null)),
                 );
               case UsersListSuccess():
                 body = UsersListView(
@@ -81,59 +68,24 @@ class UsersListPage extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('Użytkownicy'),
                 actions: [
-                  SearchAction(
+                  UsersSearchAction(
                     key: const Key('searchAction'),
-                    onClear: () => context.read<UsersSearchBloc>().add(
-                          const UsersSearchClear(),
-                        ),
-                    generateResults: (generateContext, query) =>
-                        BlocProvider.value(
-                      value: context.read<UsersSearchBloc>()
-                        ..add(
-                          UsersSearchQueryChanged(query),
-                        ),
-                      child: BlocBuilder<UsersSearchBloc, UsersSearchState>(
-                        builder: (context, state) {
-                          switch (state) {
-                            case UsersSearchInitial():
-                              return Container(
-                                key: const Key('searchInitial'),
-                              );
-                            case UsersSearchFailure():
-                              return const FailureView(
-                                message:
-                                    'Wystąpił błąd podczas wyszukiwania użytkowników.',
-                              );
-                            case UsersSearchSuccess():
-                              return UsersSearchView(
-                                users: state.users,
-                                hasReachedMax: state.hasReachedMax,
-                              );
-                          }
-                        },
-                      ),
-                    ),
+                    args: context.read<UsersListBloc>().args,
                   ),
                   IconButton(
-                    // TODO: Add filter functionality
+                    key: const Key('filterAction'),
                     icon: const Icon(Icons.filter_alt),
                     onPressed: () {
                       showModalBottomSheet(
                         context: context,
-                        builder: (context) {
-                          return SizedBox(
-                              width: double.infinity,
-                              child: Center(
-                                  child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text('Tutaj powinny być filtry'),
-                                  FilledButton.tonal(
-                                    child: const Text('Zamknij'),
-                                    onPressed: () => context.pop(),
-                                  ),
-                                ],
-                              )));
+                        isScrollControlled: true,
+                        builder: (_) {
+                          return BlocProvider.value(
+                            value: context.read<UsersListBloc>(),
+                            child: UsersListFilters(
+                              args: context.read<UsersListBloc>().args,
+                            ),
+                          );
                         },
                       );
                     },

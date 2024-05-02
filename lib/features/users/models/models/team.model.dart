@@ -12,7 +12,6 @@ final class Team extends Equatable {
   final List<User> users;
 
   static Team fromJson(Map<String, dynamic> json) {
-    // TODO: Add tests
     return Team(
       id: int.parse(json['id']),
       users: (json['users'] as List)

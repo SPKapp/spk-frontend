@@ -16,7 +16,6 @@ final class User extends Equatable {
   final String? phone;
 
   static User fromJson(Map<String, dynamic> json) {
-    // TODO: Add tests
     return User(
       id: int.parse(json['id']),
       firstName: json['firstname'] as String,

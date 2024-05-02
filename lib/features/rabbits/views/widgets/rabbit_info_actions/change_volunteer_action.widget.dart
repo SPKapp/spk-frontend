@@ -9,6 +9,7 @@ import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
+import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces/users.repo.interface.dart';
 
 /// A widget that represents an action to change a volunteer of a rabbit.
@@ -41,8 +42,10 @@ class _ChangeVolunteerActionState extends State<ChangeVolunteerAction> {
             create: widget.usersListBloc ??
                 (context) => UsersListBloc(
                       usersRepository: context.read<IUsersRepository>(),
-                      perPage: 0,
-                      regionsIds: [widget.rabbit.rabbitGroup!.region!.id],
+                      args: FindUsersArgs(
+                        limit: 0,
+                        regionsIds: [widget.rabbit.rabbitGroup!.region!.id],
+                      ),
                     )..add(const FetchUsers()),
           ),
           BlocProvider(
