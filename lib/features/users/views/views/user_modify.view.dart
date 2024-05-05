@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
 import 'package:spk_app_frontend/common/views/widgets/form_fields.dart';
+import 'package:spk_app_frontend/features/regions/views/views.dart';
+import 'package:spk_app_frontend/features/regions/models/models.dart';
 
 class FieldControlers {
   FieldControlers();
@@ -10,6 +12,7 @@ class FieldControlers {
   final lastnameControler = TextEditingController();
   final emailControler = TextEditingController();
   final phoneControler = TextEditingController();
+  Region? selectedRegion;
 
   void dispose() {
     firstnameControler.dispose();
@@ -20,13 +23,17 @@ class FieldControlers {
 }
 
 /// A StatefulWidget that represents the view for modifying or creating a user.
+///
+/// Region dropdown is only displayed when the [regions] are provided.
 class UserModifyView extends StatefulWidget {
   const UserModifyView({
     super.key,
     required this.editControlers,
+    this.regions,
   });
 
   final FieldControlers editControlers;
+  final List<Region>? regions;
 
   @override
   State<UserModifyView> createState() => _UserModifyViewState();
@@ -76,6 +83,18 @@ class _UserModifyViewState extends State<UserModifyView> {
                   icon: Icons.phone,
                   validator: phoneValidator,
                 ),
+                if (widget.regions != null)
+                  RegionDropdown(
+                    key: const Key('regionDropdown'),
+                    regions: widget.regions!,
+                    onSelected: (Region? region) {
+                      if (region != null) {
+                        setState(() {
+                          widget.editControlers.selectedRegion = region;
+                        });
+                      }
+                    },
+                  ),
               ],
             ),
           ),
@@ -111,7 +130,3 @@ class _UserModifyViewState extends State<UserModifyView> {
     return null;
   }
 }
-
-// TODO: Add team change and region change fields
-// team change should be loaded only for admin and regionManager
-// region change should be loaded only for admin or regionManager with more than one region

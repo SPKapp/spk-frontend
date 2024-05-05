@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:spk_app_frontend/features/auth/auth.dart';
+import 'package:spk_app_frontend/features/regions/views/views.dart';
+import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
+import 'package:spk_app_frontend/features/regions/models/models.dart';
 import 'package:spk_app_frontend/features/users/bloc/user_create.cubit.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
@@ -14,9 +18,11 @@ class UserCreatePage extends StatefulWidget {
   const UserCreatePage({
     super.key,
     this.cubitCreate,
+    this.regionsListBloc,
   });
 
   final UserCreateCubit Function(BuildContext)? cubitCreate;
+  final RegionsListBloc Function(BuildContext)? regionsListBloc;
 
   @override
   State<UserCreatePage> createState() => _UserCreatePageState();
@@ -40,42 +46,47 @@ class _UserCreatePageState extends State<UserCreatePage> {
                 usersRepository: context.read<IUsersRepository>(),
               ),
       child: Builder(builder: (context) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Dodaj Użytkownika'),
-            actions: [
-              _SaveButton(
-                key: const Key('saveButton'),
-                formKey: _formKey,
-                editControlers: _editControlers,
-              ),
-            ],
-          ),
-          body: Form(
-            key: _formKey,
-            child: UserModifyView(
-              editControlers: _editControlers,
-            ),
-          ),
-        );
+        final currentUser = context.read<AuthCubit>().currentUser;
+
+        if (currentUser.checkRole([Role.admin])) {
+          return InjectRegionsList(
+            regionsListBloc: widget.regionsListBloc,
+            buildChild: (context, regions) =>
+                _buildForm(context, regions: regions),
+          );
+        } else if (currentUser.managerRegions!.length > 1) {
+          return InjectRegionsList(
+            regionsListBloc: widget.regionsListBloc,
+            selectedRegions: currentUser.managerRegions,
+            buildChild: (context, regions) =>
+                _buildForm(context, regions: regions),
+          );
+        } else {
+          _editControlers.selectedRegion =
+              Region(id: currentUser.managerRegions!.first);
+          return Builder(
+            builder: (context) => _buildForm(context),
+          );
+        }
       }),
     );
   }
-}
 
-class _SaveButton extends StatelessWidget {
-  const _SaveButton({
-    super.key,
-    required GlobalKey<FormState> formKey,
-    required FieldControlers editControlers,
-  })  : _formKey = formKey,
-        _editControlers = editControlers;
+  void _onSubmit(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      context.read<UserCreateCubit>().createUser(
+            UserCreateDto(
+              firstname: _editControlers.firstnameControler.text,
+              lastname: _editControlers.lastnameControler.text,
+              email: _editControlers.emailControler.text,
+              phone: _editControlers.phoneControler.text,
+              regionId: _editControlers.selectedRegion?.id,
+            ),
+          );
+    }
+  }
 
-  final GlobalKey<FormState> _formKey;
-  final FieldControlers _editControlers;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildForm(BuildContext context, {List<Region>? regions}) {
     return BlocListener<UserCreateCubit, UserCreateState>(
       listener: (context, state) {
         switch (state) {
@@ -96,20 +107,26 @@ class _SaveButton extends StatelessWidget {
           default:
         }
       },
-      child: IconButton(
-        icon: const Icon(Icons.send_rounded),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            context.read<UserCreateCubit>().createUser(
-                  UserCreateDto(
-                    firstname: _editControlers.firstnameControler.text,
-                    lastname: _editControlers.lastnameControler.text,
-                    email: _editControlers.emailControler.text,
-                    phone: _editControlers.phoneControler.text,
-                  ),
-                );
-          }
-        },
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              key: const Key('saveButton'),
+              icon: const Icon(Icons.send_rounded),
+              onPressed: () => _onSubmit(context),
+            ),
+          ],
+          title: const Text(
+            'Dodaj Użytkownika',
+          ),
+        ),
+        body: Form(
+          key: _formKey,
+          child: UserModifyView(
+            editControlers: _editControlers,
+            regions: regions,
+          ),
+        ),
       ),
     );
   }

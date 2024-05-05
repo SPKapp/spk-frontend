@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:spk_app_frontend/features/regions/models/models.dart';
 
-import 'package:spk_app_frontend/features/rabbits/views/widgets/form_fields/region.dropdown.dart';
+import 'package:spk_app_frontend/features/regions/views/common/region.dropdown.dart';
 
 void main() {
   group(RegionDropdown, () {

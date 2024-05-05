@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 
@@ -93,6 +94,13 @@ class UsersListPage extends StatelessWidget {
                 ],
               ),
               drawer: drawer,
+              floatingActionButton: FloatingActionButton(
+                key: const Key('addUserButton'),
+                onPressed: () => context.push(
+                  '/user/add',
+                ),
+                child: const Icon(Icons.add),
+              ),
               body: body,
             );
           },

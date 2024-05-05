@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
@@ -31,6 +32,11 @@ class RabbitsListPage extends StatelessWidget {
             context.read<AuthCubit>().currentUser.checkRole([Role.volunteer])
         ? [context.read<AuthCubit>().currentUser.teamId!]
         : null;
+
+    final canCreate = context
+        .read<AuthCubit>()
+        .currentUser
+        .checkRole([Role.admin, Role.regionManager]);
 
     return BlocProvider(
       create: rabbitsListBloc ??
@@ -76,7 +82,7 @@ class RabbitsListPage extends StatelessWidget {
 
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Króliki'),
+              title: Text(volunteerView ? 'Moje Króliki' : 'Króliki'),
               actions: [
                 RabbitsSearchAction(
                   key: const Key('searchAction'),
@@ -103,6 +109,15 @@ class RabbitsListPage extends StatelessWidget {
               ],
             ),
             drawer: drawer,
+            floatingActionButton: !volunteerView && canCreate
+                ? FloatingActionButton(
+                    key: const Key('addRabbitButton'),
+                    onPressed: () {
+                      context.push('/rabbit/add');
+                    },
+                    child: const Icon(Icons.add),
+                  )
+                : null,
             body: body,
           );
         },

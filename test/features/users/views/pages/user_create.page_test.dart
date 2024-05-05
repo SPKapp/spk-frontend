@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:spk_app_frontend/features/auth/auth.dart';
+import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
+import 'package:spk_app_frontend/features/regions/models/models.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/user_create.cubit.dart';
 import 'package:spk_app_frontend/features/users/models/dto/user_create.dto.dart';
@@ -14,12 +19,19 @@ import 'package:spk_app_frontend/features/users/views/views/user_modify.view.dar
 class MockUserCreateCubit extends MockCubit<UserCreateState>
     implements UserCreateCubit {}
 
+class MockRegionsListBloc extends MockBloc<RegionsListEvent, RegionsListState>
+    implements RegionsListBloc {}
+
+class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
+
 class MockGoRouter extends Mock implements GoRouter {}
 
 void main() {
   group(UserCreatePage, () {
-    final MockUserCreateCubit userCreateCubit = MockUserCreateCubit();
-    final MockGoRouter mockGoRouter = MockGoRouter();
+    late MockUserCreateCubit userCreateCubit;
+    late RegionsListBloc regionsListBloc;
+    late AuthCubit authCubit;
+    late GoRouter goRouter;
 
     setUpAll(() {
       registerFallbackValue(
@@ -32,18 +44,46 @@ void main() {
       );
     });
 
+    setUp(() {
+      userCreateCubit = MockUserCreateCubit();
+      regionsListBloc = MockRegionsListBloc();
+      authCubit = MockAuthCubit();
+      goRouter = MockGoRouter();
+
+      when(() => userCreateCubit.state)
+          .thenAnswer((_) => const UserCreateInitial());
+
+      when(() => authCubit.currentUser).thenAnswer(
+        (_) => const CurrentUser(
+          uid: '1',
+          token: 'token',
+          roles: [Role.regionManager],
+          managerRegions: [1],
+        ),
+      );
+    });
+
+    Widget buildWidget() {
+      return MaterialApp(
+        home: InheritedGoRouter(
+          goRouter: goRouter,
+          child: BlocProvider<AuthCubit>.value(
+            value: authCubit,
+            child: UserCreatePage(
+              cubitCreate: (_) => userCreateCubit,
+              regionsListBloc: (_) => regionsListBloc,
+            ),
+          ),
+        ),
+      );
+    }
+
     testWidgets('UserCreatePage should render correctly',
         (WidgetTester tester) async {
       when(() => userCreateCubit.state)
           .thenAnswer((_) => const UserCreateInitial());
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UserCreatePage(
-            cubitCreate: (_) => userCreateCubit,
-          ),
-        ),
-      );
+      await tester.pumpWidget(buildWidget());
 
       expect(find.text('Dodaj Użytkownika'), findsOneWidget);
       expect(find.byType(UserModifyView), findsOneWidget);
@@ -57,19 +97,10 @@ void main() {
         streamController.stream,
         initialState: const UserCreateInitial(),
       );
-      when(() => mockGoRouter.pushReplacement(any()))
+      when(() => goRouter.pushReplacement(any()))
           .thenAnswer((invocation) async => Object());
 
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: InheritedGoRouter(
-            goRouter: mockGoRouter,
-            child: UserCreatePage(
-              cubitCreate: (_) => userCreateCubit,
-            ),
-          ),
-        ),
-      );
+      await widgetTester.pumpWidget(buildWidget());
 
       await fillForm(widgetTester);
 
@@ -100,13 +131,7 @@ void main() {
       when(() => userCreateCubit.state)
           .thenAnswer((invocation) => const UserCreateInitial());
 
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: UserCreatePage(
-            cubitCreate: (_) => userCreateCubit,
-          ),
-        ),
-      );
+      await widgetTester.pumpWidget(buildWidget());
 
       await fillForm(widgetTester);
 
@@ -132,13 +157,7 @@ void main() {
       when(() => userCreateCubit.state)
           .thenAnswer((invocation) => const UserCreateInitial());
 
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: UserCreatePage(
-            cubitCreate: (_) => userCreateCubit,
-          ),
-        ),
-      );
+      await widgetTester.pumpWidget(buildWidget());
 
       final saveButton = find.byKey(const Key('saveButton'));
       expect(saveButton, findsOneWidget);
@@ -151,6 +170,37 @@ void main() {
 
       expect(find.text('Nie udało się dodać użytkownika'), findsNothing);
       expect(find.text('Użytkownik został dodany'), findsNothing);
+    });
+
+    testWidgets('UserCreatePage should show form with selected region',
+        (widgetTester) async {
+      when(() => authCubit.currentUser).thenAnswer(
+        (_) => const CurrentUser(
+          uid: '1',
+          token: 'token',
+          roles: [Role.regionManager],
+          managerRegions: [1, 2],
+        ),
+      );
+
+      when(() => regionsListBloc.state).thenAnswer(
+        (_) => const RegionsListSuccess(
+          regions: [
+            Region(id: 1, name: 'Region 1'),
+            Region(id: 2, name: 'Region 2'),
+          ],
+          hasReachedMax: true,
+          totalCount: 2,
+        ),
+      );
+
+      await widgetTester.pumpWidget(buildWidget());
+
+      expect(find.text('Dodaj Użytkownika'), findsOneWidget);
+      expect(find.byType(UserModifyView), findsOneWidget);
+
+      final regionDropdown = find.byKey(const Key('regionDropdown'));
+      expect(regionDropdown, findsOneWidget);
     });
   });
 }

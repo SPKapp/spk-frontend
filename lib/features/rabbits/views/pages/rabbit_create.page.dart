@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_create.cubit.dart';
@@ -12,7 +11,7 @@ import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_modify.view
 
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
-import 'package:spk_app_frontend/features/regions/repositories/interfaces.dart';
+import 'package:spk_app_frontend/features/regions/views/views.dart';
 
 class RabbitCreatePage extends StatefulWidget {
   const RabbitCreatePage({
@@ -48,31 +47,18 @@ class _RabbitCreatePageState extends State<RabbitCreatePage> {
       child: Builder(builder: (context) {
         final currentUser = context.read<AuthCubit>().currentUser;
 
-        if (currentUser.checkRole([Role.admin]) ||
-            currentUser.managerRegions!.length > 1) {
-          return BlocProvider(
-            create: widget.regionsListBloc ??
-                (context) => RegionsListBloc(
-                      regionsRepository: context.read<IRegionsRepository>(),
-                      perPage: 0,
-                    )..add(const FetchRegions()),
-            child: BlocBuilder<RegionsListBloc, RegionsListState>(
-              builder: (context, state) {
-                switch (state) {
-                  case RegionsListInitial():
-                    return const InitialView();
-                  case RegionsListFailure():
-                    return FailureView(
-                      message: 'Nie udało się pobrać regionów',
-                      onPressed: () => context
-                          .read<RegionsListBloc>()
-                          .add(const RefreshRegions()),
-                    );
-                  case RegionsListSuccess():
-                    return _buildForm(context, regions: state.regions);
-                }
-              },
-            ),
+        if (currentUser.checkRole([Role.admin])) {
+          return InjectRegionsList(
+            regionsListBloc: widget.regionsListBloc,
+            buildChild: (context, regions) =>
+                _buildForm(context, regions: regions),
+          );
+        } else if (currentUser.managerRegions!.length > 1) {
+          return InjectRegionsList(
+            regionsListBloc: widget.regionsListBloc,
+            selectedRegions: currentUser.managerRegions,
+            buildChild: (context, regions) =>
+                _buildForm(context, regions: regions),
           );
         } else {
           _editControlers.selectedRegion =

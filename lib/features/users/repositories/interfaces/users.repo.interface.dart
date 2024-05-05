@@ -9,8 +9,10 @@ abstract interface class IUsersRepository {
   /// The [args] parameter specifies the criteria for filtering the [Team] objects. The [totalCount] parameter specifies whether the total number of objects should be included in the result, otherwise it will be null.
   Future<Paginated<Team>> findAll(FindUsersArgs args, bool totalCount);
 
-  Future<User> fetchUser(int id);
+  /// Creates a new [User].
   Future<int> createUser(UserCreateDto user);
+
+  Future<User> fetchUser(int id);
 
   Future<Paginated<User>> findUsersByName(
     String name, {

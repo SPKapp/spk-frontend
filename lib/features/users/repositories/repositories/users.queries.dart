@@ -21,3 +21,14 @@ query $operationName(\$offset: Int, \$limit: Int, \$regionsIds: [ID!], \$isActiv
 }
 ''';
 }
+
+abstract class CreateUserMutation {
+  static String operationName = 'CreateUser';
+  static String document = '''
+mutation $operationName(\$createUserInput: CreateUserInput!) {
+	createUser(createUserInput: \$createUserInput) {
+		id
+	}
+}
+''';
+}

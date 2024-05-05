@@ -31,6 +31,21 @@ final class UsersRepository implements IUsersRepository {
   }
 
   @override
+  Future<int> createUser(UserCreateDto userCreateDto) async {
+    final result = await _gqlService.mutate(
+      CreateUserMutation.document,
+      operationName: CreateUserMutation.operationName,
+      variables: {'createUserInput': userCreateDto.toJson()},
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+
+    return int.parse(result.data!['createUser']['id']);
+  }
+
+  @override
   Future<User> fetchUser(int id) async {
     return const User(
       id: 1,
@@ -39,11 +54,6 @@ final class UsersRepository implements IUsersRepository {
       email: 'email@example.com',
       phone: '123456789',
     );
-  }
-
-  @override
-  Future<int> createUser(UserCreateDto userCreateDto) async {
-    return 1;
   }
 
   @override

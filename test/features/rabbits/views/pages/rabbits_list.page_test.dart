@@ -40,12 +40,13 @@ void main() {
       when(() => rabbitsListBloc.args).thenReturn(const FindRabbitsArgs());
     });
 
-    Widget buildWidget() {
+    Widget buildWidget({bool? volunteerView}) {
       return MaterialApp(
         home: BlocProvider.value(
           value: authCubit,
           child: RabbitsListPage(
             rabbitsListBloc: (_) => rabbitsListBloc,
+            volunteerView: volunteerView ?? true,
           ),
         ),
       );
@@ -156,6 +157,83 @@ void main() {
 
       expect(find.byKey(const Key('searchAction')), findsOneWidget);
       expect(find.byKey(const Key('filterAction')), findsOneWidget);
+    });
+
+    testWidgets('should display volunteer view title',
+        (WidgetTester widgetTester) async {
+      when(() => rabbitsListBloc.state)
+          .thenAnswer((_) => const RabbitsListInitial());
+
+      await widgetTester.pumpWidget(buildWidget());
+
+      expect(find.text('Moje Króliki'), findsOneWidget);
+    });
+
+    testWidgets('should display rabbits view title',
+        (WidgetTester widgetTester) async {
+      when(() => rabbitsListBloc.state)
+          .thenAnswer((_) => const RabbitsListInitial());
+
+      await widgetTester.pumpWidget(buildWidget(
+        volunteerView: false,
+      ));
+
+      expect(find.text('Króliki'), findsOneWidget);
+    });
+
+    testWidgets('should display floating action button',
+        (WidgetTester widgetTester) async {
+      when(() => rabbitsListBloc.state)
+          .thenAnswer((_) => const RabbitsListInitial());
+
+      when(() => authCubit.currentUser).thenReturn(
+        const CurrentUser(
+          id: 1,
+          uid: '123',
+          token: '123',
+          roles: [
+            Role.admin,
+          ],
+        ),
+      );
+
+      await widgetTester.pumpWidget(buildWidget(volunteerView: false));
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+    });
+
+    testWidgets('should not display floating action button',
+        (WidgetTester widgetTester) async {
+      when(() => rabbitsListBloc.state)
+          .thenAnswer((_) => const RabbitsListInitial());
+
+      await widgetTester.pumpWidget(buildWidget(
+        volunteerView: true,
+      ));
+
+      expect(find.byType(FloatingActionButton), findsNothing);
+    });
+
+    testWidgets(
+        'should not display floating action button when volunteerView is false',
+        (WidgetTester widgetTester) async {
+      when(() => rabbitsListBloc.state)
+          .thenAnswer((_) => const RabbitsListInitial());
+      when(() => authCubit.currentUser).thenReturn(
+        const CurrentUser(
+          id: 1,
+          uid: '123',
+          token: '123',
+          roles: [Role.regionRabbitObserver],
+          observerRegions: [1],
+        ),
+      );
+
+      await widgetTester.pumpWidget(buildWidget(
+        volunteerView: false,
+      ));
+
+      expect(find.byType(FloatingActionButton), findsNothing);
     });
   });
 }

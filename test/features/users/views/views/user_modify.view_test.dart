@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:spk_app_frontend/common/views/widgets/form_fields.dart';
+import 'package:spk_app_frontend/features/regions/views/views.dart';
 
 import 'package:spk_app_frontend/features/users/views/views/user_modify.view.dart';
 
@@ -168,6 +169,19 @@ void main() {
       expect(find.text('Pole nie może być puste.'), findsNothing);
       expect(find.text('Niepoprawny email'), findsNothing);
       expect(find.text('Niepoprawny numer telefonu.'), findsNothing);
+    });
+
+    testWidgets(
+        'UserModifyView should render RegionDropdown when regions are provided',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: UserModifyView(
+              editControlers: fieldControlers, regions: const []),
+        ),
+      );
+
+      expect(find.byType(RegionDropdown), findsOneWidget);
     });
   });
 }
