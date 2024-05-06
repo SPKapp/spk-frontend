@@ -10,6 +10,7 @@ final class User extends Equatable {
     required this.lastName,
     this.email,
     this.phone,
+    this.active,
     this.roles,
     this.rolesWithDetails,
   });
@@ -19,6 +20,7 @@ final class User extends Equatable {
   final String lastName;
   final String? email;
   final String? phone;
+  final bool? active;
   final List<Role>? roles;
   final List<RoleEntity>? rolesWithDetails;
 
@@ -29,6 +31,7 @@ final class User extends Equatable {
       lastName: json['lastname'] as String,
       email: json['email'] as String?,
       phone: json['phone'] as String?,
+      active: json['active'] as bool?,
       roles: (json['roles'] as List<dynamic>?)
           ?.map((role) => Role.fromJson(role))
           .toList(),
@@ -42,5 +45,5 @@ final class User extends Equatable {
 
   @override
   List<Object?> get props =>
-      [id, firstName, lastName, email, phone, roles, rolesWithDetails];
+      [id, firstName, lastName, email, phone, active, roles, rolesWithDetails];
 }

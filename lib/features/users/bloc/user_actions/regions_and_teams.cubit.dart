@@ -7,6 +7,18 @@ import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
 part 'regions_and_teams.state.dart';
 
+/// Cubit responsible for fetching regions and teams.
+///
+/// It fetches regions and teams from the repository and emits the result.
+///
+/// Available functions:
+/// - [fetch] - fetches regions and teams
+///
+/// Available states:
+/// - [RegionsAndTeamsInitial] - initial state
+/// - [RegionsAndTeamsSuccess] - emitted when fetching regions and teams is successful
+/// - [RegionsAndTeamsFailure] - emitted when fetching regions and teams is unsuccessful
+///
 class RegionsAndTeamsCubit extends Cubit<RegionsAndTeamsState> {
   RegionsAndTeamsCubit({
     required ITeamsRepository teamsRepository,
@@ -15,7 +27,8 @@ class RegionsAndTeamsCubit extends Cubit<RegionsAndTeamsState> {
 
   final ITeamsRepository _teamsRepository;
 
-  Future<void> fetch(Iterable<String>? regionsIds) async {
+  /// Fetches regions and teams.
+  void fetch(Iterable<String>? regionsIds) async {
     try {
       final result = await _teamsRepository.fetchRegionsAndTeams(regionsIds);
 

@@ -52,4 +52,34 @@ final class PermissionsRepository implements IPermissionsRepository {
       throw Exception(result.exception);
     }
   }
+
+  @override
+  Future<void> deactivateUser(String userId) async {
+    final result = await _gqlService.mutate(
+      DeactivateUserMutation.document,
+      operationName: DeactivateUserMutation.operationName,
+      variables: {
+        'userId': userId,
+      },
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+  }
+
+  @override
+  Future<void> activateUser(String userId) async {
+    final result = await _gqlService.mutate(
+      ActivateUserMutation.document,
+      operationName: ActivateUserMutation.operationName,
+      variables: {
+        'userId': userId,
+      },
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+  }
 }

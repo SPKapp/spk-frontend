@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/users/bloc/user.cubit.dart';
@@ -55,24 +56,27 @@ class UserPage extends StatelessWidget {
                   PopupMenuButton(
                     key: const Key('userPopupMenu'),
                     itemBuilder: (_) => [
+                      if (state.user.active == true)
+                        PopupMenuItem(
+                          key: const Key('addRole'),
+                          onTap: () async {
+                            final result = await showModalBottomSheet<bool>(
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (_) {
+                                  return AddRoleAction(
+                                    roleInfo: roleInfo,
+                                    userId: state.user.id.toString(),
+                                  );
+                                });
+                            if (result != null && result && context.mounted) {
+                              context.read<UserCubit>().fetchUser();
+                            }
+                          },
+                          child: const Text('Dodaj rolę'),
+                        ),
                       PopupMenuItem(
-                        onTap: () async {
-                          final result = await showModalBottomSheet<bool>(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (_) {
-                                return AddRoleAction(
-                                  roleInfo: roleInfo,
-                                  userId: state.user.id.toString(),
-                                );
-                              });
-                          if (result != null && result && context.mounted) {
-                            context.read<UserCubit>().fetchUser();
-                          }
-                        },
-                        child: const Text('Dodaj rolę'),
-                      ),
-                      PopupMenuItem(
+                        key: const Key('removeRole'),
                         onTap: () async {
                           final result = await showModalBottomSheet<bool>(
                               context: context,
@@ -97,7 +101,7 @@ class UserPage extends StatelessWidget {
                             final result = await showModalBottomSheet<bool>(
                                 context: context,
                                 builder: (_) {
-                                  return const Text('Dodaj rolę');
+                                  return const Text('Not implemented yet');
                                 });
                             if (result != null && result && context.mounted) {
                               context.read<UserCubit>().fetchUser();
@@ -106,12 +110,33 @@ class UserPage extends StatelessWidget {
                           child: const Text('Zmień region'),
                         ),
                       PopupMenuItem(
-                        onTap: () {},
-                        child: const Text('Dezaktywuj użytkownika lub aktywuj'),
+                        key: const Key('deactivateUser'),
+                        onTap: () async {
+                          final result = await showDialog<bool>(
+                              context: context,
+                              builder: (_) {
+                                return DeactivateUserAction(
+                                  userId: state.user.id.toString(),
+                                  isActive: state.user.active ?? false,
+                                );
+                              });
+                          if (result != null && result && context.mounted) {
+                            context.read<UserCubit>().fetchUser();
+                          }
+                        },
+                        child: Text(state.user.active == true
+                            ? 'Dezaktywuj'
+                            : 'Aktywuj'),
                       ),
                       PopupMenuItem(
-                        onTap: () {},
-                        child: const Text('Usuń użytkownika'),
+                        onTap: () async {
+                          await showModalBottomSheet<bool>(
+                              context: context,
+                              builder: (_) {
+                                return const Text('Not implemented yet');
+                              });
+                        },
+                        child: const Text('Usuń'),
                       ),
                     ],
                   )

@@ -134,5 +134,77 @@ void main() {
         },
       );
     });
+
+    group('deactivateUser', () {
+      blocTest<UserPermissionsCubit, UserPermissionsState>(
+        'emits [UserPermissionsSuccess] when deactivateUser is successful',
+        setUp: () {
+          when(() => mockPermissionsRepository.deactivateUser('1'))
+              .thenAnswer((_) async {});
+        },
+        build: () => userPermissionsCubit,
+        act: (cubit) => cubit.deactivateUser(),
+        expect: () => [
+          const UserPermissionsSuccess(),
+        ],
+        verify: (_) {
+          verify(() => mockPermissionsRepository.deactivateUser('1')).called(1);
+          verifyNoMoreInteractions(mockPermissionsRepository);
+        },
+      );
+
+      blocTest<UserPermissionsCubit, UserPermissionsState>(
+        'emits [UserPermissionsFailure] when deactivateUser is unsuccessful',
+        setUp: () {
+          when(() => mockPermissionsRepository.deactivateUser('1'))
+              .thenThrow(Exception());
+        },
+        build: () => userPermissionsCubit,
+        act: (cubit) => cubit.deactivateUser(),
+        expect: () => [
+          const UserPermissionsFailure(),
+        ],
+        verify: (_) {
+          verify(() => mockPermissionsRepository.deactivateUser('1')).called(1);
+          verifyNoMoreInteractions(mockPermissionsRepository);
+        },
+      );
+    });
+
+    group('activateUser', () {
+      blocTest<UserPermissionsCubit, UserPermissionsState>(
+        'emits [UserPermissionsSuccess] when activateUser is successful',
+        setUp: () {
+          when(() => mockPermissionsRepository.activateUser('1'))
+              .thenAnswer((_) async {});
+        },
+        build: () => userPermissionsCubit,
+        act: (cubit) => cubit.activateUser(),
+        expect: () => [
+          const UserPermissionsSuccess(),
+        ],
+        verify: (_) {
+          verify(() => mockPermissionsRepository.activateUser('1')).called(1);
+          verifyNoMoreInteractions(mockPermissionsRepository);
+        },
+      );
+
+      blocTest<UserPermissionsCubit, UserPermissionsState>(
+        'emits [UserPermissionsFailure] when activateUser is unsuccessful',
+        setUp: () {
+          when(() => mockPermissionsRepository.activateUser('1'))
+              .thenThrow(Exception());
+        },
+        build: () => userPermissionsCubit,
+        act: (cubit) => cubit.activateUser(),
+        expect: () => [
+          const UserPermissionsFailure(),
+        ],
+        verify: (_) {
+          verify(() => mockPermissionsRepository.activateUser('1')).called(1);
+          verifyNoMoreInteractions(mockPermissionsRepository);
+        },
+      );
+    });
   });
 }

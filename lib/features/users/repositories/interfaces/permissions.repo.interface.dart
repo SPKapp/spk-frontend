@@ -15,4 +15,10 @@ abstract interface class IPermissionsRepository {
     Role role, {
     String? regionId,
   });
+
+  /// Deactivates a user.
+  Future<void> deactivateUser(String userId);
+
+  /// Activates a user.
+  Future<void> activateUser(String userId);
 }

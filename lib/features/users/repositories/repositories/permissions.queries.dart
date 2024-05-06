@@ -22,3 +22,21 @@ mutation $operationName(\$userId: ID!, \$role: Role!, \$regionId: ID) {
 }
 ''';
 }
+
+abstract class DeactivateUserMutation {
+  static const String operationName = 'DeactivateUser';
+  static const String document = '''
+mutation $operationName(\$userId: ID!) {
+	deactivateUser(userId: \$userId)
+}
+''';
+}
+
+abstract class ActivateUserMutation {
+  static const String operationName = 'ActivateUser';
+  static const String document = '''
+mutation $operationName(\$userId: ID!) {
+  activateUser(userId: \$userId)
+}
+''';
+}
