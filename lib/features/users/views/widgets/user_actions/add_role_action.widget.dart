@@ -15,14 +15,12 @@ class AddRoleAction extends StatefulWidget {
     super.key,
     required this.userId,
     required this.roleInfo,
-    this.canAddAdmin = false,
     this.regionsAndTeamsCubit,
     this.userPermissionsCubit,
   });
 
   final String userId;
   final RoleInfo roleInfo;
-  final bool canAddAdmin;
   final RegionsAndTeamsCubit Function(BuildContext)? regionsAndTeamsCubit;
   final UserPermissionsCubit Function(BuildContext)? userPermissionsCubit;
 
@@ -34,11 +32,13 @@ class _AddRoleActionState extends State<AddRoleAction> {
   Role? _selectedRole;
   Region? _selectedRegion;
   Team? _selectedTeam;
-  final controler = TextEditingController();
+  final regionControler = TextEditingController();
+  final teamControler = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final currentUser = context.read<AuthCubit>().currentUser;
+    final asAdmin = currentUser.checkRole([Role.admin]);
     return BlocProvider(
       create: widget.userPermissionsCubit ??
           (context) => UserPermissionsCubit(
@@ -103,11 +103,11 @@ class _AddRoleActionState extends State<AddRoleAction> {
                             setState(() {
                               _selectedRole = role;
                               _selectedRegion = null;
-                              controler.clear();
+                              regionControler.clear();
                             });
                           },
                           dropdownMenuEntries: [
-                            if (widget.canAddAdmin && !widget.roleInfo.isAdmin)
+                            if (asAdmin && !widget.roleInfo.isAdmin)
                               DropdownMenuEntry(
                                 value: Role.admin,
                                 label: Role.admin.toHumanReadable(),
@@ -131,14 +131,15 @@ class _AddRoleActionState extends State<AddRoleAction> {
                         ),
                       ),
                       if (_selectedRole == Role.regionManager ||
-                          _selectedRole == Role.regionRabbitObserver)
+                          _selectedRole == Role.regionRabbitObserver ||
+                          _selectedRole == Role.volunteer)
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: DropdownMenu<Region>(
                             key: const Key('regionDropdown'),
                             label: const Text('Region'),
                             width: constraints.maxWidth * 0.8,
-                            controller: controler,
+                            controller: regionControler,
                             onSelected: (Region? region) {
                               setState(() {
                                 _selectedRegion = region;
@@ -164,7 +165,7 @@ class _AddRoleActionState extends State<AddRoleAction> {
                             key: const Key('teamDropdown'),
                             label: const Text('Zespół'),
                             width: constraints.maxWidth * 0.8,
-                            controller: controler,
+                            controller: teamControler,
                             menuHeight: constraints.maxHeight,
                             requestFocusOnTap: true,
                             enableFilter: true,

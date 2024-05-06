@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
@@ -40,7 +41,11 @@ void main() {
       goRouter = MockGoRouter();
 
       when(() => authCubit.currentUser).thenReturn(
-        const CurrentUser(uid: '123', token: '123', roles: [Role.admin]),
+        const CurrentUser(
+            uid: '123',
+            token: '123',
+            roles: [Role.regionManager],
+            managerRegions: [1]),
       );
 
       when(() => regionsAndTeamsCubit.state).thenReturn(
@@ -54,7 +59,7 @@ void main() {
           .thenReturn(const UserPermissionsInitial());
     });
 
-    Widget buildwidget({bool canAddAdmin = false, required RoleInfo roleInfo}) {
+    Widget buildwidget({required RoleInfo roleInfo}) {
       return MaterialApp(
         home: InheritedGoRouter(
           goRouter: goRouter,
@@ -63,7 +68,6 @@ void main() {
             child: Scaffold(
               body: AddRoleAction(
                 userId: '1',
-                canAddAdmin: canAddAdmin,
                 roleInfo: roleInfo,
                 regionsAndTeamsCubit: (_) => regionsAndTeamsCubit,
                 userPermissionsCubit: (_) => userPermissionsCubit,
@@ -130,7 +134,7 @@ void main() {
         await tester.tap(find.text(Role.volunteer.toHumanReadable()).last);
         await tester.pumpAndSettle();
 
-        expect(find.byKey(const Key('regionDropdown')), findsNothing);
+        expect(find.byKey(const Key('regionDropdown')), findsOneWidget);
         expect(find.byKey(const Key('teamDropdown')), findsOneWidget);
 
         await tester.tap(find.byKey(const Key('teamDropdown')));
@@ -141,9 +145,11 @@ void main() {
 
       testWidgets('not display region and team dropdown',
           (WidgetTester tester) async {
+        when(() => authCubit.currentUser).thenReturn(
+          const CurrentUser(uid: '123', token: '123', roles: [Role.admin]),
+        );
         await tester.pumpWidget(
           buildwidget(
-            canAddAdmin: true,
             roleInfo: RoleInfo([]),
           ),
         );
@@ -160,9 +166,12 @@ void main() {
 
       testWidgets('not display regionObserver and adminRoles',
           (WidgetTester tester) async {
+        when(() => authCubit.currentUser).thenReturn(
+          const CurrentUser(uid: '123', token: '123', roles: [Role.admin]),
+        );
+
         await tester.pumpWidget(
           buildwidget(
-            canAddAdmin: true,
             roleInfo: RoleInfo([
               const RoleEntity(role: Role.admin),
               const RoleEntity(

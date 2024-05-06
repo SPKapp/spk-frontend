@@ -50,14 +50,14 @@ class _RabbitCreatePageState extends State<RabbitCreatePage> {
         if (currentUser.checkRole([Role.admin])) {
           return InjectRegionsList(
             regionsListBloc: widget.regionsListBloc,
-            buildChild: (context, regions) =>
+            builder: (context, regions) =>
                 _buildForm(context, regions: regions),
           );
         } else if (currentUser.managerRegions!.length > 1) {
           return InjectRegionsList(
             regionsListBloc: widget.regionsListBloc,
-            selectedRegions: currentUser.managerRegions,
-            buildChild: (context, regions) =>
+            regionsIds: currentUser.managerRegions?.map((e) => e.toString()),
+            builder: (context, regions) =>
                 _buildForm(context, regions: regions),
           );
         } else {

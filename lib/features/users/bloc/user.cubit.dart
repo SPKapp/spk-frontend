@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
+import 'package:spk_app_frontend/common/services/logger.service.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
@@ -15,6 +16,7 @@ class UserCubit extends Cubit<UserState> {
 
   final int userId;
   final IUsersRepository _usersRepository;
+  final logger = LoggerService();
 
   /// Fetches a user with the given [userId].
   /// Emits new state only if data was changed.
@@ -27,6 +29,7 @@ class UserCubit extends Cubit<UserState> {
         ),
       );
     } catch (e) {
+      logger.error(e);
       emit(
         const UserFailure(),
       );

@@ -84,5 +84,55 @@ void main() {
         },
       );
     });
+
+    group('removeRoleFromUser', () {
+      blocTest<UserPermissionsCubit, UserPermissionsState>(
+        'emits [UserPermissionsSuccess] when removeRoleFromUser is successful',
+        setUp: () {
+          when(() => mockPermissionsRepository.removeRoleFromUser(
+                '1',
+                Role.admin,
+                regionId: null,
+              )).thenAnswer((_) async {});
+        },
+        build: () => userPermissionsCubit,
+        act: (cubit) => cubit.removeRoleFromUser(Role.admin),
+        expect: () => [
+          const UserPermissionsSuccess(),
+        ],
+        verify: (_) {
+          verify(() => mockPermissionsRepository.removeRoleFromUser(
+                '1',
+                Role.admin,
+                regionId: null,
+              )).called(1);
+          verifyNoMoreInteractions(mockPermissionsRepository);
+        },
+      );
+
+      blocTest<UserPermissionsCubit, UserPermissionsState>(
+        'emits [UserPermissionsFailure] when removeRoleFromUser is unsuccessful',
+        setUp: () {
+          when(() => mockPermissionsRepository.removeRoleFromUser(
+                '1',
+                Role.admin,
+                regionId: '3',
+              )).thenThrow(Exception());
+        },
+        build: () => userPermissionsCubit,
+        act: (cubit) => cubit.removeRoleFromUser(Role.admin, regionId: '3'),
+        expect: () => [
+          const UserPermissionsFailure(),
+        ],
+        verify: (_) {
+          verify(() => mockPermissionsRepository.removeRoleFromUser(
+                '1',
+                Role.admin,
+                regionId: '3',
+              )).called(1);
+          verifyNoMoreInteractions(mockPermissionsRepository);
+        },
+      );
+    });
   });
 }

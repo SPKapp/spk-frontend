@@ -13,3 +13,12 @@ mutation $operationName(\$userId: ID!, \$role: Role!, \$regionId: ID, \$teamId: 
 }
 ''';
 }
+
+abstract class RemoveRoleFromUserMutation {
+  static const String operationName = 'RemoveRoleFromUser';
+  static const String document = '''
+mutation $operationName(\$userId: ID!, \$role: Role!, \$regionId: ID) {
+	removeRoleFromUser(userId: \$userId, role: \$role, regionId: \$regionId)
+}
+''';
+}

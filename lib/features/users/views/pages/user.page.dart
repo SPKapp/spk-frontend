@@ -52,20 +52,6 @@ class UserPage extends StatelessWidget {
                     icon: const Icon(Icons.edit),
                     onPressed: () => context.go('/users/$userId/edit'),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.abc),
-                    onPressed: () async {
-                      showModalBottomSheet<bool>(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (_) {
-                            return AddRoleAction(
-                              roleInfo: roleInfo,
-                              userId: state.user.id.toString(),
-                            );
-                          });
-                    },
-                  ),
                   PopupMenuButton(
                     key: const Key('userPopupMenu'),
                     itemBuilder: (_) => [
@@ -90,8 +76,12 @@ class UserPage extends StatelessWidget {
                         onTap: () async {
                           final result = await showModalBottomSheet<bool>(
                               context: context,
+                              isScrollControlled: true,
                               builder: (_) {
-                                return const Text('Dodaj rolę');
+                                return RemoveRoleAction(
+                                  roleInfo: roleInfo,
+                                  userId: state.user.id.toString(),
+                                );
                               });
                           if (result != null && result && context.mounted) {
                             context.read<UserCubit>().fetchUser();

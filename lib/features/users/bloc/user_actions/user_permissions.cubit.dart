@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
+import 'package:spk_app_frontend/common/services/logger.service.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
@@ -13,6 +15,7 @@ class UserPermissionsCubit extends Cubit<UserPermissionsState> {
 
   final IPermissionsRepository _permissionsRepository;
   final String userId;
+  final logger = LoggerService();
 
   Future<void> addRoleToUser(
     Role role, {
@@ -28,6 +31,25 @@ class UserPermissionsCubit extends Cubit<UserPermissionsState> {
       );
       emit(const UserPermissionsSuccess());
     } catch (e) {
+      logger.error(e);
+      emit(const UserPermissionsFailure());
+    }
+  }
+
+  Future<void> removeRoleFromUser(
+    Role role, {
+    String? teamId,
+    String? regionId,
+  }) async {
+    try {
+      await _permissionsRepository.removeRoleFromUser(
+        userId,
+        role,
+        regionId: regionId,
+      );
+      emit(const UserPermissionsSuccess());
+    } catch (e) {
+      logger.error(e);
       emit(const UserPermissionsFailure());
     }
   }

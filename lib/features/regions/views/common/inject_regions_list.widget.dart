@@ -10,13 +10,13 @@ class InjectRegionsList extends StatelessWidget {
   const InjectRegionsList({
     super.key,
     this.regionsListBloc,
-    required this.buildChild,
-    this.selectedRegions,
+    required this.builder,
+    this.regionsIds,
   });
 
   final RegionsListBloc Function(BuildContext)? regionsListBloc;
-  final Widget Function(BuildContext, List<Region> regions) buildChild;
-  final List<int>? selectedRegions;
+  final Widget Function(BuildContext, List<Region> regions) builder;
+  final Iterable<String>? regionsIds;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class InjectRegionsList extends StatelessWidget {
                     context.read<RegionsListBloc>().add(const RefreshRegions()),
               );
             case RegionsListSuccess():
-              return buildChild(context, state.regions);
+              return builder(context, state.regions);
           }
         },
       ),

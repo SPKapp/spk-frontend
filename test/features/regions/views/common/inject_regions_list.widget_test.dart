@@ -23,7 +23,7 @@ void main() {
       return MaterialApp(
         home: InjectRegionsList(
           regionsListBloc: (_) => regionsListBloc,
-          buildChild: (context, regions) => const Text('Test'),
+          builder: (context, regions) => const Text('Test'),
         ),
       );
     }

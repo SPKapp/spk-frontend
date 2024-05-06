@@ -30,7 +30,26 @@ final class PermissionsRepository implements IPermissionsRepository {
     if (result.hasException) {
       throw Exception(result.exception);
     }
+  }
 
-    return;
+  @override
+  Future<void> removeRoleFromUser(
+    String userId,
+    Role role, {
+    String? regionId,
+  }) async {
+    final result = await _gqlService.mutate(
+      RemoveRoleFromUserMutation.document,
+      operationName: RemoveRoleFromUserMutation.operationName,
+      variables: {
+        'userId': userId,
+        'role': role.jsonValue,
+        'regionId': regionId,
+      },
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
   }
 }
