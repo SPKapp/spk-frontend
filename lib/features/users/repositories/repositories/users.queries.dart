@@ -22,6 +22,34 @@ query $operationName(\$offset: Int, \$limit: Int, \$regionsIds: [ID!], \$isActiv
 ''';
 }
 
+abstract class GetUserQuery {
+  static String operationName = 'GetUser';
+  static String document = '''
+query $operationName(\$id: Int!) {
+	user(id: \$id) {
+		id
+		firstname
+		lastname
+		email
+		phone
+		active
+		rolesWithDetails {
+			role
+			additionalInfo
+		}
+		team {
+			id
+			users {
+				id
+				firstname
+				lastname
+			}
+		}
+	}
+}
+''';
+}
+
 abstract class CreateUserMutation {
   static String operationName = 'CreateUser';
   static String document = '''

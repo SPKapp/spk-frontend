@@ -10,7 +10,7 @@ class MockRabbitsRepository extends Mock implements IRabbitsRepository {}
 
 void main() {
   group(RabbitCubit, () {
-    final rabbitRepository = MockRabbitsRepository();
+    late IRabbitsRepository rabbitRepository;
     late RabbitCubit rabbitCubit;
 
     const Rabbit rabbit = Rabbit(
@@ -22,11 +22,15 @@ void main() {
     );
 
     setUp(() {
-      registerFallbackValue(rabbit);
+      rabbitRepository = MockRabbitsRepository();
       rabbitCubit = RabbitCubit(
         rabbitsRepository: rabbitRepository,
         rabbitId: rabbit.id,
       );
+    });
+
+    tearDown(() {
+      rabbitCubit.close();
     });
 
     test('initial state', () {
@@ -64,6 +68,20 @@ void main() {
         verify(() => rabbitRepository.findOne(rabbit.id)).called(1);
         verifyNoMoreInteractions(rabbitRepository);
       },
+    );
+
+    blocTest<RabbitCubit, RabbitState>(
+      'emits [RabbitInitial, RabbitSuccess] when refreshRabbit is called',
+      setUp: () {
+        when(() => rabbitRepository.findOne(rabbit.id))
+            .thenAnswer((_) async => rabbit);
+      },
+      build: () => rabbitCubit,
+      act: (cubit) => cubit.refreshRabbit(),
+      expect: () => [
+        const RabbitInitial(),
+        const RabbitSuccess(rabbit: rabbit),
+      ],
     );
   });
 }

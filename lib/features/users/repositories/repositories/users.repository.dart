@@ -31,6 +31,21 @@ final class UsersRepository implements IUsersRepository {
   }
 
   @override
+  Future<User> findOne(int id) async {
+    final result = await _gqlService.query(
+      GetUserQuery.document,
+      operationName: GetUserQuery.operationName,
+      variables: {'id': id},
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+
+    return User.fromJson(result.data!['user']);
+  }
+
+  @override
   Future<int> createUser(UserCreateDto userCreateDto) async {
     final result = await _gqlService.mutate(
       CreateUserMutation.document,

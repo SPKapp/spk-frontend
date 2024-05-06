@@ -131,6 +131,24 @@ class AppRouter {
                 return const UserCreatePage();
               },
             ),
+            GoRoute(
+              path: '/user/:id',
+              builder: (context, state) {
+                return UserPage(
+                  userId: int.parse(state.pathParameters['id']!),
+                );
+              },
+              // routes: [
+              // GoRoute(
+              //   path: 'edit',
+              //   builder: (context, state) {
+              //     return UserUpdatePage(
+              //       userId: int.parse(state.pathParameters['id']!),
+              //     );
+              //   },
+              // ),
+              // ],
+            ),
           ]),
           StatefulShellBranch(
             routes: [

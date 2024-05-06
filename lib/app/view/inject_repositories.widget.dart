@@ -30,6 +30,12 @@ class InjectRepositories extends StatelessWidget {
         RepositoryProvider<IUsersRepository>(
           create: (context) => UsersRepository(gqlService),
         ),
+        RepositoryProvider<ITeamsRepository>(
+          create: (context) => TeamsReposiotry(gqlService),
+        ),
+        RepositoryProvider<IPermissionsRepository>(
+          create: (context) => PermissionsRepository(gqlService),
+        ),
         RepositoryProvider<IRegionsRepository>(
           create: (context) => RegionsRepository(gqlService),
         ),
