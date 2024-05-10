@@ -38,12 +38,12 @@ void main() {
       goRouter = MockGoRouter();
 
       when(() => authCubit.currentUser).thenReturn(
-        const CurrentUser(uid: '123', token: '123', roles: [Role.admin]),
+        CurrentUser(uid: '123', token: '123', roles: const [Role.admin]),
       );
 
       when(() => regionsListBloc.state).thenReturn(
         const RegionsListSuccess(
-          regions: [Region(id: 1, name: 'Region 1')],
+          regions: [Region(id: '1', name: 'Region 1')],
           hasReachedMax: true,
           totalCount: 1,
         ),
@@ -82,11 +82,11 @@ void main() {
 
     testWidgets('not render admin role', (tester) async {
       when(() => authCubit.currentUser).thenReturn(
-        const CurrentUser(
+        CurrentUser(
             uid: '123',
             token: '123',
-            roles: [Role.regionManager],
-            managerRegions: [1]),
+            roles: const [Role.regionManager],
+            managerRegions: const [1]),
       );
 
       await tester.pumpWidget(buildwidget(
@@ -152,11 +152,11 @@ void main() {
 
     testWidgets('click delete role without region', (tester) async {
       when(() => authCubit.currentUser).thenReturn(
-        const CurrentUser(
+        CurrentUser(
             uid: '123',
             token: '123',
-            roles: [Role.regionManager],
-            managerRegions: [1]),
+            roles: const [Role.regionManager],
+            managerRegions: const [1]),
       );
       when(() => userPermissionsCubit.removeRoleFromUser(
             Role.regionManager,

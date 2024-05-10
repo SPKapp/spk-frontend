@@ -6,12 +6,12 @@ final class Region extends Equatable {
     this.name,
   });
 
-  final int id;
+  final String id;
   final String? name;
 
   static Region fromJson(Map<String, dynamic> json) {
     return Region(
-      id: int.parse(json['id']),
+      id: json['id'] as String,
       name: json['name'] as String?,
     );
   }

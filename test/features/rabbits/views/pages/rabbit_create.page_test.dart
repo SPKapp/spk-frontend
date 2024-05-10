@@ -48,11 +48,11 @@ void main() {
           .thenAnswer((_) => const RabbitCreateInitial());
 
       when(() => authCubit.currentUser).thenAnswer(
-        (_) => const CurrentUser(
+        (_) => CurrentUser(
           uid: '1',
           token: 'token',
-          roles: [Role.regionManager],
-          managerRegions: [1],
+          roles: const [Role.regionManager],
+          managerRegions: const [1],
         ),
       );
     });
@@ -87,10 +87,10 @@ void main() {
     group('with regions', () {
       setUp(() {
         when(() => authCubit.currentUser).thenAnswer(
-          (_) => const CurrentUser(
+          (_) => CurrentUser(
             uid: '1',
             token: 'token',
-            roles: [Role.admin],
+            roles: const [Role.admin],
           ),
         );
       });
@@ -135,8 +135,8 @@ void main() {
         when(() => regionsListBloc.state).thenAnswer(
           (_) => const RegionsListSuccess(
             regions: [
-              Region(id: 1, name: 'Region 1'),
-              Region(id: 2, name: 'Region 2'),
+              Region(id: '1', name: 'Region 1'),
+              Region(id: '2', name: 'Region 2'),
             ],
             hasReachedMax: true,
             totalCount: 2,
@@ -184,7 +184,7 @@ void main() {
         () => rabbitCreateCubit.createRabbit(
           any(
             that: isA<RabbitCreateDto>()
-                .having((dto) => dto.regionId, 'regionId', 1),
+                .having((dto) => dto.regionId, 'regionId', '1'),
           ),
         ),
       ).called(1);

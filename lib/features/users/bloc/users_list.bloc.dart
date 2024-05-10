@@ -27,8 +27,6 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   UsersListBloc({
     required IUsersRepository usersRepository,
     required FindUsersArgs args,
-    int? perPage,
-    List<int>? regionsIds,
   })  : _usersRepository = usersRepository,
         _args = args,
         super(UsersListInitial()) {

@@ -28,11 +28,11 @@ void main() {
       authCubit = MockAuthCubit();
 
       when(() => authCubit.currentUser).thenReturn(
-        const CurrentUser(
+        CurrentUser(
           id: 1,
           uid: '123',
           token: '123',
-          roles: [Role.volunteer],
+          roles: const [Role.volunteer],
           teamId: 1,
         ),
       );
@@ -187,13 +187,11 @@ void main() {
           .thenAnswer((_) => const RabbitsListInitial());
 
       when(() => authCubit.currentUser).thenReturn(
-        const CurrentUser(
+        CurrentUser(
           id: 1,
           uid: '123',
           token: '123',
-          roles: [
-            Role.admin,
-          ],
+          roles: const [Role.admin],
         ),
       );
 
@@ -220,12 +218,12 @@ void main() {
       when(() => rabbitsListBloc.state)
           .thenAnswer((_) => const RabbitsListInitial());
       when(() => authCubit.currentUser).thenReturn(
-        const CurrentUser(
+        CurrentUser(
           id: 1,
           uid: '123',
           token: '123',
-          roles: [Role.regionRabbitObserver],
-          observerRegions: [1],
+          roles: const [Role.regionRabbitObserver],
+          observerRegions: const [1],
         ),
       );
 

@@ -41,16 +41,16 @@ void main() {
       goRouter = MockGoRouter();
 
       when(() => authCubit.currentUser).thenReturn(
-        const CurrentUser(
+        CurrentUser(
             uid: '123',
             token: '123',
-            roles: [Role.regionManager],
-            managerRegions: [1]),
+            roles: const [Role.regionManager],
+            managerRegions: const [1]),
       );
 
       when(() => regionsAndTeamsCubit.state).thenReturn(
         const RegionsAndTeamsSuccess(
-          regions: [Region(id: 1, name: 'Region 1')],
+          regions: [Region(id: '1', name: 'Region 1')],
           teams: [Team(id: 1, users: [])],
         ),
       );
@@ -146,7 +146,7 @@ void main() {
       testWidgets('not display region and team dropdown',
           (WidgetTester tester) async {
         when(() => authCubit.currentUser).thenReturn(
-          const CurrentUser(uid: '123', token: '123', roles: [Role.admin]),
+          CurrentUser(uid: '123', token: '123', roles: const [Role.admin]),
         );
         await tester.pumpWidget(
           buildwidget(
@@ -167,7 +167,7 @@ void main() {
       testWidgets('not display regionObserver and adminRoles',
           (WidgetTester tester) async {
         when(() => authCubit.currentUser).thenReturn(
-          const CurrentUser(uid: '123', token: '123', roles: [Role.admin]),
+          CurrentUser(uid: '123', token: '123', roles: const [Role.admin]),
         );
 
         await tester.pumpWidget(

@@ -101,9 +101,9 @@ void main() {
 
     testWidgets('should render RegionDropdown', (WidgetTester tester) async {
       const regions = [
-        Region(id: 1, name: 'Region 1'),
-        Region(id: 2, name: 'Region 2'),
-        Region(id: 3, name: 'Region 3'),
+        Region(id: '1', name: 'Region 1'),
+        Region(id: '2', name: 'Region 2'),
+        Region(id: '3', name: 'Region 3'),
       ];
 
       await tester.pumpWidget(

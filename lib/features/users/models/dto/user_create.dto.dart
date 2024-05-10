@@ -15,8 +15,8 @@ class UserCreateDto {
 
   // TODO: Add Address fields
 
-  final int? teamId;
-  final int? regionId;
+  final String? teamId;
+  final String? regionId;
 
   Map<String, dynamic> toJson() {
     return {

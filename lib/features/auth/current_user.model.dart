@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:spk_app_frontend/features/auth/roles.enum.dart';
 
 class CurrentUser extends Equatable {
-  const CurrentUser({
+  CurrentUser({
     int? id,
     required this.uid,
     required this.token,
@@ -11,11 +11,13 @@ class CurrentUser extends Equatable {
     this.phone,
     this.name,
     required List<Role> roles,
-    this.managerRegions,
-    this.observerRegions,
+    List<int>? managerRegions,
+    List<int>? observerRegions,
     this.teamId,
   })  : _roles = roles,
-        _id = id;
+        _id = id,
+        managerRegions = managerRegions?.map((e) => e.toString()).toList(),
+        observerRegions = observerRegions?.map((e) => e.toString()).toList();
 
   final int? _id;
   final String uid;
@@ -24,12 +26,12 @@ class CurrentUser extends Equatable {
   final String? phone;
   final String? name;
   final List<Role> _roles;
-  final List<int>? managerRegions;
-  final List<int>? observerRegions;
+  final List<String>? managerRegions;
+  final List<String>? observerRegions;
   final int? teamId;
 
   /// Empty user which represents an unauthenticated user.
-  static const empty = CurrentUser(uid: '', token: '', roles: []);
+  static final empty = CurrentUser(uid: '', token: '', roles: const []);
 
   bool get isEmpty => this == CurrentUser.empty;
   bool get isNotEmpty => this != CurrentUser.empty;

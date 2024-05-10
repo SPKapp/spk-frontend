@@ -24,8 +24,8 @@ class RabbitCreateDto {
   final DateTime? admissionDate;
   final AdmissionType? admissionType;
   final DateTime? fillingDate;
-  int? rabbitGroupId;
-  int? regionId;
+  String? rabbitGroupId;
+  String? regionId;
 
   Map<String, dynamic> toJson() {
     return {

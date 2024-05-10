@@ -15,8 +15,8 @@ void main() {
     late IRegionsRepository regionsRepository;
     late RegionsListBloc regionsListBloc;
 
-    const region1 = Region(id: 1, name: 'Region 1');
-    const region2 = Region(id: 2, name: 'Region 2');
+    const region1 = Region(id: '1', name: 'Region 1');
+    const region2 = Region(id: '2', name: 'Region 2');
 
     const paginatedResult = Paginated<Region>(
       data: [region1],

@@ -58,11 +58,11 @@ void main() {
           .thenAnswer((_) => const RabbitUpdateInitial());
 
       when(() => authCubit.currentUser).thenAnswer(
-        (_) => const CurrentUser(
+        (_) => CurrentUser(
           uid: '1',
           token: 'token',
-          roles: [Role.regionManager],
-          managerRegions: [1],
+          roles: const [Role.regionManager],
+          managerRegions: const [1],
         ),
       );
     });
@@ -102,10 +102,10 @@ void main() {
     testWidgets('should renders correctly - unprivileged',
         (WidgetTester tester) async {
       when(() => authCubit.currentUser).thenAnswer(
-        (_) => const CurrentUser(
+        (_) => CurrentUser(
           uid: '1',
           token: 'token',
-          roles: [Role.volunteer],
+          roles: const [Role.volunteer],
           teamId: 1,
         ),
       );

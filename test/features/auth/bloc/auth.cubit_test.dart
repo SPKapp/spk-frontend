@@ -36,18 +36,18 @@ void main() {
       'emits [Authenticated] when user changes',
       build: () => authCubit,
       act: (cubit) => userStream.add(
-        const CurrentUser(uid: '123', token: '123', roles: []),
+        CurrentUser(uid: '123', token: '123', roles: const []),
       ),
       seed: () => const Unauthenticated(),
       expect: () => [
-        const Authenticated(
-          CurrentUser(uid: '123', token: '123', roles: []),
+        Authenticated(
+          CurrentUser(uid: '123', token: '123', roles: const []),
         ),
       ],
       verify: (bloc) {
         expect(
           authCubit.currentUser,
-          const CurrentUser(uid: '123', token: '123', roles: []),
+          CurrentUser(uid: '123', token: '123', roles: const []),
         );
       },
     );
@@ -56,8 +56,8 @@ void main() {
       'emits [Unauthenticated] when user changes',
       build: () => authCubit,
       act: (cubit) => userStream.add(CurrentUser.empty),
-      seed: () => const Authenticated(
-        CurrentUser(uid: '123', token: '123', roles: []),
+      seed: () => Authenticated(
+        CurrentUser(uid: '123', token: '123', roles: const []),
       ),
       expect: () => [
         const Unauthenticated(),
@@ -76,8 +76,8 @@ void main() {
       },
       build: () => authCubit,
       act: (cubit) => cubit.logout(),
-      seed: () => const Authenticated(
-        CurrentUser(uid: '123', token: '123', roles: []),
+      seed: () => Authenticated(
+        CurrentUser(uid: '123', token: '123', roles: const []),
       ),
       expect: () => [
         const Unauthenticated(),

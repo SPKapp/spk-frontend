@@ -33,12 +33,12 @@ void main() {
       );
 
       when(() => authCubit.currentUser).thenAnswer(
-        (_) => const CurrentUser(
+        (_) => CurrentUser(
           id: 1,
           uid: '1',
           token: 'token',
-          roles: [Role.regionManager],
-          managerRegions: [1],
+          roles: const [Role.regionManager],
+          managerRegions: const [1],
         ),
       );
     });
@@ -102,11 +102,11 @@ void main() {
     testWidgets('does not render edit button when cannot edit rabbit note',
         (WidgetTester tester) async {
       when(() => authCubit.currentUser).thenAnswer(
-        (_) => const CurrentUser(
+        (_) => CurrentUser(
           id: 1,
           uid: '1',
           token: 'token',
-          roles: [],
+          roles: const [],
         ),
       );
 

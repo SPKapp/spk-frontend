@@ -43,7 +43,7 @@ class RabbitsListPage extends StatelessWidget {
           (context) => RabbitsListBloc(
                 rabbitsRepository: context.read<IRabbitsRepository>(),
                 args: FindRabbitsArgs(
-                  teamsIds: teamIds,
+                  teamsIds: teamIds?.map((e) => e.toString()).toList(),
                 ),
               )..add(const FetchRabbits()),
       child: BlocConsumer<RabbitsListBloc, RabbitsListState>(

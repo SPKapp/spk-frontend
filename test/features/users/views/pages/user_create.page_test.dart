@@ -54,11 +54,11 @@ void main() {
           .thenAnswer((_) => const UserCreateInitial());
 
       when(() => authCubit.currentUser).thenAnswer(
-        (_) => const CurrentUser(
+        (_) => CurrentUser(
           uid: '1',
           token: 'token',
-          roles: [Role.regionManager],
-          managerRegions: [1],
+          roles: const [Role.regionManager],
+          managerRegions: const [1],
         ),
       );
     });
@@ -175,19 +175,19 @@ void main() {
     testWidgets('UserCreatePage should show form with selected region',
         (widgetTester) async {
       when(() => authCubit.currentUser).thenAnswer(
-        (_) => const CurrentUser(
+        (_) => CurrentUser(
           uid: '1',
           token: 'token',
-          roles: [Role.regionManager],
-          managerRegions: [1, 2],
+          roles: const [Role.regionManager],
+          managerRegions: const [1, 2],
         ),
       );
 
       when(() => regionsListBloc.state).thenAnswer(
         (_) => const RegionsListSuccess(
           regions: [
-            Region(id: 1, name: 'Region 1'),
-            Region(id: 2, name: 'Region 2'),
+            Region(id: '1', name: 'Region 1'),
+            Region(id: '2', name: 'Region 2'),
           ],
           hasReachedMax: true,
           totalCount: 2,

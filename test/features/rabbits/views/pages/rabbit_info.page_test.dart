@@ -42,11 +42,11 @@ void main() {
           .thenReturn(const RabbitSuccess(rabbit: rabbit));
 
       when(() => authCubit.currentUser).thenAnswer(
-        (_) => const CurrentUser(
+        (_) => CurrentUser(
           uid: '1',
           token: 'token',
-          roles: [Role.regionManager],
-          managerRegions: [1],
+          roles: const [Role.regionManager],
+          managerRegions: const [1],
         ),
       );
     });
@@ -112,10 +112,10 @@ void main() {
     testWidgets('should render RabbitInfoView when RabbitSuccess - volunteer',
         (tester) async {
       when(() => authCubit.currentUser).thenAnswer(
-        (_) => const CurrentUser(
+        (_) => CurrentUser(
           uid: '1',
           token: 'token',
-          roles: [Role.volunteer],
+          roles: const [Role.volunteer],
           teamId: 1,
         ),
       );
@@ -133,11 +133,11 @@ void main() {
     testWidgets('should render RabbitInfoView when RabbitSuccess - observer',
         (tester) async {
       when(() => authCubit.currentUser).thenAnswer(
-        (_) => const CurrentUser(
+        (_) => CurrentUser(
           uid: '1',
           token: 'token',
-          roles: [Role.regionRabbitObserver],
-          observerRegions: [1],
+          roles: const [Role.regionRabbitObserver],
+          observerRegions: const [1],
         ),
       );
 

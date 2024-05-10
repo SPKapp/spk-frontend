@@ -15,7 +15,7 @@ void main() {
 
     final dto = RabbitCreateDto(
       name: 'name',
-      rabbitGroupId: 1,
+      rabbitGroupId: '1',
     );
 
     setUp(() {

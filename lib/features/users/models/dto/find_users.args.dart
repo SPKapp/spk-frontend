@@ -12,7 +12,7 @@ final class FindUsersArgs extends Equatable {
 
   final int? offset;
   final int? limit;
-  final List<int>? regionsIds;
+  final List<String>? regionsIds;
   final bool? isActive;
   final String? name;
 
@@ -28,7 +28,7 @@ final class FindUsersArgs extends Equatable {
   FindUsersArgs copyWith({
     ValueGetter<int?>? offset,
     ValueGetter<int?>? limit,
-    ValueGetter<List<int>?>? regionsIds,
+    ValueGetter<List<String>?>? regionsIds,
     ValueGetter<bool?>? isActive,
     ValueGetter<String?>? name,
   }) {

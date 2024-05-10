@@ -12,8 +12,8 @@ final class FindRabbitsArgs extends Equatable {
 
   final int? offset;
   final int? limit;
-  final List<int>? regionsIds;
-  final List<int>? teamsIds;
+  final List<String>? regionsIds;
+  final List<String>? teamsIds;
   final String? name;
 
   @override
@@ -28,8 +28,8 @@ final class FindRabbitsArgs extends Equatable {
   FindRabbitsArgs copyWith({
     ValueGetter<int?>? offset,
     ValueGetter<int?>? limit,
-    ValueGetter<List<int>?>? regionsIds,
-    ValueGetter<List<int>?>? teamsIds,
+    ValueGetter<List<String>?>? regionsIds,
+    ValueGetter<List<String>?>? teamsIds,
     ValueGetter<String?>? name,
   }) {
     return FindRabbitsArgs(
