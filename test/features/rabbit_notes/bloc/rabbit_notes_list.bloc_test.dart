@@ -15,26 +15,26 @@ void main() {
     late IRabbitNotesRepository rabbitNoteRepository;
     late RabbitNotesListBloc rabbitNotesListBloc;
 
-    const args1 = FindRabbitNotesArgs(rabbitId: 1);
+    const args1 = FindRabbitNotesArgs(rabbitId: '1');
     const args2 = FindRabbitNotesArgs(
-      rabbitId: 1,
+      rabbitId: '1',
       limit: 10,
     );
 
     const rabbitNotes1 = [
       RabbitNote(
-        id: 1,
+        id: '1',
       ),
       RabbitNote(
-        id: 2,
+        id: '2',
       ),
     ];
     const rabbitNotes2 = [
       RabbitNote(
-        id: 3,
+        id: '3',
       ),
       RabbitNote(
-        id: 4,
+        id: '4',
       ),
     ];
 

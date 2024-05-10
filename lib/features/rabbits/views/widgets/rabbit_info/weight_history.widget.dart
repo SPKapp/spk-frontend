@@ -16,7 +16,7 @@ class WeightHistory extends StatelessWidget {
     this.rabbitNotesListBloc,
   });
 
-  final int rabbitId;
+  final String rabbitId;
   final RabbitNotesListBloc Function(BuildContext)? rabbitNotesListBloc;
 
   @override

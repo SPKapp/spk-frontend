@@ -15,14 +15,14 @@ void main() {
     late IRabbitNotesRepository rabbitNotesRepository;
 
     const RabbitNote rabbitNote = RabbitNote(
-      id: 1,
+      id: '1',
       description: 'Test Rabbit Note',
     );
 
     setUp(() {
       rabbitNotesRepository = MockRabbitNotesRepository();
       rabbitNoteCubit = RabbitNoteCubit(
-        rabbitNoteId: 1,
+        rabbitNoteId: '1',
         rabbitNotesRepository: rabbitNotesRepository,
       );
     });
@@ -38,7 +38,7 @@ void main() {
     blocTest<RabbitNoteCubit, RabbitNoteState>(
       'emits [RabbitNoteSuccess] when fetchRabbitNote is called',
       setUp: () {
-        when(() => rabbitNotesRepository.findOne(1))
+        when(() => rabbitNotesRepository.findOne('1'))
             .thenAnswer((_) async => rabbitNote);
       },
       build: () => rabbitNoteCubit,
@@ -49,7 +49,7 @@ void main() {
         ),
       ],
       verify: (_) {
-        verify(() => rabbitNotesRepository.findOne(1)).called(1);
+        verify(() => rabbitNotesRepository.findOne('1')).called(1);
         verifyNoMoreInteractions(rabbitNotesRepository);
       },
     );
@@ -57,7 +57,7 @@ void main() {
     blocTest<RabbitNoteCubit, RabbitNoteState>(
       'emits [RabbitNoteFailure] when fetchRabbitNote is called',
       setUp: () {
-        when(() => rabbitNotesRepository.findOne(1)).thenThrow(Exception());
+        when(() => rabbitNotesRepository.findOne('1')).thenThrow(Exception());
       },
       build: () => rabbitNoteCubit,
       act: (cubit) => cubit.fetchRabbitNote(),
@@ -65,7 +65,7 @@ void main() {
         const RabbitNoteFailure(),
       ],
       verify: (_) {
-        verify(() => rabbitNotesRepository.findOne(1)).called(1);
+        verify(() => rabbitNotesRepository.findOne('1')).called(1);
         verifyNoMoreInteractions(rabbitNotesRepository);
       },
     );

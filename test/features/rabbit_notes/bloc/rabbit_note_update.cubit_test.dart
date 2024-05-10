@@ -17,7 +17,7 @@ void main() {
     setUp(() {
       mockRepository = MockRabbitNotesRepository();
       cubit = RabbitNoteUpdateCubit(
-        rabbitNoteId: 1,
+        rabbitNoteId: '1',
         rabbitNotesRepository: mockRepository,
       );
     });
@@ -31,7 +31,7 @@ void main() {
     });
 
     group('update', () {
-      const dto = RabbitNoteUpdateDto(id: 1, description: 'test');
+      const dto = RabbitNoteUpdateDto(id: '1', description: 'test');
       blocTest<RabbitNoteUpdateCubit, RabbitNoteUpdateState>(
         'emits [RabbitNoteUpdated] when updateRabbitNote is called',
         setUp: () {
@@ -69,7 +69,7 @@ void main() {
       blocTest<RabbitNoteUpdateCubit, RabbitNoteUpdateState>(
         'emits [RabbitNoteUpdated] when removeRabbitNote is called',
         setUp: () {
-          when(() => mockRepository.remove(1)).thenAnswer((_) async {});
+          when(() => mockRepository.remove('1')).thenAnswer((_) async {});
         },
         build: () => cubit,
         act: (cubit) => cubit.removeRabbitNote(),
@@ -77,7 +77,7 @@ void main() {
           const RabbitNoteUpdated(),
         ],
         verify: (_) {
-          verify(() => mockRepository.remove(1)).called(1);
+          verify(() => mockRepository.remove('1')).called(1);
           verifyNoMoreInteractions(mockRepository);
         },
       );
@@ -85,7 +85,7 @@ void main() {
       blocTest<RabbitNoteUpdateCubit, RabbitNoteUpdateState>(
         'emits [RabbitNoteUpdateFailure] when removeRabbitNote is called',
         setUp: () {
-          when(() => mockRepository.remove(1)).thenThrow(Exception());
+          when(() => mockRepository.remove('1')).thenThrow(Exception());
         },
         build: () => cubit,
         act: (cubit) => cubit.removeRabbitNote(),
@@ -93,7 +93,7 @@ void main() {
           const RabbitNoteUpdateFailure(),
         ],
         verify: (_) {
-          verify(() => mockRepository.remove(1)).called(1);
+          verify(() => mockRepository.remove('1')).called(1);
           verifyNoMoreInteractions(mockRepository);
         },
       );

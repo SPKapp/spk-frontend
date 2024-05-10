@@ -23,7 +23,7 @@ class RabbitNotesListPage extends StatelessWidget {
     this.rabbitNotesListBloc,
   });
 
-  final int rabbitId;
+  final String rabbitId;
   final String? rabbitName;
   final bool? isVetVisit;
   final RabbitNotesListBloc Function(BuildContext)? rabbitNotesListBloc;

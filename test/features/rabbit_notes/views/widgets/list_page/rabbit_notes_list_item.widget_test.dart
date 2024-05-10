@@ -20,7 +20,7 @@ void main() {
     testWidgets('should display vet visit information correctly',
         (WidgetTester tester) async {
       final rabbitNote = RabbitNote(
-        id: 1,
+        id: '1',
         vetVisit: VetVisit(
           visitInfo: const [
             VisitInfo(visitType: VisitType.control),
@@ -62,7 +62,7 @@ void main() {
             child: const Scaffold(
               body: RabbitNoteListItem(
                 rabbitNote: RabbitNote(
-                  id: 1,
+                  id: '1',
                 ),
                 rabbitName: 'Fluffy',
               ),
@@ -90,7 +90,7 @@ void main() {
             child: const Scaffold(
               body: RabbitNoteListItem(
                 rabbitNote: RabbitNote(
-                  id: 1,
+                  id: '1',
                 ),
                 rabbitName: 'Fluffy',
               ),

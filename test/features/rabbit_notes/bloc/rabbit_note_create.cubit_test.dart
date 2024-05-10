@@ -22,7 +22,7 @@ void main() {
 
       registerFallbackValue(
         const RabbitNoteCreateDto(
-          rabbitId: 1,
+          rabbitId: '1',
           description: 'description',
         ),
       );
@@ -44,7 +44,7 @@ void main() {
       },
       build: () => cubit,
       act: (cubit) => cubit.createRabbitNote(const RabbitNoteCreateDto(
-        rabbitId: 1,
+        rabbitId: '1',
         description: 'description',
       )),
       expect: () => [
@@ -64,7 +64,7 @@ void main() {
       },
       build: () => cubit,
       act: (cubit) => cubit.createRabbitNote(const RabbitNoteCreateDto(
-        rabbitId: 1,
+        rabbitId: '1',
         description: 'description',
       )),
       expect: () => [

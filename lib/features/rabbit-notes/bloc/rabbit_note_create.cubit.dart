@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:spk_app_frontend/common/services/logger.service.dart';
 
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
@@ -23,6 +24,7 @@ class RabbitNoteCreateCubit extends Cubit<RabbitNoteCreateState> {
         super(const RabbitNoteCreateInitial());
 
   final IRabbitNotesRepository _rabbitNotesRepository;
+  final logger = LoggerService();
 
   /// Creates a new rabbit note based on the provided [dto].
   void createRabbitNote(RabbitNoteCreateDto dto) async {
@@ -32,6 +34,7 @@ class RabbitNoteCreateCubit extends Cubit<RabbitNoteCreateState> {
         RabbitNoteCreated(rabbitNoteId),
       );
     } catch (e) {
+      logger.error('Error while creating a rabbit note', error: e);
       emit(
         const RabbitNoteCreateFailure(),
       );

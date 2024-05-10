@@ -32,7 +32,8 @@ void main() {
           .thenAnswer((_) async => Object());
 
       registerFallbackValue(
-        const RabbitNoteCreateDto(rabbitId: 1, description: 'Test description'),
+        const RabbitNoteCreateDto(
+            rabbitId: '1', description: 'Test description'),
       );
     });
 
@@ -44,7 +45,7 @@ void main() {
         home: InheritedGoRouter(
           goRouter: goRouter,
           child: RabbitNoteCreatePage(
-            rabbitId: 1,
+            rabbitId: '1',
             rabbitName: rabbitName,
             isVetVisitInitial: isVetVisitInitial,
             rabbitNoteCreateCubit: (context) => createCubit,
@@ -88,7 +89,7 @@ void main() {
 
       verify(() => createCubit.createRabbitNote(
             const RabbitNoteCreateDto(
-                rabbitId: 1, description: 'Test description'),
+                rabbitId: '1', description: 'Test description'),
           )).called(1);
       verify(() => goRouter.pushReplacement(
             '/note/1',
@@ -120,7 +121,7 @@ void main() {
 
       verify(() => createCubit.createRabbitNote(
             const RabbitNoteCreateDto(
-                rabbitId: 1, description: 'Test description'),
+                rabbitId: '1', description: 'Test description'),
           )).called(1);
       verifyNever(() => goRouter.pushReplacement(
             any(),

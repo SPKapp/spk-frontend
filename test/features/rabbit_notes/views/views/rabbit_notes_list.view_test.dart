@@ -17,12 +17,12 @@ void main() {
 
     final rabbitNotes = [
       RabbitNote(
-        id: 1,
+        id: '1',
         description: 'Notatka 1',
         createdAt: DateTime(2024, 1, 1),
       ),
       RabbitNote(
-        id: 2,
+        id: '2',
         description: 'Notatka 2',
         createdAt: DateTime(2024, 1, 2),
       ),

@@ -11,7 +11,7 @@ class RabbitNoteRemoveAction extends StatelessWidget {
     this.rabbitNoteUpdateCubit,
   });
 
-  final int rabbitNoteId;
+  final String rabbitNoteId;
   final RabbitNoteUpdateCubit Function(BuildContext)? rabbitNoteUpdateCubit;
 
   @override

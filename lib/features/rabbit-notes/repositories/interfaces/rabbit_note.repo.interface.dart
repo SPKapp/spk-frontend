@@ -11,10 +11,10 @@ abstract interface class IRabbitNotesRepository {
       FindRabbitNotesArgs args, bool totalCount);
 
   /// Retrieves a single [RabbitNote] object based on the provided [id].
-  Future<RabbitNote> findOne(int id);
+  Future<RabbitNote> findOne(String id);
 
   /// Remove a [RabbitNote] from the database based on the provided [id].
-  Future<void> remove(int id);
+  Future<void> remove(String id);
 
   /// Create a new [RabbitNote] object based on the provided [dto].
   /// Returns the id of the created object.

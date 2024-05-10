@@ -32,7 +32,7 @@ void main() {
           navigator: navigator,
           child: Scaffold(
             body: RabbitNoteRemoveAction(
-              rabbitNoteId: 1,
+              rabbitNoteId: '1',
               rabbitNoteUpdateCubit: (context) => rabbitNoteUpdateCubit,
             ),
           ),

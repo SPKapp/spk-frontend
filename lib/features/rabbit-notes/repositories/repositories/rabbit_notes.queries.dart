@@ -44,7 +44,7 @@ query $operationName(
 abstract class GetRabbitNoteQuery {
   static const String operationName = 'GetRabbitNote';
   static const String document = '''
-query $operationName(\$id: Int!) {
+query $operationName(\$id: ID!) {
 	rabbitNote(id: \$id) {
 		id
 		rabbitId

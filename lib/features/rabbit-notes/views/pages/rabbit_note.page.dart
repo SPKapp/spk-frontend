@@ -23,7 +23,7 @@ class RabbitNotePage extends StatelessWidget {
     this.rabbitNoteCubit,
   });
 
-  final int id;
+  final String id;
   final String? rabbitName;
   final RabbitNoteCubit Function(BuildContext)? rabbitNoteCubit;
 
@@ -56,7 +56,8 @@ class RabbitNotePage extends StatelessWidget {
             case RabbitNoteSuccess():
               editable = isAtLeastRegionManager ||
                   (state.rabbitNote.createdBy != null &&
-                      user.checkId(state.rabbitNote.createdBy));
+                      user.checkId(
+                          int.tryParse(state.rabbitNote.createdBy ?? '')));
               body = RabbitNoteView(rabbitNote: state.rabbitNote);
           }
 

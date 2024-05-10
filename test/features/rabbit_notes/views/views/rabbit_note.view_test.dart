@@ -40,7 +40,7 @@ void main() {
         await tester.pumpWidget(
           buildWidget(
             rabbitNote: RabbitNote(
-              id: 1,
+              id: '1',
               createdAt: DateTime(2024, 1, 1),
               description: 'Description',
               weight: 1.0,
@@ -68,7 +68,7 @@ void main() {
         await tester.pumpWidget(
           buildWidget(
             rabbitNote: const RabbitNote(
-              id: 1,
+              id: '1',
             ),
           ),
         );
@@ -88,7 +88,7 @@ void main() {
         await tester.pumpWidget(
           buildWidget(
             rabbitNote: RabbitNote(
-              id: 1,
+              id: '1',
               description: 'Description',
               weight: 1.0,
               vetVisit: VetVisit(
@@ -124,7 +124,7 @@ void main() {
         await tester.pumpWidget(
           buildWidget(
             rabbitNote: RabbitNote(
-              id: 1,
+              id: '1',
               vetVisit: VetVisit(visitInfo: List.empty(growable: true)),
             ),
           ),
@@ -147,13 +147,13 @@ void main() {
         Stream.fromIterable(
           [
             const RabbitNoteInitial(),
-            const RabbitNoteSuccess(rabbitNote: RabbitNote(id: 1)),
+            const RabbitNoteSuccess(rabbitNote: RabbitNote(id: '1')),
           ],
         ),
       );
 
       await tester.pumpWidget(
-        buildWidget(rabbitNote: const RabbitNote(id: 1)),
+        buildWidget(rabbitNote: const RabbitNote(id: '1')),
       );
 
       await tester.fling(

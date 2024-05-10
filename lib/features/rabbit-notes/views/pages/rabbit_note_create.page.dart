@@ -23,7 +23,7 @@ class RabbitNoteCreatePage extends StatefulWidget {
     this.rabbitNoteCreateCubit,
   });
 
-  final int rabbitId;
+  final String rabbitId;
   final String? rabbitName;
   final bool? isVetVisitInitial;
   final RabbitNoteCreateCubit Function(BuildContext)? rabbitNoteCreateCubit;

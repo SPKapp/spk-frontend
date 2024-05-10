@@ -10,7 +10,7 @@ final class RabbitNoteCreateDto extends Equatable {
     this.vetVisit,
   });
 
-  final int rabbitId;
+  final String rabbitId;
   final String description;
   final double? weight;
   final VetVisit? vetVisit;

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:spk_app_frontend/common/services/logger.service.dart';
 
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
@@ -23,8 +24,9 @@ class RabbitNoteCubit extends Cubit<RabbitNoteState> {
   })  : _rabbitNotesRepository = rabbitNotesRepository,
         super(const RabbitNoteInitial());
 
-  final int rabbitNoteId;
+  final String rabbitNoteId;
   final IRabbitNotesRepository _rabbitNotesRepository;
+  final logger = LoggerService();
 
   /// Fetches the RabbitNote with the given [rabbitNoteId].
   /// Emits new state only if data was changed.
@@ -39,6 +41,7 @@ class RabbitNoteCubit extends Cubit<RabbitNoteState> {
         ),
       );
     } catch (e) {
+      logger.error('Error while fetching a RabbitNote', error: e);
       emit(
         const RabbitNoteFailure(),
       );

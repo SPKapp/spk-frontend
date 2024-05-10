@@ -59,7 +59,7 @@ final class FindRabbitNotesArgs extends Equatable {
     this.vetVisit,
   });
 
-  final int rabbitId;
+  final String rabbitId;
   final int? offset;
   final int? limit;
   final DateTime? createdAtFrom;

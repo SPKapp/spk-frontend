@@ -21,7 +21,6 @@ class GqlRabbitNotesRepository implements IRabbitNotesRepository {
     );
 
     if (result.hasException) {
-      // TODO: Better error handling - own exception and print the error message to the user
       throw Exception(result.exception);
     }
 
@@ -29,7 +28,7 @@ class GqlRabbitNotesRepository implements IRabbitNotesRepository {
   }
 
   @override
-  Future<RabbitNote> findOne(int id) async {
+  Future<RabbitNote> findOne(String id) async {
     final result = await _gqlService.query(
       GetRabbitNoteQuery.document,
       operationName: GetRabbitNoteQuery.operationName,
@@ -44,7 +43,7 @@ class GqlRabbitNotesRepository implements IRabbitNotesRepository {
   }
 
   @override
-  Future<void> remove(int id) async {
+  Future<void> remove(String id) async {
     final result = await _gqlService.mutate(
       RemoveRabbitNoteMutation.document,
       operationName: RemoveRabbitNoteMutation.operationName,

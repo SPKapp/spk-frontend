@@ -34,7 +34,7 @@ void main() {
 
       when(() => rabbitNoteCubit.state).thenReturn(
         const RabbitNoteSuccess(
-            rabbitNote: RabbitNote(id: 1, description: 'Test')),
+            rabbitNote: RabbitNote(id: '1', description: 'Test')),
       );
 
       when(() => rabbitNoteUpdateCubit.state).thenReturn(
@@ -42,7 +42,7 @@ void main() {
       );
 
       registerFallbackValue(
-        const RabbitNoteUpdateDto(id: 1),
+        const RabbitNoteUpdateDto(id: '1'),
       );
     });
 
@@ -51,7 +51,7 @@ void main() {
         home: InheritedGoRouter(
           goRouter: goRouter,
           child: RabbitNoteUpdatePage(
-            rabbitNoteId: 1,
+            rabbitNoteId: '1',
             rabbitNoteCubit: (context) => rabbitNoteCubit,
             rabbitNoteUpdateCubit: (context) => rabbitNoteUpdateCubit,
           ),
@@ -108,7 +108,7 @@ void main() {
 
       verify(() => rabbitNoteUpdateCubit.updateRabbitNote(
             const RabbitNoteUpdateDto(
-              id: 1,
+              id: '1',
               description: 'Test description',
               weight: 0.0,
               vetVisit: null,
@@ -136,7 +136,7 @@ void main() {
       expect(find.byKey(const Key('errorSnackBar')), findsOneWidget);
       verify(() => rabbitNoteUpdateCubit.updateRabbitNote(
             const RabbitNoteUpdateDto(
-              id: 1,
+              id: '1',
               description: 'Test description',
               weight: 0.0,
               vetVisit: null,

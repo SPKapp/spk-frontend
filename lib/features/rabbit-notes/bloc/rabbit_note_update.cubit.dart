@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:spk_app_frontend/common/services/logger.service.dart';
 
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
@@ -25,8 +26,9 @@ class RabbitNoteUpdateCubit extends Cubit<RabbitNoteUpdateState> {
   })  : _rabbitNotesRepository = rabbitNotesRepository,
         super(const RabbitNoteUpdateInitial());
 
-  final int rabbitNoteId;
+  final String rabbitNoteId;
   final IRabbitNotesRepository _rabbitNotesRepository;
+  final logger = LoggerService();
 
   /// Updates the RabbitNote with the given [rabbitNoteId] using the provided [dto].
   void updateRabbitNote(RabbitNoteUpdateDto dto) async {
@@ -42,6 +44,7 @@ class RabbitNoteUpdateCubit extends Cubit<RabbitNoteUpdateState> {
         const RabbitNoteUpdated(),
       );
     } catch (e) {
+      logger.error('Error while updating RabbitNote', error: e);
       emit(
         const RabbitNoteUpdateFailure(),
       );
@@ -56,6 +59,7 @@ class RabbitNoteUpdateCubit extends Cubit<RabbitNoteUpdateState> {
         const RabbitNoteUpdated(),
       );
     } catch (e) {
+      logger.error('Error while removing RabbitNote', error: e);
       emit(
         const RabbitNoteUpdateFailure(),
       );

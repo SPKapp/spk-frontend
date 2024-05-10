@@ -46,7 +46,7 @@ void main() {
 
     testWidgets('should render correctly - all', (WidgetTester tester) async {
       await tester.pumpWidget(
-        buildWidget(const FindRabbitNotesArgs(rabbitId: 1)),
+        buildWidget(const FindRabbitNotesArgs(rabbitId: '1')),
       );
 
       expect(find.text('Filtruj notatki'), findsOneWidget);
@@ -58,7 +58,7 @@ void main() {
 
     testWidgets('should render correctly - notes', (WidgetTester tester) async {
       await tester.pumpWidget(
-        buildWidget(const FindRabbitNotesArgs(rabbitId: 1)),
+        buildWidget(const FindRabbitNotesArgs(rabbitId: '1')),
       );
 
       expect(find.text('Filtruj notatki'), findsOneWidget);
@@ -71,7 +71,7 @@ void main() {
     testWidgets('should render correctly - vet visit',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        buildWidget(const FindRabbitNotesArgs(rabbitId: 1, isVetVisit: true)),
+        buildWidget(const FindRabbitNotesArgs(rabbitId: '1', isVetVisit: true)),
       );
 
       expect(find.text('Filtruj notatki'), findsOneWidget);
@@ -83,7 +83,7 @@ void main() {
 
     testWidgets('should update args when choice chips are selected',
         (WidgetTester tester) async {
-      FindRabbitNotesArgs args = const FindRabbitNotesArgs(rabbitId: 1);
+      FindRabbitNotesArgs args = const FindRabbitNotesArgs(rabbitId: '1');
 
       await tester.pumpWidget(
         buildWidget(args),
@@ -108,7 +108,7 @@ void main() {
     testWidgets('should update args when filter chips are selected',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        buildWidget(const FindRabbitNotesArgs(rabbitId: 1, isVetVisit: true)),
+        buildWidget(const FindRabbitNotesArgs(rabbitId: '1', isVetVisit: true)),
       );
 
       await tester.tap(find.byType(FilterChip).first);
@@ -123,7 +123,7 @@ void main() {
         () => rabbitNotesListBloc.add(
           RefreshRabbitNotes(
             FindRabbitNotesArgs(
-              rabbitId: 1,
+              rabbitId: '1',
               isVetVisit: true,
               vetVisit: VetVisitArgs(
                 visitTypes: [VisitType.values.first, VisitType.values.last],

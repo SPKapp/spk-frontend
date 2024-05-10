@@ -22,7 +22,7 @@ void main() {
     late RabbitNoteCubit rabbitNoteCubit;
     late AuthCubit authCubit;
 
-    const rabbitNote = RabbitNote(id: 1);
+    const rabbitNote = RabbitNote(id: '1');
 
     setUp(() {
       rabbitNoteCubit = MockRabbitNoteCubit();
@@ -48,7 +48,7 @@ void main() {
         home: BlocProvider<AuthCubit>.value(
           value: authCubit,
           child: RabbitNotePage(
-            id: 1,
+            id: '1',
             rabbitNoteCubit: (_) => rabbitNoteCubit,
             rabbitName: rabbitName,
           ),

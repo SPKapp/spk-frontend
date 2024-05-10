@@ -18,7 +18,7 @@ void main() {
     late RabbitNotesListBloc rabbitNotesListBloc;
 
     final rabbitNote = RabbitNote(
-      id: 1,
+      id: '1',
       weight: 1.0,
       createdAt: DateTime(2024, 1, 1),
     );
@@ -31,7 +31,7 @@ void main() {
       return MaterialApp(
         home: Scaffold(
           body: WeightHistory(
-            rabbitId: 1,
+            rabbitId: '1',
             rabbitNotesListBloc: (_) => rabbitNotesListBloc,
           ),
         ),

@@ -21,7 +21,7 @@ class RabbitNoteUpdatePage extends StatefulWidget {
     this.rabbitNoteUpdateCubit,
   });
 
-  final int rabbitNoteId;
+  final String rabbitNoteId;
   final RabbitNoteCubit Function(BuildContext)? rabbitNoteCubit;
   final RabbitNoteUpdateCubit Function(BuildContext)? rabbitNoteUpdateCubit;
 

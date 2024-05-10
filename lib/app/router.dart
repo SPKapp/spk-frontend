@@ -76,7 +76,7 @@ class AppRouter {
                     final extra = state.extra as dynamic;
 
                     return RabbitNotesListPage(
-                        rabbitId: int.parse(state.pathParameters['id']!),
+                        rabbitId: state.pathParameters['id']!,
                         rabbitName: extra?['rabbitName'],
                         isVetVisit: extra?['isVetVisit']);
                   },
@@ -87,7 +87,7 @@ class AppRouter {
                     final extra = state.extra as dynamic;
 
                     return RabbitNoteCreatePage(
-                      rabbitId: int.parse(state.pathParameters['id']!),
+                      rabbitId: state.pathParameters['id']!,
                       isVetVisitInitial: extra?['isVetVisit'],
                       rabbitName: extra?['rabbitName'],
                     );
@@ -101,7 +101,7 @@ class AppRouter {
                 final extra = state.extra as dynamic;
 
                 return RabbitNotePage(
-                  id: int.parse(state.pathParameters['id']!),
+                  id: state.pathParameters['id']!,
                   rabbitName: extra?['rabbitName'],
                 );
               },
@@ -110,7 +110,7 @@ class AppRouter {
                   path: 'edit',
                   builder: (context, state) {
                     return RabbitNoteUpdatePage(
-                      rabbitNoteId: int.parse(state.pathParameters['id']!),
+                      rabbitNoteId: state.pathParameters['id']!,
                     );
                   },
                 ),

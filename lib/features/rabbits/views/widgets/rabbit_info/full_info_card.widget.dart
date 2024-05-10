@@ -40,7 +40,7 @@ class FullInfoCard extends StatelessWidget {
                 () => showModalBottomSheet(
                       context: context,
                       builder: (BuildContext context) => WeightHistory(
-                        rabbitId: rabbit.id,
+                        rabbitId: rabbit.id.toString(),
                       ),
                       isScrollControlled: true,
                     ),

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:spk_app_frontend/common/bloc/debounce.transformer.dart';
+import 'package:spk_app_frontend/common/services/logger.service.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
@@ -37,6 +38,7 @@ class RabbitNotesListBloc
   }
 
   final IRabbitNotesRepository _rabbitNoteRepository;
+  final logger = LoggerService();
   FindRabbitNotesArgs _args;
 
   FindRabbitNotesArgs get args => _args;
@@ -60,6 +62,7 @@ class RabbitNotesListBloc
         totalCount: totalCount,
       ));
     } catch (e) {
+      logger.error('Error while fetching RabbitNotes', error: e);
       emit(RabbitNotesListFailure(
         rabbitNotes: state.rabbitNotes,
         hasReachedMax: state.hasReachedMax,

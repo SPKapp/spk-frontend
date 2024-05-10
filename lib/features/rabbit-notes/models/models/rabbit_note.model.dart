@@ -13,9 +13,9 @@ final class RabbitNote extends Equatable {
     this.createdAt,
   });
 
-  final int id;
-  final int? rabbitId;
-  final int? createdBy;
+  final String id;
+  final String? rabbitId;
+  final String? createdBy;
   final String? description;
   final double? weight;
   final VetVisit? vetVisit;
@@ -26,9 +26,9 @@ final class RabbitNote extends Equatable {
 
   factory RabbitNote.fromJson(Map<String, dynamic> json) {
     return RabbitNote(
-      id: int.parse(json['id']),
-      rabbitId: int.tryParse(json['rabbitId'] ?? ''),
-      createdBy: int.tryParse(json['createdBy'] ?? ''),
+      id: json['id'] as String,
+      rabbitId: json['rabbitId'] as String?,
+      createdBy: json['createdBy'] as String?,
       description: json['description'] as String?,
       weight: json['weight'] is int
           ? (json['weight'] as int).toDouble()

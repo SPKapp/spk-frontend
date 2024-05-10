@@ -33,7 +33,7 @@ void main() {
         home: InheritedGoRouter(
           goRouter: goRouter,
           child: RabbitNotesListPage(
-            rabbitId: 1,
+            rabbitId: '1',
             rabbitName: name,
             isVetVisit: isVetVisit,
             rabbitNotesListBloc: (context) => rabbitNotesListBloc,
@@ -101,7 +101,7 @@ void main() {
             const RabbitNotesListFailure(
               rabbitNotes: [
                 RabbitNote(
-                  id: 1,
+                  id: '1',
                   description: 'Test note',
                 ),
               ],
@@ -112,7 +112,7 @@ void main() {
           initialState: const RabbitNotesListSuccess(
             rabbitNotes: [
               RabbitNote(
-                id: 1,
+                id: '1',
                 description: 'Test note',
               ),
             ],
@@ -140,7 +140,7 @@ void main() {
         const RabbitNotesListSuccess(
           rabbitNotes: [
             RabbitNote(
-              id: 1,
+              id: '1',
               description: 'Test note',
             ),
           ],
@@ -167,7 +167,7 @@ void main() {
         const RabbitNotesListSuccess(
           rabbitNotes: [
             RabbitNote(
-              id: 1,
+              id: '1',
               description: 'Test note',
             ),
           ],
@@ -193,7 +193,7 @@ void main() {
         const RabbitNotesListSuccess(
           rabbitNotes: [
             RabbitNote(
-              id: 1,
+              id: '1',
               description: 'Test note',
             ),
           ],
@@ -202,7 +202,7 @@ void main() {
         ),
       );
       when(() => rabbitNotesListBloc.args)
-          .thenReturn(const FindRabbitNotesArgs(rabbitId: 1));
+          .thenReturn(const FindRabbitNotesArgs(rabbitId: '1'));
 
       await tester.pumpWidget(
         buildWidget(name: 'Test Rabbit'),
@@ -225,7 +225,7 @@ void main() {
         ),
       );
       when(() => rabbitNotesListBloc.args)
-          .thenReturn(const FindRabbitNotesArgs(rabbitId: 1));
+          .thenReturn(const FindRabbitNotesArgs(rabbitId: '1'));
 
       when(
         () =>
@@ -257,8 +257,8 @@ void main() {
           totalCount: 0,
         ),
       );
-      when(() => rabbitNotesListBloc.args)
-          .thenReturn(const FindRabbitNotesArgs(rabbitId: 1, isVetVisit: true));
+      when(() => rabbitNotesListBloc.args).thenReturn(
+          const FindRabbitNotesArgs(rabbitId: '1', isVetVisit: true));
 
       when(
         () =>
