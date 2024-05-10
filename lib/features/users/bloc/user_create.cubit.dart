@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:spk_app_frontend/common/services/logger.service.dart';
 
 import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
@@ -22,6 +23,7 @@ class UserCreateCubit extends Cubit<UserCreateState> {
         super(const UserCreateInitial());
 
   final IUsersRepository _usersRepository;
+  final logger = LoggerService();
 
   /// Creates a new user with the given [user] data.
   void createUser(UserCreateDto user) async {
@@ -33,6 +35,7 @@ class UserCreateCubit extends Cubit<UserCreateState> {
         ),
       );
     } catch (e) {
+      logger.error('Error while creating user: $e');
       emit(
         const UserCreateFailure(),
       );

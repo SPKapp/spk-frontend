@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
 
 import 'package:spk_app_frontend/common/bloc/debounce.transformer.dart';
+import 'package:spk_app_frontend/common/services/logger.service.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
@@ -40,6 +41,7 @@ class RabbitsListBloc extends Bloc<RabbitsListEvent, RabbitsListState> {
   }
 
   final IRabbitsRepository _rabbitsRepository;
+  final logger = LoggerService();
   FindRabbitsArgs _args;
 
   FindRabbitsArgs get args => _args;
@@ -63,6 +65,7 @@ class RabbitsListBloc extends Bloc<RabbitsListEvent, RabbitsListState> {
         totalCount: totalCount,
       ));
     } catch (e) {
+      logger.error('Error fetching rabbits', error: e);
       emit(
         RabbitsListFailure(
           rabbitGroups: state.rabbitGroups,

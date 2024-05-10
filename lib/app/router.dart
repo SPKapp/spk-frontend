@@ -20,7 +20,6 @@ class AppRouter {
         redirect: _signInRedirect,
         builder: (context, state) => const SignInScreen(
           showAuthActionSwitch: false,
-          email: 'tester2@example.com', // TODO: Remove testing data
         ),
       ),
       GoRoute(

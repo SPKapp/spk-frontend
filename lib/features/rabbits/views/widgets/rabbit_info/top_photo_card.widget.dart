@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:spk_app_frontend/config/config.local.dart';
+import 'package:spk_app_frontend/config/config.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 
@@ -35,7 +35,7 @@ class TopPhotoCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             image: const DecorationImage(
               image: NetworkImage(
-                LocalConfig.photoUrl,
+                AppConfig.photoUrl,
               ),
               fit: BoxFit.cover,
             ),

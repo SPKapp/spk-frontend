@@ -47,9 +47,11 @@ google-services.json
 firebase_app_id_file.json
 GoogleService-Info.plist
 firebase_options.dart
+.firebase/
 
 # local files
 *.local.dart
 
-# Mockito related
-*.mocks.dart
+# Configuration files
+configs/*
+configs/development.config.json

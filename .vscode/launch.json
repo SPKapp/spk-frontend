@@ -4,7 +4,11 @@
         {
             "name": "Start",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define-from-file",
+                "configs/development.config.json"
+            ]
         },
         {
             "name": "spk_app_frontend (profile mode)",
