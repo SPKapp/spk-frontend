@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
+import 'package:spk_app_frontend/features/regions/models/dto.dart';
 import 'package:spk_app_frontend/features/regions/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 
@@ -35,21 +36,22 @@ class RolesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final bloc = RegionsListBloc(
-          regionsRepository: context.read<IRegionsRepository>(),
-        );
+        Set<String>? regionsIds;
 
         if (_managerRegions?.isNotEmpty == true ||
             _observerRegions?.isNotEmpty == true) {
-          // final regionsIds = <String>{
-          //   ...?_managerRegions,
-          //   ...?_observerRegions,
-          // };
-
-          // TODO: add regionsIds to the query
-          bloc.add(const RefreshRegions());
+          regionsIds = <String>{
+            ...?_managerRegions,
+            ...?_observerRegions,
+          };
         }
-        return bloc;
+        return RegionsListBloc(
+          regionsRepository: context.read<IRegionsRepository>(),
+          args: FindRegionsArgs(
+            limit: 0,
+            regionsIds: regionsIds,
+          ),
+        )..add(const FetchRegions());
       },
       child: AppCard(
         child: _hasAnyRole

@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
+import 'package:spk_app_frontend/features/regions/models/dto.dart';
 import 'package:spk_app_frontend/features/regions/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
 
@@ -31,7 +32,10 @@ void main() {
       regionsRepository = MockRegionsRepository();
       regionsListBloc = RegionsListBloc(
         regionsRepository: regionsRepository,
+        args: const FindRegionsArgs(),
       );
+
+      registerFallbackValue(const FindRegionsArgs());
     });
 
     tearDown(() {
@@ -46,10 +50,7 @@ void main() {
       'emits [RegionsListSuccess] when FetchRegions event is added',
       setUp: () {
         when(
-          () => regionsRepository.findAll(
-            offset: 0,
-            totalCount: true,
-          ),
+          () => regionsRepository.findAll(any(), any()),
         ).thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => regionsListBloc,
@@ -63,8 +64,10 @@ void main() {
       ],
       verify: (_) {
         verify(() => regionsRepository.findAll(
-              offset: 0,
-              totalCount: true,
+              any(
+                  that: isA<FindRegionsArgs>()
+                      .having((p) => p.offset, 'offset', 0)),
+              true,
             )).called(1);
         verifyNoMoreInteractions(regionsRepository);
       },
@@ -74,10 +77,7 @@ void main() {
       'emits [RegionsListFailure] when an error occurs on initial fetch',
       setUp: () {
         when(
-          () => regionsRepository.findAll(
-            offset: 0,
-            totalCount: true,
-          ),
+          () => regionsRepository.findAll(any(), any()),
         ).thenThrow(Exception());
       },
       build: () => regionsListBloc,
@@ -87,8 +87,10 @@ void main() {
       ],
       verify: (_) {
         verify(() => regionsRepository.findAll(
-              offset: 0,
-              totalCount: true,
+              any(
+                  that: isA<FindRegionsArgs>()
+                      .having((p) => p.offset, 'offset', 0)),
+              true,
             )).called(1);
         verifyNoMoreInteractions(regionsRepository);
       },
@@ -98,10 +100,7 @@ void main() {
       'emits [RegionsListFailure] when an error occurs on next fetch',
       setUp: () {
         when(
-          () => regionsRepository.findAll(
-            offset: 1,
-            totalCount: false,
-          ),
+          () => regionsRepository.findAll(any(), any()),
         ).thenThrow(Exception());
       },
       build: () => regionsListBloc,
@@ -120,8 +119,10 @@ void main() {
       ],
       verify: (_) {
         verify(() => regionsRepository.findAll(
-              offset: 1,
-              totalCount: false,
+              any(
+                  that: isA<FindRegionsArgs>()
+                      .having((p) => p.offset, 'offset', 1)),
+              false,
             )).called(1);
         verifyNoMoreInteractions(regionsRepository);
       },
@@ -131,10 +132,7 @@ void main() {
       'emits [RegionsListSuccess] when FetchRegions event is added and hasReachedMax is false',
       setUp: () {
         when(
-          () => regionsRepository.findAll(
-            offset: 1,
-            totalCount: false,
-          ),
+          () => regionsRepository.findAll(any(), any()),
         ).thenAnswer((_) async => paginatedResult);
       },
       build: () => regionsListBloc,
@@ -153,8 +151,10 @@ void main() {
       ],
       verify: (_) {
         verify(() => regionsRepository.findAll(
-              offset: 1,
-              totalCount: false,
+              any(
+                  that: isA<FindRegionsArgs>()
+                      .having((p) => p.offset, 'offset', 1)),
+              false,
             )).called(1);
         verifyNoMoreInteractions(regionsRepository);
       },
@@ -179,14 +179,11 @@ void main() {
       'eemits [RegionsListSuccess] when RefreshUsers event is added',
       setUp: () {
         when(
-          () => regionsRepository.findAll(
-            offset: 0,
-            totalCount: true,
-          ),
+          () => regionsRepository.findAll(any(), any()),
         ).thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => regionsListBloc,
-      act: (bloc) => bloc.add(const RefreshRegions()),
+      act: (bloc) => bloc.add(const RefreshRegions(null)),
       expect: () => [
         const RegionsListInitial(),
         RegionsListSuccess(
@@ -198,54 +195,47 @@ void main() {
       verify: (_) {
         verify(
           () => regionsRepository.findAll(
-            offset: 0,
-            totalCount: true,
+            any(
+                that: isA<FindRegionsArgs>()
+                    .having((p) => p.offset, 'offset', 0)),
+            true,
           ),
         ).called(1);
         verifyNoMoreInteractions(regionsRepository);
       },
     );
 
-    group('perPage', () {
-      const perPage = 10;
-      setUp(() {
-        regionsListBloc = RegionsListBloc(
-          regionsRepository: regionsRepository,
-          perPage: perPage,
-        );
-      });
-
-      blocTest<RegionsListBloc, RegionsListState>(
-        'emits [RegionsListSuccess] when FetchRegions event is added',
-        setUp: () {
-          when(
-            () => regionsRepository.findAll(
-              offset: 0,
-              limit: perPage,
-              totalCount: true,
+    blocTest<RegionsListBloc, RegionsListState>(
+      'emits [RegionsListSuccess] when RefreshUsers event is added with args',
+      setUp: () {
+        when(
+          () => regionsRepository.findAll(any(), any()),
+        ).thenAnswer((_) async => paginatedResultTotalCount);
+      },
+      build: () => regionsListBloc,
+      act: (bloc) =>
+          bloc.add(const RefreshRegions(FindRegionsArgs(name: 'name'))),
+      expect: () => [
+        const RegionsListInitial(),
+        RegionsListSuccess(
+          regions: paginatedResultTotalCount.data,
+          hasReachedMax: false,
+          totalCount: paginatedResultTotalCount.totalCount!,
+        ),
+      ],
+      verify: (_) {
+        verify(
+          () => regionsRepository.findAll(
+            any(
+              that: isA<FindRegionsArgs>()
+                  .having((p) => p.offset, 'offset', 0)
+                  .having((p) => p.name, 'name', 'name'),
             ),
-          ).thenAnswer((_) async => paginatedResultTotalCount);
-        },
-        build: () => regionsListBloc,
-        act: (bloc) => bloc.add(const FetchRegions()),
-        expect: () => [
-          RegionsListSuccess(
-            regions: paginatedResultTotalCount.data,
-            hasReachedMax: false,
-            totalCount: paginatedResultTotalCount.totalCount!,
+            true,
           ),
-        ],
-        verify: (_) {
-          verify(
-            () => regionsRepository.findAll(
-              offset: 0,
-              limit: perPage,
-              totalCount: true,
-            ),
-          ).called(1);
-          verifyNoMoreInteractions(regionsRepository);
-        },
-      );
-    });
+        ).called(1);
+        verifyNoMoreInteractions(regionsRepository);
+      },
+    );
   });
 }

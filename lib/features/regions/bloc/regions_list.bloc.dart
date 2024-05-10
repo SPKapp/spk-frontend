@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:spk_app_frontend/common/bloc/debounce.transformer.dart';
 
+import 'package:spk_app_frontend/features/regions/models/dto.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
 import 'package:spk_app_frontend/features/regions/repositories/interfaces.dart';
 
@@ -19,9 +20,9 @@ part 'regions_list.state.dart';
 class RegionsListBloc extends Bloc<RegionsListEvent, RegionsListState> {
   RegionsListBloc({
     required IRegionsRepository regionsRepository,
-    int? perPage,
+    required FindRegionsArgs args,
   })  : _regionsRepository = regionsRepository,
-        _perPage = perPage,
+        _args = args,
         super(const RegionsListInitial()) {
     on<FetchRegions>(
       _onFetchRegions,
@@ -31,7 +32,9 @@ class RegionsListBloc extends Bloc<RegionsListEvent, RegionsListState> {
   }
 
   final IRegionsRepository _regionsRepository;
-  final int? _perPage;
+  FindRegionsArgs _args;
+
+  FindRegionsArgs get args => _args;
 
   void _onFetchRegions(
       FetchRegions event, Emitter<RegionsListState> emit) async {
@@ -39,19 +42,16 @@ class RegionsListBloc extends Bloc<RegionsListEvent, RegionsListState> {
 
     try {
       final paginatedResult = await _regionsRepository.findAll(
-        offset: state.regions.length,
-        limit: _perPage,
-        totalCount: state is RegionsListInitial,
+        _args.copyWith(offset: () => state.regions.length),
+        state.totalCount == 0,
       );
 
-      final regions = paginatedResult.data;
-      final totalCount = (state is RegionsListInitial)
-          ? paginatedResult.totalCount!
-          : state.totalCount;
+      final totalCount = paginatedResult.totalCount ?? state.totalCount;
+      final newData = state.regions + paginatedResult.data;
 
       emit(RegionsListSuccess(
-        regions: state.regions + regions,
-        hasReachedMax: state.regions.length + regions.length >= totalCount,
+        regions: newData,
+        hasReachedMax: newData.length >= totalCount,
         totalCount: totalCount,
       ));
     } catch (e) {
@@ -65,6 +65,7 @@ class RegionsListBloc extends Bloc<RegionsListEvent, RegionsListState> {
 
   void _onRefreshRegions(
       RefreshRegions event, Emitter<RegionsListState> emit) async {
+    _args = event.args ?? _args;
     emit(const RegionsListInitial());
     add(const FetchRegions());
   }

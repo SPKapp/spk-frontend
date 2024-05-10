@@ -1,6 +1,7 @@
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/common/services/gql.service.dart';
 
+import 'package:spk_app_frontend/features/regions/models/dto.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
 import 'package:spk_app_frontend/features/regions/repositories/interfaces/region.repo.interface.dart';
 
@@ -12,18 +13,14 @@ final class RegionsRepository implements IRegionsRepository {
   final GqlService gqlService;
 
   @override
-  Future<Paginated<Region>> findAll({
-    bool totalCount = false,
-    int? offset,
-    int? limit,
-  }) async {
+  Future<Paginated<Region>> findAll(
+    FindRegionsArgs args,
+    bool totalCount,
+  ) async {
     final result = await gqlService.query(
       _FindAllRegionsQuery.document(totalCount),
       operationName: _FindAllRegionsQuery.name,
-      variables: {
-        if (offset != null) 'offset': offset,
-        if (limit != null) 'limit': limit,
-      },
+      variables: args.toJson(),
     );
 
     if (result.hasException) {

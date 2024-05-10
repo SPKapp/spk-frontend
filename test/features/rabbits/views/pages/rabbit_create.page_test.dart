@@ -127,7 +127,7 @@ void main() {
 
         await tester.tap(find.text('Spróbuj ponownie'));
 
-        verify(() => regionsListBloc.add(const RefreshRegions())).called(1);
+        verify(() => regionsListBloc.add(const RefreshRegions(null))).called(1);
       });
 
       testWidgets('should render correctly with regions',
