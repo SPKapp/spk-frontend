@@ -53,5 +53,5 @@ firebase_options.dart
 *.local.dart
 
 # Configuration files
-configs/*
-configs/development.config.json
+.env/*
+.env/development.config.json

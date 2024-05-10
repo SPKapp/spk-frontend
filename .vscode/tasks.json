@@ -1,0 +1,14 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "adb reverse localhost",
+            "type": "shell",
+            "presentation": {
+                "reveal": "silent",
+                "close": true
+            },
+            "command": "adb reverse tcp:3000 tcp:3000"
+        }
+    ]
+}

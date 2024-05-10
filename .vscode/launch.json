@@ -7,8 +7,9 @@
             "type": "dart",
             "toolArgs": [
                 "--dart-define-from-file",
-                "configs/development.config.json"
-            ]
+                ".env/development.env"
+            ],
+            "preLaunchTask": "adb reverse localhost",
         },
         {
             "name": "spk_app_frontend (profile mode)",
