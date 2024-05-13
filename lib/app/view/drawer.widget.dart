@@ -1,15 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
+
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  bool isAccountDrawer = false;
 
   @override
   Widget build(BuildContext context) {
     final currentUser = context.read<AuthCubit>().currentUser;
 
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          UserAccountsDrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).secondaryHeaderColor,
+            ),
+            accountName: Text(currentUser.name ?? ''),
+            accountEmail: Text(currentUser.email ?? ''),
+            onDetailsPressed: () {
+              setState(() {
+                isAccountDrawer = !isAccountDrawer;
+              });
+            },
+          ),
+          if (isAccountDrawer) ...accountDrawer(context),
+          if (!isAccountDrawer) ...defaultDrawer(context, currentUser),
+        ],
+      ),
+    );
+  }
+
+  Iterable<Widget> defaultDrawer(
+      BuildContext context, CurrentUser currentUser) {
     final List<Widget> regionManagerList = [
       const Center(child: Text('RegionManager')),
       ListTile(
@@ -34,28 +68,39 @@ class AppDrawer extends StatelessWidget {
       const Divider()
     ];
 
-    return Drawer(
-      child: ListView(
-        children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-                // color: Colors.blue,
-                ),
-            child: Text('Drawer Header'),
-          ),
+    return [
+      if (currentUser.checkRole([Role.volunteer])) ...volunteerList,
+      if (currentUser.checkRole([Role.admin]))
+        ...adminList
+      else if (currentUser.checkRole([Role.regionManager]))
+        ...regionManagerList,
+      // const AboutListTile(),
+    ];
+  }
 
-          ListTile(
-            title: const Text('Wyloguj się'),
-            onTap: () => context.read<AuthCubit>().logout(),
-          ),
-          if (currentUser.checkRole([Role.volunteer])) ...volunteerList,
-          if (currentUser.checkRole([Role.admin]))
-            ...adminList
-          else if (currentUser.checkRole([Role.regionManager]))
-            ...regionManagerList,
-          // const AboutListTile(),
-        ],
+  Iterable<Widget> accountDrawer(BuildContext context) {
+    return [
+      ListTile(
+        title: const Text('Moje Konto'),
+        leading: const Icon(FontAwesomeIcons.user),
+        onTap: () => context.go('/myProfile'),
       ),
-    );
+      ListTile(
+        title: const Text('Zmień Hasło'),
+        leading: const Icon(FontAwesomeIcons.lock),
+        onTap: () async {
+          await showModalBottomSheet<bool>(
+              context: context,
+              builder: (_) {
+                return const Text('Not implemented yet');
+              });
+        },
+      ),
+      ListTile(
+        title: const Text('Wyloguj się'),
+        leading: const Icon(FontAwesomeIcons.rightFromBracket),
+        onTap: () => context.read<AuthCubit>().logout(),
+      ),
+    ];
   }
 }

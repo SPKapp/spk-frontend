@@ -53,6 +53,30 @@ query $operationName(\$id: ID!) {
 ''';
 }
 
+abstract class _GetMyProfileQuery {
+  static String operationName = 'GetMyProfile';
+  static String document = '''
+query $operationName {
+	myProfile {
+		id
+		firstname
+		lastname
+		email
+		phone
+		active
+		rolesWithDetails {
+			role
+			additionalInfo
+		}
+    region {
+      id
+			name
+		}
+	}
+}
+''';
+}
+
 abstract class _CreateUserMutation {
   static String operationName = 'CreateUser';
   static String document = '''

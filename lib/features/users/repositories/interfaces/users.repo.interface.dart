@@ -12,6 +12,9 @@ abstract interface class IUsersRepository {
   /// Retrieves a single [User] object based on the provided [id].
   Future<User> findOne(String id);
 
+  /// Retrieves the current [User] object.
+  Future<User> findMyProfile();
+
   /// Creates a new [User].
   Future<int> createUser(UserCreateDto user);
 }

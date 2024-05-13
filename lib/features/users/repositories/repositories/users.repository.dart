@@ -46,6 +46,20 @@ final class UsersRepository implements IUsersRepository {
   }
 
   @override
+  Future<User> findMyProfile() async {
+    final result = await _gqlService.query(
+      _GetMyProfileQuery.document,
+      operationName: _GetMyProfileQuery.operationName,
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+
+    return User.fromJson(result.data!['myProfile']);
+  }
+
+  @override
   Future<int> createUser(UserCreateDto userCreateDto) async {
     final result = await _gqlService.mutate(
       _CreateUserMutation.document,

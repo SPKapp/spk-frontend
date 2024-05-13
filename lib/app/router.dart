@@ -148,11 +148,19 @@ class AppRouter {
               // ),
               // ],
             ),
+            GoRoute(
+              path: '/myProfile',
+              builder: (context, state) {
+                return const MyProfilePage(
+                  drawer: AppDrawer(),
+                );
+              },
+            ),
           ]),
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/myProfile',
+                path: '/example',
                 builder: (context, state) => const MyHomePage2(),
               ),
             ],
