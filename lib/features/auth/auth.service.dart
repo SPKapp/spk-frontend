@@ -42,6 +42,16 @@ class AuthService {
       rethrow;
     }
   }
+
+  Future<void> sendVerificationMail() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw Exception('User is null');
+    }
+
+    // TODO: Add actonCodeSettings
+    await user.sendEmailVerification();
+  }
 }
 
 extension on User {
@@ -65,6 +75,7 @@ extension on User {
       email: email,
       phone: phoneNumber,
       name: displayName,
+      emailVerified: emailVerified,
       teamId: claims['teamId'],
       roles:
           (claims['roles'] as List).map((role) => Role.fromJson(role)).toList(),

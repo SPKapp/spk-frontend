@@ -13,10 +13,12 @@ class UserView extends StatelessWidget {
     super.key,
     required this.user,
     required this.roleInfo,
+    this.errorWidget,
   });
 
   final User user;
   final RoleInfo roleInfo;
+  final Widget? errorWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class UserView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          if (errorWidget != null) errorWidget!,
           if (user.active == false)
             AppCard(
               child: ListTile(

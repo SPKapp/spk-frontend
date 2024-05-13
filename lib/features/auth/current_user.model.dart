@@ -14,6 +14,7 @@ class CurrentUser extends Equatable {
     List<int>? managerRegions,
     List<int>? observerRegions,
     this.teamId,
+    this.emailVerified,
   })  : _roles = roles,
         _id = id,
         managerRegions = managerRegions?.map((e) => e.toString()).toList(),
@@ -29,6 +30,7 @@ class CurrentUser extends Equatable {
   final List<String>? managerRegions;
   final List<String>? observerRegions;
   final int? teamId;
+  final bool? emailVerified;
 
   /// Empty user which represents an unauthenticated user.
   static final empty = CurrentUser(uid: '', token: '', roles: const []);
@@ -59,7 +61,8 @@ class CurrentUser extends Equatable {
         _roles,
         managerRegions,
         observerRegions,
-        teamId
+        teamId,
+        emailVerified,
       ];
 
   String get debugString =>
