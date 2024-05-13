@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 
+import 'package:spk_app_frontend/features/auth/views/widgets/change_password.widget.dart';
 import 'package:spk_app_frontend/features/users/bloc/user.cubit.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
@@ -56,10 +57,10 @@ class MyProfilePage extends StatelessWidget {
                         key: const Key('changePassword'),
                         onTap: () async {
                           await showModalBottomSheet<bool>(
-                              context: context,
-                              builder: (_) {
-                                return const Text('Not implemented yet');
-                              });
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (_) => const ChangePasswordAction(),
+                          );
                         },
                         child: const Text('Zmień Hasło'),
                       ),

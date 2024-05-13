@@ -23,6 +23,25 @@ class AuthService {
       throw LogoutFailure();
     }
   }
+
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw Exception('User is null');
+    }
+
+    try {
+      await user.reauthenticateWithCredential(
+        EmailAuthProvider.credential(email: user.email!, password: oldPassword),
+      );
+      await user.updatePassword(newPassword);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password' || e.code == 'weak-password') {
+        throw ChangePasswordException(e.code);
+      }
+      rethrow;
+    }
+  }
 }
 
 extension on User {
@@ -60,3 +79,20 @@ extension on User {
 }
 
 class LogoutFailure implements Exception {}
+
+/// Exception thrown when changing password fails.
+///
+/// [code] types:
+/// - 'wrong-password' - wrong old password
+/// - 'weak-password' - weak new password
+///
+class ChangePasswordException implements Exception {
+  ChangePasswordException(this.code);
+
+  final String code;
+
+  @override
+  String toString() {
+    return 'ChangePasswordFailure: $code';
+  }
+}

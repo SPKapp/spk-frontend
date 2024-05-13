@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/features/auth/auth.dart';
+import 'package:spk_app_frontend/features/auth/views/widgets/change_password.widget.dart';
 
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
@@ -90,10 +91,10 @@ class _AppDrawerState extends State<AppDrawer> {
         leading: const Icon(FontAwesomeIcons.lock),
         onTap: () async {
           await showModalBottomSheet<bool>(
-              context: context,
-              builder: (_) {
-                return const Text('Not implemented yet');
-              });
+            context: context,
+            isScrollControlled: true,
+            builder: (_) => const ChangePasswordAction(),
+          );
         },
       ),
       ListTile(
