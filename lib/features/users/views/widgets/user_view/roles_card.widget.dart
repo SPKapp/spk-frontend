@@ -3,58 +3,45 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
-import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
 import 'package:spk_app_frontend/features/regions/models/dto.dart';
 import 'package:spk_app_frontend/features/regions/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 
-// TODO: Implement This
 class RolesCard extends StatelessWidget {
-  RolesCard({
+  const RolesCard({
     super.key,
-    List<RoleEntity>? roles,
-  })  : _hasAnyRole = roles?.isNotEmpty ?? false,
-        _isAdmin = roles?.any((role) => role.role == Role.admin),
-        _isVolunteer = roles?.any((role) => role.role == Role.volunteer),
-        _managerRegions = roles
-            ?.where((role) => role.role == Role.regionManager)
-            .map((role) => role.additionalInfo!)
-            .toList(),
-        _observerRegions = roles
-            ?.where((role) => role.role == Role.regionRabbitObserver)
-            .map((role) => role.additionalInfo!)
-            .toList();
+    required this.roleInfo,
+    this.regionsListBloc,
+  });
 
-  final bool _hasAnyRole;
-  final bool? _isAdmin;
-  final bool? _isVolunteer;
-  final List<String>? _managerRegions;
-  final List<String>? _observerRegions;
+  final RoleInfo roleInfo;
+  final RegionsListBloc Function(BuildContext)? regionsListBloc;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) {
-        Set<String>? regionsIds;
+      create: regionsListBloc ??
+          (context) {
+            Set<String>? regionsIds;
 
-        if (_managerRegions?.isNotEmpty == true ||
-            _observerRegions?.isNotEmpty == true) {
-          regionsIds = <String>{
-            ...?_managerRegions,
-            ...?_observerRegions,
-          };
-        }
-        return RegionsListBloc(
-          regionsRepository: context.read<IRegionsRepository>(),
-          args: FindRegionsArgs(
-            limit: 0,
-            regionsIds: regionsIds,
-          ),
-        )..add(const FetchRegions());
-      },
+            if (roleInfo.managerRegions.isNotEmpty == true ||
+                roleInfo.observerRegions.isNotEmpty == true) {
+              regionsIds = <String>{
+                ...roleInfo.managerRegions,
+                ...roleInfo.observerRegions,
+              };
+            }
+            return RegionsListBloc(
+              regionsRepository: context.read<IRegionsRepository>(),
+              args: FindRegionsArgs(
+                limit: 0,
+                regionsIds: regionsIds,
+              ),
+            )..add(const FetchRegions());
+          },
       child: AppCard(
-        child: _hasAnyRole
+        child: roleInfo.hasAnyRole
             ? BlocBuilder<RegionsListBloc, RegionsListState>(
                 builder: (context, state) {
                   late final Widget managerRegions;
@@ -68,13 +55,13 @@ class RolesCard extends StatelessWidget {
                       break;
                     case RegionsListSuccess():
                       managerRegions = Text(state.regions
-                          .where(
-                              (e) => _managerRegions!.contains(e.id.toString()))
+                          .where((e) =>
+                              roleInfo.managerRegions.contains(e.id.toString()))
                           .map((e) => e.name)
                           .join('\n'));
                       observerRegions = Text(state.regions
-                          .where((e) =>
-                              _observerRegions!.contains(e.id.toString()))
+                          .where((e) => roleInfo.observerRegions
+                              .contains(e.id.toString()))
                           .map((e) => e.name)
                           .join('\n'));
                       break;
@@ -91,37 +78,37 @@ class RolesCard extends StatelessWidget {
 
                   return Column(
                     children: [
-                      if (_isAdmin == true)
+                      if (roleInfo.isAdmin == true)
                         const ListTile(
                           title: Text('Administrator'),
                           subtitle: Text('Pełna kontrola nad aplikacją'),
                           leading: Icon(FontAwesomeIcons.userShield),
                         ),
-                      if (_isAdmin == true &&
-                          (_isVolunteer == true ||
-                              _managerRegions?.isNotEmpty == true ||
-                              _observerRegions?.isNotEmpty == true))
+                      if (roleInfo.isAdmin == true &&
+                          (roleInfo.isVolunteer == true ||
+                              roleInfo.managerRegions.isNotEmpty == true ||
+                              roleInfo.observerRegions.isNotEmpty == true))
                         const Divider(),
-                      if (_isVolunteer == true)
+                      if (roleInfo.isVolunteer == true)
                         const ListTile(
                           title: Text('Wolontariusz'),
                           subtitle: Text('Dom Tymczasowy dla Królików'),
                           leading: Icon(FontAwesomeIcons.houseUser),
                         ),
-                      if (_isVolunteer == true &&
-                          (_managerRegions?.isNotEmpty == true ||
-                              _observerRegions?.isNotEmpty == true))
+                      if (roleInfo.isVolunteer == true &&
+                          (roleInfo.managerRegions.isNotEmpty == true ||
+                              roleInfo.observerRegions.isNotEmpty == true))
                         const Divider(),
-                      if (_managerRegions?.isNotEmpty == true)
+                      if (roleInfo.managerRegions.isNotEmpty == true)
                         ListTile(
                           title: const Text('Menedżer regionu'),
                           subtitle: managerRegions,
                           leading: const Icon(FontAwesomeIcons.userGear),
                         ),
-                      if (_managerRegions?.isNotEmpty == true &&
-                          _observerRegions?.isNotEmpty == true)
+                      if (roleInfo.managerRegions.isNotEmpty == true &&
+                          roleInfo.observerRegions.isNotEmpty == true)
                         const Divider(),
-                      if (_observerRegions?.isNotEmpty == true)
+                      if (roleInfo.observerRegions.isNotEmpty == true)
                         ListTile(
                           title: const Text('Obserwator regionu'),
                           subtitle: observerRegions,
@@ -131,7 +118,10 @@ class RolesCard extends StatelessWidget {
                   );
                 },
               )
-            : const Text('Brak ról'),
+            : const ListTile(
+                title: Text('Brak przyznanych uprawnień'),
+                leading: Icon(FontAwesomeIcons.squareMinus),
+              ),
       ),
     );
   }
