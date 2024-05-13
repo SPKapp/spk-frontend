@@ -32,7 +32,7 @@ query $operationName(
 abstract class _GetUserQuery {
   static String operationName = 'GetUser';
   static String document = '''
-query $operationName(\$id: Int!) {
+query $operationName(\$id: ID!) {
 	user(id: \$id) {
 		id
 		firstname

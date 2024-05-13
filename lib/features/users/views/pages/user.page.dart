@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
-import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/users/bloc/user.cubit.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
+import 'package:spk_app_frontend/features/users/views/views/user.view.dart';
 import 'package:spk_app_frontend/features/users/views/widgets/user_actions.dart';
-import 'package:spk_app_frontend/features/users/views/widgets/user_view.dart';
 
 // TODO: Implement This
 class UserPage extends StatelessWidget {
@@ -147,37 +145,9 @@ class UserPage extends StatelessWidget {
                 ],
                 title: Text(state.user.fullName),
               );
-              body = SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (state.user.active == false)
-                      AppCard(
-                        child: ListTile(
-                          title: Text(
-                            'Użytkownik jest dezaktywowany',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  color: Colors.red,
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    BasicInfoCard(
-                      user: state.user,
-                    ),
-                    const AppCard(
-                      child: ListTile(
-                        title: Text('Tutaj będzie adres'),
-                        leading: Icon(FontAwesomeIcons.addressCard),
-                      ),
-                    ),
-                    RolesCard(roleInfo: roleInfo),
-                  ],
-                ),
+              body = UserView(
+                user: state.user,
+                roleInfo: roleInfo,
               );
           }
 

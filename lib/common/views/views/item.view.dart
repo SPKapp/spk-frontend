@@ -9,6 +9,9 @@ class ItemView extends StatelessWidget {
   });
 
   final Widget child;
+
+  /// A function that is called when the user pulls the refresh indicator.
+  /// It should return a future that completes when the refresh is done.
   final Future<void> Function() onRefresh;
 
   @override
