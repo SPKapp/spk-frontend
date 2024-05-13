@@ -1,28 +1,35 @@
 part of 'users.repository.dart';
 
-abstract class GetTeamQuery {
-  static String operationName = 'GetTeam';
+abstract class _GetUsersQuery {
+  static String operationName = 'GetUsers';
   static String document(bool total) => '''
-query $operationName(\$offset: Int, \$limit: Int, \$regionsIds: [ID!], \$isActive: Boolean, \$name: String) {
-	teams(offset: \$offset, limit: \$limit, regionsIds: \$regionsIds, isActive: \$isActive, name: \$name) {
+query $operationName(
+	\$offset: Int
+	\$limit: Int
+	\$regionsIds: [ID!]
+	\$isActive: Boolean
+	\$name: String
+) {
+	users(
+		offset: \$offset
+		limit: \$limit
+		regionsIds: \$regionsIds
+		isActive: \$isActive
+		name: \$name
+	) {
 		data {
 			id
-			users {
-				id
-				firstname
-				lastname
-        roles
-			}
+			firstname
+			lastname
+			roles
 		}
-		offset
-		limit
     ${total ? 'totalCount' : ''}
 	}
 }
 ''';
 }
 
-abstract class GetUserQuery {
+abstract class _GetUserQuery {
   static String operationName = 'GetUser';
   static String document = '''
 query $operationName(\$id: Int!) {
@@ -50,7 +57,7 @@ query $operationName(\$id: Int!) {
 ''';
 }
 
-abstract class CreateUserMutation {
+abstract class _CreateUserMutation {
   static String operationName = 'CreateUser';
   static String document = '''
 mutation $operationName(\$createUserInput: CreateUserInput!) {

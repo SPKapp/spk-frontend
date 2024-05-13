@@ -8,8 +8,8 @@ import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
-part 'users_list.event.dart';
-part 'users_list.state.dart';
+part 'teams_list.event.dart';
+part 'teams_list.state.dart';
 
 /// A bloc that manages the state of a list with teams.
 ///
@@ -24,56 +24,56 @@ part 'users_list.state.dart';
 /// - [UsersListSuccess] - the teams have been fetched successfully
 /// - [UsersListFailure] - an error occurred while fetching the teams
 ///
-class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
-  UsersListBloc({
-    required IUsersRepository usersRepository,
-    required FindUsersArgs args,
-  })  : _usersRepository = usersRepository,
+class TeamsListBloc extends Bloc<TeamsListEvent, TeamsListState> {
+  TeamsListBloc({
+    required ITeamsRepository teamsRepository,
+    required FindTeamsArgs args,
+  })  : _teamsRepository = teamsRepository,
         _args = args,
-        super(const UsersListInitial()) {
-    on<FetchUsers>(
+        super(TeamsListInitial()) {
+    on<FetchTeams>(
       _onFetchUsers,
       transformer: debounceTransformer(const Duration(milliseconds: 500)),
     );
-    on<RefreshUsers>(_onRefreshUsers);
+    on<RefreshTeams>(_onRefreshUsers);
   }
 
-  final IUsersRepository _usersRepository;
+  final ITeamsRepository _teamsRepository;
   final logger = LoggerService();
-  FindUsersArgs _args;
+  FindTeamsArgs _args;
 
-  FindUsersArgs get args => _args;
+  FindTeamsArgs get args => _args;
 
-  void _onFetchUsers(FetchUsers event, Emitter<UsersListState> emit) async {
+  void _onFetchUsers(FetchTeams event, Emitter<TeamsListState> emit) async {
     if (state.hasReachedMax) return;
 
     try {
-      final paginatedResult = await _usersRepository.findAll(
-        _args.copyWith(offset: () => state.users.length),
+      final paginatedResult = await _teamsRepository.findAll(
+        _args.copyWith(offset: () => state.teams.length),
         state.totalCount == 0,
       );
 
       final totalCount = paginatedResult.totalCount ?? state.totalCount;
-      final newData = state.users + paginatedResult.data;
+      final newData = state.teams + paginatedResult.data;
 
-      emit(UsersListSuccess(
-        users: newData,
+      emit(TeamsListSuccess(
+        teams: newData,
         hasReachedMax: newData.length >= totalCount,
         totalCount: totalCount,
       ));
     } catch (e) {
-      logger.error('Error while fetching users', error: e);
-      emit(UsersListFailure(
-        users: state.users,
+      logger.error('Error while fetching teams', error: e);
+      emit(TeamsListFailure(
+        teams: state.teams,
         hasReachedMax: state.hasReachedMax,
         totalCount: state.totalCount,
       ));
     }
   }
 
-  void _onRefreshUsers(RefreshUsers event, Emitter<UsersListState> emit) async {
+  void _onRefreshUsers(RefreshTeams event, Emitter<TeamsListState> emit) async {
     _args = event.args ?? _args;
-    emit(const UsersListInitial());
-    add(const FetchUsers());
+    emit(TeamsListInitial());
+    add(const FetchTeams());
   }
 }

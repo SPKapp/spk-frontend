@@ -31,7 +31,7 @@ void main() {
     });
 
     test('initial state is UsersSearchInitial', () {
-      expect(usersSearchBloc.state, UsersSearchInitial());
+      expect(usersSearchBloc.state, const UsersSearchInitial());
     });
 
     blocTest<UsersSearchBloc, UsersSearchState>(
@@ -50,10 +50,10 @@ void main() {
       build: () => usersSearchBloc,
       act: (bloc) => bloc.add(const UsersSearchRefresh('search query')),
       expect: () => [
-        UsersSearchInitial(),
-        UsersSearchSuccess(
+        const UsersSearchInitial(),
+        const UsersSearchSuccess(
           query: 'search query',
-          teams: const [],
+          users: [],
           hasReachedMax: true,
           totalCount: 0,
         ),
@@ -81,8 +81,8 @@ void main() {
       build: () => usersSearchBloc,
       act: (bloc) => bloc.add(const UsersSearchRefresh('search query')),
       expect: () => [
-        UsersSearchInitial(),
-        UsersSearchFailure(),
+        const UsersSearchInitial(),
+        const UsersSearchFailure(),
       ],
       verify: (_) {
         verify(() => mockUsersRepository.findAll(
@@ -95,17 +95,13 @@ void main() {
     );
 
     const result1 = [
-      Team(id: 1, users: [
-        User(id: 1, firstName: 'John', lastName: 'Doe'),
-        User(id: 2, firstName: 'Jan', lastName: 'Smith'),
-      ])
+      User(id: 1, firstName: 'John', lastName: 'Doe'),
+      User(id: 2, firstName: 'Jan', lastName: 'Smith'),
     ];
 
     const result2 = [
-      Team(id: 2, users: [
-        User(id: 3, firstName: 'Thomas', lastName: 'Doe'),
-        User(id: 4, firstName: 'Jacob', lastName: 'Smith'),
-      ])
+      User(id: 3, firstName: 'Thomas', lastName: 'Doe'),
+      User(id: 4, firstName: 'Jacob', lastName: 'Smith'),
     ];
 
     blocTest<UsersSearchBloc, UsersSearchState>(
@@ -114,31 +110,31 @@ void main() {
         when(() => mockUsersRepository.findAll(
             const FindUsersArgs(
               name: 'search query',
-              offset: 1,
+              offset: 2,
             ),
             false)).thenAnswer((_) async => const Paginated(data: result2));
       },
       build: () => usersSearchBloc,
       act: (bloc) => bloc.add(const UsersSearchFetch()),
-      seed: () => UsersSearchSuccess(
+      seed: () => const UsersSearchSuccess(
         query: 'search query',
-        teams: result1,
+        users: result1,
         hasReachedMax: false,
-        totalCount: 2,
+        totalCount: 4,
       ),
       expect: () => [
         UsersSearchSuccess(
           query: 'search query',
-          teams: result1 + result2,
+          users: result1 + result2,
           hasReachedMax: true,
-          totalCount: 2,
+          totalCount: 4,
         ),
       ],
       verify: (_) {
         verify(() => mockUsersRepository.findAll(
             const FindUsersArgs(
               name: 'search query',
-              offset: 1,
+              offset: 2,
             ),
             false)).called(1);
       },
@@ -150,31 +146,31 @@ void main() {
         when(() => mockUsersRepository.findAll(
             const FindUsersArgs(
               name: 'search query',
-              offset: 1,
+              offset: 2,
             ),
             false)).thenThrow(Exception('Error'));
       },
       build: () => usersSearchBloc,
       act: (bloc) => bloc.add(const UsersSearchFetch()),
-      seed: () => UsersSearchSuccess(
+      seed: () => const UsersSearchSuccess(
         query: 'search query',
-        teams: result1,
+        users: result1,
         hasReachedMax: false,
-        totalCount: 2,
+        totalCount: 4,
       ),
       expect: () => [
-        UsersSearchFailure(
+        const UsersSearchFailure(
           query: 'search query',
-          teams: result1,
+          users: result1,
           hasReachedMax: false,
-          totalCount: 2,
+          totalCount: 4,
         ),
       ],
       verify: (_) {
         verify(() => mockUsersRepository.findAll(
             const FindUsersArgs(
               name: 'search query',
-              offset: 1,
+              offset: 2,
             ),
             false)).called(1);
       },
@@ -184,11 +180,11 @@ void main() {
         'emits [UsersSearchSuccess] when loadMore is called and hasReachedMax is true',
         build: () => usersSearchBloc,
         act: (bloc) => bloc.add(const UsersSearchFetch()),
-        seed: () => UsersSearchSuccess(
+        seed: () => const UsersSearchSuccess(
               query: 'search query',
-              teams: result1,
+              users: result1,
               hasReachedMax: true,
-              totalCount: 1,
+              totalCount: 3,
             ),
         expect: () => [],
         verify: (_) {
@@ -200,7 +196,7 @@ void main() {
       build: () => usersSearchBloc,
       act: (bloc) => bloc.add(const UsersSearchClear()),
       expect: () => [
-        UsersSearchInitial(),
+        const UsersSearchInitial(),
       ],
     );
   });

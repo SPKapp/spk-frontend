@@ -41,7 +41,7 @@ void main() {
 
     testWidgets('should display nothing when initial state',
         (WidgetTester tester) async {
-      when(() => usersSearchBloc.state).thenReturn(UsersSearchInitial());
+      when(() => usersSearchBloc.state).thenReturn(const UsersSearchInitial());
 
       await tester.pumpWidget(buildWidget());
       await tester.tap(find.byType(SearchAction));
@@ -54,7 +54,7 @@ void main() {
 
     testWidgets('should display FailureView when failure state',
         (WidgetTester tester) async {
-      when(() => usersSearchBloc.state).thenReturn(UsersSearchFailure());
+      when(() => usersSearchBloc.state).thenReturn(const UsersSearchFailure());
 
       await tester.pumpWidget(buildWidget());
       await tester.tap(find.byType(SearchAction));
@@ -65,9 +65,9 @@ void main() {
 
     testWidgets('should display AppListView when success state',
         (WidgetTester tester) async {
-      when(() => usersSearchBloc.state).thenReturn(UsersSearchSuccess(
+      when(() => usersSearchBloc.state).thenReturn(const UsersSearchSuccess(
         query: 'query',
-        teams: const [],
+        users: [],
         totalCount: 0,
         hasReachedMax: false,
       ));

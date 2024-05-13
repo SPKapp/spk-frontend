@@ -16,15 +16,9 @@ void main() {
   group(UsersListView, () {
     late UsersListBloc usersListBloc;
 
-    const teams = [
-      Team(id: 1, users: [
-        User(id: 1, firstName: 'John', lastName: 'Doe'),
-        User(id: 2, firstName: 'Jane', lastName: 'Smith'),
-      ]),
-      Team(id: 2, users: [
-        User(id: 3, firstName: 'John', lastName: 'Zoe'),
-        User(id: 4, firstName: 'Alex', lastName: 'Yoe'),
-      ]),
+    const users = [
+      User(id: 1, firstName: 'John', lastName: 'Doe'),
+      User(id: 2, firstName: 'Jane', lastName: 'Smith'),
     ];
 
     setUp(() {
@@ -36,7 +30,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: UsersListView(
-            teams: [],
+            users: [],
             hasReachedMax: true,
           ),
         ),
@@ -52,7 +46,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: UsersListView(
-            teams: teams,
+            users: users,
             hasReachedMax: false,
           ),
         ),
@@ -66,19 +60,15 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: UsersListView(
-            teams: teams,
+            users: users,
             hasReachedMax: true,
           ),
         ),
       );
 
-      expect(
-          find.text(
-              '${teams[0].users[0].firstName} ${teams[0].users[0].lastName}'),
+      expect(find.text('${users[0].firstName} ${users[0].lastName}'),
           findsOneWidget);
-      expect(
-          find.text(
-              '${teams[1].users[0].firstName} ${teams[1].users[0].lastName}'),
+      expect(find.text('${users[1].firstName} ${users[1].lastName}'),
           findsOneWidget);
     });
 
@@ -92,7 +82,7 @@ void main() {
           home: BlocProvider<UsersListBloc>.value(
             value: usersListBloc,
             child: const UsersListView(
-              teams: teams,
+              users: users,
               hasReachedMax: false,
             ),
           ),
@@ -114,9 +104,9 @@ void main() {
       whenListen(
         usersListBloc,
         Stream.fromIterable([
-          UsersListInitial(),
-          UsersListSuccess(
-            teams: const [],
+          const UsersListInitial(),
+          const UsersListSuccess(
+            users: [],
             hasReachedMax: true,
             totalCount: 0,
           ),
@@ -128,7 +118,7 @@ void main() {
           home: BlocProvider<UsersListBloc>.value(
             value: usersListBloc,
             child: const UsersListView(
-              teams: teams,
+              users: users,
               hasReachedMax: true,
             ),
           ),
@@ -136,8 +126,7 @@ void main() {
       );
 
       await tester.fling(
-          find.text(
-              '${teams[0].users[0].firstName} ${teams[0].users[0].lastName}'),
+          find.text('${users[0].firstName} ${users[0].lastName}'),
           const Offset(0, 400),
           1000);
       await tester.pumpAndSettle();
@@ -151,9 +140,9 @@ void main() {
       whenListen(
         usersListBloc,
         Stream.fromIterable([
-          UsersListInitial(),
-          UsersListSuccess(
-            teams: const [],
+          const UsersListInitial(),
+          const UsersListSuccess(
+            users: [],
             hasReachedMax: true,
             totalCount: 0,
           ),
@@ -165,7 +154,7 @@ void main() {
           home: BlocProvider<UsersListBloc>.value(
             value: usersListBloc,
             child: const UsersListView(
-              teams: [],
+              users: [],
               hasReachedMax: true,
             ),
           ),

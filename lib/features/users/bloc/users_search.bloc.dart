@@ -28,7 +28,7 @@ class UsersSearchBloc extends Bloc<UsersSearchEvent, UsersSearchState> {
     required FindUsersArgs args,
   })  : _usersRepository = usersRepository,
         _args = args,
-        super(UsersSearchInitial()) {
+        super(const UsersSearchInitial()) {
     on<UsersSearchRefresh>(
       _onRefresh,
       transformer: debounceTransformer(const Duration(milliseconds: 500)),
@@ -52,29 +52,29 @@ class UsersSearchBloc extends Bloc<UsersSearchEvent, UsersSearchState> {
     if (state.hasReachedMax) return;
 
     if (_args.name == null || _args.name!.isEmpty) {
-      emit(UsersSearchInitial());
+      emit(const UsersSearchInitial());
       return;
     }
 
     try {
       final paginatedResult = await _usersRepository.findAll(
-        _args.copyWith(offset: () => state.teams.length),
+        _args.copyWith(offset: () => state.users.length),
         state.totalCount == 0,
       );
 
       final totalCount = paginatedResult.totalCount ?? state.totalCount;
-      final newData = state.teams + paginatedResult.data;
+      final newData = state.users + paginatedResult.data;
 
       emit(UsersSearchSuccess(
         query: _args.name ?? '',
-        teams: newData,
+        users: newData,
         hasReachedMax: newData.length >= totalCount,
         totalCount: totalCount,
       ));
     } catch (_) {
       emit(UsersSearchFailure(
         query: state.query,
-        teams: state.teams,
+        users: state.users,
         hasReachedMax: state.hasReachedMax,
         totalCount: state.totalCount,
       ));
@@ -86,7 +86,7 @@ class UsersSearchBloc extends Bloc<UsersSearchEvent, UsersSearchState> {
     Emitter<UsersSearchState> emit,
   ) {
     _args = _args.copyWith(name: () => event.query, offset: () => 0);
-    emit(UsersSearchInitial());
+    emit(const UsersSearchInitial());
     add(const UsersSearchFetch());
   }
 
@@ -95,6 +95,6 @@ class UsersSearchBloc extends Bloc<UsersSearchEvent, UsersSearchState> {
     Emitter<UsersSearchState> emit,
   ) {
     _args = _args.copyWith(name: () => '', offset: () => 0);
-    emit(UsersSearchInitial());
+    emit(const UsersSearchInitial());
   }
 }

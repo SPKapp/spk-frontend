@@ -8,6 +8,7 @@ import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
+import 'package:spk_app_frontend/features/users/models/models/user.model.dart';
 import 'package:spk_app_frontend/features/users/views/pages/users_list.page.dart';
 import 'package:spk_app_frontend/features/users/views/views/users_list.view.dart';
 
@@ -27,7 +28,8 @@ void main() {
     testWidgets(
         'UsersListPage should display CircularProgressIndicator when state is UsersListInitial',
         (WidgetTester tester) async {
-      when(() => usersListBloc.state).thenAnswer((_) => UsersListInitial());
+      when(() => usersListBloc.state)
+          .thenAnswer((_) => const UsersListInitial());
 
       await tester.pumpWidget(
         MaterialApp(
@@ -46,7 +48,8 @@ void main() {
     testWidgets(
         'UsersListPage should display "Failed to fetch users" when state is UsersListFailure',
         (WidgetTester tester) async {
-      when(() => usersListBloc.state).thenAnswer((_) => UsersListFailure());
+      when(() => usersListBloc.state)
+          .thenAnswer((_) => const UsersListFailure());
       await tester.pumpWidget(
         MaterialApp(
           home: UsersListPage(
@@ -64,8 +67,8 @@ void main() {
         'UsersListPage should display UsersListView when state is UsersListSuccess',
         (WidgetTester tester) async {
       when(() => usersListBloc.state).thenAnswer(
-        (_) => UsersListSuccess(
-          teams: const [],
+        (_) => const UsersListSuccess(
+          users: [],
           hasReachedMax: true,
           totalCount: 0,
         ),
@@ -90,10 +93,10 @@ void main() {
       whenListen(
         usersListBloc,
         Stream.fromIterable([
-          UsersListInitial(),
+          const UsersListInitial(),
         ]),
-        initialState: UsersListSuccess(
-          teams: const [],
+        initialState: const UsersListSuccess(
+          users: [],
           hasReachedMax: true,
           totalCount: 0,
         ),
@@ -119,14 +122,26 @@ void main() {
       whenListen(
         usersListBloc,
         Stream.fromIterable([
-          UsersListFailure(
-            teams: const [Team(id: 1, users: [])],
+          const UsersListFailure(
+            users: [
+              User(
+                id: 1,
+                firstName: 'John',
+                lastName: 'Foe',
+              )
+            ],
             hasReachedMax: true,
             totalCount: 0,
           ),
         ]),
-        initialState: UsersListSuccess(
-          teams: const [Team(id: 1, users: [])],
+        initialState: const UsersListSuccess(
+          users: [
+            User(
+              id: 1,
+              firstName: 'John',
+              lastName: 'Foe',
+            )
+          ],
           hasReachedMax: true,
           totalCount: 0,
         ),

@@ -7,22 +7,21 @@ import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
-
-import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
+import 'package:spk_app_frontend/features/users/bloc/team/teams_list.bloc.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
-import 'package:spk_app_frontend/features/users/repositories/interfaces/users.repo.interface.dart';
+import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
 /// A widget that represents an action to change a volunteer of a rabbit.
 class ChangeVolunteerAction extends StatefulWidget {
   const ChangeVolunteerAction({
     super.key,
     required this.rabbit,
-    this.usersListBloc,
+    this.teamsListBloc,
     this.rabbitUpdateCubit,
   });
 
   final Rabbit rabbit;
-  final UsersListBloc Function(BuildContext)? usersListBloc;
+  final TeamsListBloc Function(BuildContext)? teamsListBloc;
   final RabbitUpdateCubit Function(BuildContext)? rabbitUpdateCubit;
 
   @override
@@ -39,14 +38,14 @@ class _ChangeVolunteerActionState extends State<ChangeVolunteerAction> {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: widget.usersListBloc ??
-                (context) => UsersListBloc(
-                      usersRepository: context.read<IUsersRepository>(),
-                      args: FindUsersArgs(
+            create: widget.teamsListBloc ??
+                (context) => TeamsListBloc(
+                      teamsRepository: context.read<ITeamsRepository>(),
+                      args: FindTeamsArgs(
                         limit: 0,
                         regionsIds: [widget.rabbit.rabbitGroup!.region!.id],
                       ),
-                    )..add(const FetchUsers()),
+                    )..add(const FetchTeams()),
           ),
           BlocProvider(
             create: widget.rabbitUpdateCubit ??
@@ -85,19 +84,19 @@ class _ChangeVolunteerActionState extends State<ChangeVolunteerAction> {
                     default:
                   }
                 },
-                child: BlocBuilder<UsersListBloc, UsersListState>(
+                child: BlocBuilder<TeamsListBloc, TeamsListState>(
                   builder: (context, state) {
                     switch (state) {
-                      case UsersListInitial():
+                      case TeamsListInitial():
                         return const InitialView();
-                      case UsersListFailure():
+                      case TeamsListFailure():
                         return FailureView(
                           message: 'Nie udało się pobrać listy opiekunów',
                           onPressed: () => context
-                              .read<UsersListBloc>()
-                              .add(const FetchUsers()),
+                              .read<TeamsListBloc>()
+                              .add(const FetchTeams()),
                         );
-                      case UsersListSuccess():
+                      case TeamsListSuccess():
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

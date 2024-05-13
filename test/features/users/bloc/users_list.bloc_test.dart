@@ -16,37 +16,28 @@ void main() {
     late IUsersRepository usersRepository;
     late UsersListBloc usersListBloc;
 
-    const team1 = Team(
+    const user1 = User(
       id: 1,
-      users: [
-        User(
-          id: 1,
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'email@example.com',
-          phone: '123456789',
-        ),
-      ],
-    );
-    const team2 = Team(
-      id: 2,
-      users: [
-        User(
-          id: 2,
-          firstName: 'Tom',
-          lastName: 'Smith',
-          email: 'email2@example.com',
-          phone: '223456789',
-        ),
-      ],
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'email@example.com',
+      phone: '123456789',
     );
 
-    const paginatedResult = Paginated<Team>(
-      data: [team1],
+    const user2 = User(
+      id: 2,
+      firstName: 'Tom',
+      lastName: 'Smith',
+      email: 'email2@example.com',
+      phone: '223456789',
     );
-    const paginatedResultTotalCount = Paginated<Team>(
+
+    const paginatedResult = Paginated<User>(
+      data: [user1],
+    );
+    const paginatedResultTotalCount = Paginated<User>(
       totalCount: 2,
-      data: [team2],
+      data: [user2],
     );
 
     setUp(() {
@@ -64,7 +55,7 @@ void main() {
     });
 
     test('initial state is UsersListInitial', () {
-      expect(usersListBloc.state, UsersListInitial());
+      expect(usersListBloc.state, const UsersListInitial());
     });
 
     blocTest<UsersListBloc, UsersListState>(
@@ -77,7 +68,7 @@ void main() {
       act: (bloc) => bloc.add(const FetchUsers()),
       expect: () => [
         UsersListSuccess(
-          teams: paginatedResultTotalCount.data,
+          users: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -101,7 +92,7 @@ void main() {
       build: () => usersListBloc,
       act: (bloc) => bloc.add(const FetchUsers()),
       expect: () => [
-        UsersListFailure(),
+        const UsersListFailure(),
       ],
       verify: (_) {
         verify(() => usersRepository.findAll(
@@ -121,14 +112,14 @@ void main() {
       },
       build: () => usersListBloc,
       seed: () => UsersListSuccess(
-        teams: paginatedResultTotalCount.data,
+        users: paginatedResultTotalCount.data,
         hasReachedMax: false,
         totalCount: paginatedResultTotalCount.totalCount!,
       ),
       act: (bloc) => bloc.add(const FetchUsers()),
       expect: () => [
         UsersListFailure(
-          teams: paginatedResultTotalCount.data,
+          users: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -151,14 +142,14 @@ void main() {
       },
       build: () => usersListBloc,
       seed: () => UsersListSuccess(
-        teams: paginatedResultTotalCount.data,
+        users: paginatedResultTotalCount.data,
         hasReachedMax: false,
         totalCount: paginatedResultTotalCount.totalCount!,
       ),
       act: (bloc) => bloc.add(const FetchUsers()),
       expect: () => [
         UsersListSuccess(
-          teams: paginatedResultTotalCount.data + paginatedResult.data,
+          users: paginatedResultTotalCount.data + paginatedResult.data,
           hasReachedMax: true,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -177,7 +168,7 @@ void main() {
       'does not emit any state when FetchUsers event is added and hasReachedMax is true',
       build: () => usersListBloc,
       seed: () => UsersListSuccess(
-        teams: paginatedResultTotalCount.data,
+        users: paginatedResultTotalCount.data,
         hasReachedMax: true,
         totalCount: 1,
       ),
@@ -197,9 +188,9 @@ void main() {
         build: () => usersListBloc,
         act: (bloc) => bloc.add(const RefreshUsers(null)),
         expect: () => [
-              UsersListInitial(),
+              const UsersListInitial(),
               UsersListSuccess(
-                teams: paginatedResultTotalCount.data,
+                users: paginatedResultTotalCount.data,
                 hasReachedMax: false,
                 totalCount: paginatedResultTotalCount.totalCount!,
               ),
@@ -222,9 +213,9 @@ void main() {
       build: () => usersListBloc,
       act: (bloc) => bloc.add(const RefreshUsers(FindUsersArgs(name: 'name'))),
       expect: () => [
-        UsersListInitial(),
+        const UsersListInitial(),
         UsersListSuccess(
-          teams: paginatedResultTotalCount.data,
+          users: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),

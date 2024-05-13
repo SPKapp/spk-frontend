@@ -13,28 +13,28 @@ final class UsersRepository implements IUsersRepository {
   final GqlService _gqlService;
 
   @override
-  Future<Paginated<Team>> findAll(
+  Future<Paginated<User>> findAll(
     FindUsersArgs args,
     bool totalCount,
   ) async {
-    final result = await _gqlService.query(GetTeamQuery.document(totalCount),
-        operationName: GetTeamQuery.operationName, variables: args.toJson());
+    final result = await _gqlService.query(_GetUsersQuery.document(totalCount),
+        operationName: _GetUsersQuery.operationName, variables: args.toJson());
 
     if (result.hasException) {
       throw Exception(result.exception);
     }
 
-    return Paginated.fromJson<Team>(
-      result.data!['teams'],
-      (json) => Team.fromJson(json),
+    return Paginated.fromJson<User>(
+      result.data!['users'],
+      User.fromJson,
     );
   }
 
   @override
   Future<User> findOne(int id) async {
     final result = await _gqlService.query(
-      GetUserQuery.document,
-      operationName: GetUserQuery.operationName,
+      _GetUserQuery.document,
+      operationName: _GetUserQuery.operationName,
       variables: {'id': id},
     );
 
@@ -48,8 +48,8 @@ final class UsersRepository implements IUsersRepository {
   @override
   Future<int> createUser(UserCreateDto userCreateDto) async {
     final result = await _gqlService.mutate(
-      CreateUserMutation.document,
-      operationName: CreateUserMutation.operationName,
+      _CreateUserMutation.document,
+      operationName: _CreateUserMutation.operationName,
       variables: {'createUserInput': userCreateDto.toJson()},
     );
 

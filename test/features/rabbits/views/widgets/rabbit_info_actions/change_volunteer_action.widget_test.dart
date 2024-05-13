@@ -9,11 +9,11 @@ import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart'
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info_actions/change_volunteer_action.widget.dart';
 
-import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
+import 'package:spk_app_frontend/features/users/bloc/team/teams_list.bloc.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 
-class MockUsersListBloc extends MockBloc<UsersListEvent, UsersListState>
-    implements UsersListBloc {}
+class MockTeamsListBloc extends MockBloc<TeamsListEvent, TeamsListState>
+    implements TeamsListBloc {}
 
 class MockRabbitUpdateCubit extends MockCubit<RabbitUpdateState>
     implements RabbitUpdateCubit {}
@@ -22,7 +22,7 @@ class MockGoRouter extends Mock implements GoRouter {}
 
 void main() {
   group(ChangeVolunteerAction, () {
-    late UsersListBloc usersListBloc;
+    late TeamsListBloc teamsListBloc;
     late RabbitUpdateCubit rabbitUpdateCubit;
     late GoRouter goRouter;
 
@@ -51,12 +51,12 @@ void main() {
     );
 
     setUp(() {
-      usersListBloc = MockUsersListBloc();
+      teamsListBloc = MockTeamsListBloc();
       rabbitUpdateCubit = MockRabbitUpdateCubit();
       goRouter = MockGoRouter();
 
-      when(() => usersListBloc.state).thenAnswer(
-        (_) => UsersListSuccess(
+      when(() => teamsListBloc.state).thenAnswer(
+        (_) => TeamsListSuccess(
           teams: const [
             team1,
             team2,
@@ -77,7 +77,7 @@ void main() {
           child: Scaffold(
             body: ChangeVolunteerAction(
               rabbit: rabbit,
-              usersListBloc: (_) => usersListBloc,
+              teamsListBloc: (_) => teamsListBloc,
               rabbitUpdateCubit: (_) => rabbitUpdateCubit,
             ),
           ),
@@ -119,8 +119,8 @@ void main() {
 
       testWidgets('should display CircularProgressIndicator when loading',
           (WidgetTester tester) async {
-        when(() => usersListBloc.state).thenAnswer(
-          (_) => UsersListInitial(),
+        when(() => teamsListBloc.state).thenAnswer(
+          (_) => TeamsListInitial(),
         );
 
         await tester.pumpWidget(buildWidget());
@@ -130,8 +130,8 @@ void main() {
 
       testWidgets('should display error message when UsersListBloc fails',
           (WidgetTester tester) async {
-        when(() => usersListBloc.state).thenAnswer(
-          (_) => UsersListFailure(),
+        when(() => teamsListBloc.state).thenAnswer(
+          (_) => TeamsListFailure(),
         );
 
         await tester.pumpWidget(buildWidget());
@@ -142,8 +142,8 @@ void main() {
 
       testWidgets('should refresh button works when UsersListBloc fails',
           (WidgetTester tester) async {
-        when(() => usersListBloc.state).thenAnswer(
-          (_) => UsersListFailure(),
+        when(() => teamsListBloc.state).thenAnswer(
+          (_) => TeamsListFailure(),
         );
 
         await tester.pumpWidget(buildWidget());
@@ -154,7 +154,7 @@ void main() {
         await tester.tap(refreshButton);
         await tester.pumpAndSettle();
 
-        verify(() => usersListBloc.add(const FetchUsers())).called(1);
+        verify(() => teamsListBloc.add(const FetchTeams())).called(1);
       });
     });
 

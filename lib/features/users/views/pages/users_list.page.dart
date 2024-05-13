@@ -32,7 +32,7 @@ class UsersListPage extends StatelessWidget {
                 )..add(const FetchUsers()),
         child: BlocConsumer<UsersListBloc, UsersListState>(
           listener: (context, state) {
-            if (state is UsersListFailure && state.teams.isNotEmpty) {
+            if (state is UsersListFailure && state.users.isNotEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(
@@ -59,7 +59,7 @@ class UsersListPage extends StatelessWidget {
                 );
               case UsersListSuccess():
                 body = UsersListView(
-                  teams: state.teams,
+                  users: state.users,
                   hasReachedMax: state.hasReachedMax,
                 );
                 break;
