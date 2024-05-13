@@ -23,7 +23,7 @@ query $operationName(\$offset: Int, \$limit: Int, \$regionsIds: [ID!], \$teamsId
 abstract class GetRabbitQuery {
   static const String operationName = 'GetRabbit';
   static String document = '''
-query $operationName(\$id: Int!) {
+query $operationName(\$id: ID!) {
   rabbit(id: \$id) {
     id
     name
@@ -88,7 +88,7 @@ mutation $operationName(\$updateRabbitInput: UpdateRabbitInput!) {
 abstract class UpdateTeamMutation {
   static const String operationName = 'UpdateTeam';
   static String document = '''
-mutation $operationName(\$rabbitGroupId: Int!, \$teamId: Int!) {
+mutation $operationName(\$rabbitGroupId: ID!, \$teamId: ID!) {
 	updateRabbitGroupTeam(rabbitGroupId: \$rabbitGroupId, teamId: \$teamId) {
 		id
 	}
@@ -99,7 +99,7 @@ mutation $operationName(\$rabbitGroupId: Int!, \$teamId: Int!) {
 abstract class UpdateRabbitGroupMutation {
   static const String operationName = 'UpdateRabbitRabbitGroup';
   static String document = '''
-mutation $operationName(\$rabbitId: Int!, \$rabbitGroupId: Int) {
+mutation $operationName(\$rabbitId: ID!, \$rabbitGroupId: ID) {
 	updateRabbitRabbitGroup(rabbitId: \$rabbitId, rabbitGroupId: \$rabbitGroupId) {
 		id
 	}
@@ -110,7 +110,7 @@ mutation $operationName(\$rabbitId: Int!, \$rabbitGroupId: Int) {
 abstract class RemoveRabbitMutation {
   static const String operationName = 'RemoveRabbit';
   static String document = '''
-mutation $operationName(\$id: Int!) {
+mutation $operationName(\$id: ID!) {
 	removeRabbit(id: \$id) {
 		id
 	}
