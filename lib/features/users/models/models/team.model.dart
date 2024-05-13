@@ -8,12 +8,12 @@ final class Team extends Equatable {
     required this.users,
   });
 
-  final int id;
+  final String id;
   final List<User> users;
 
   static Team fromJson(Map<String, dynamic> json) {
     return Team(
-      id: int.parse(json['id']),
+      id: json['id'] as String,
       users: (json['users'] as List)
           .map((user) => User.fromJson(user as Map<String, dynamic>))
           .toList(),

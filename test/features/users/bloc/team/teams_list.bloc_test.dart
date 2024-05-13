@@ -17,10 +17,10 @@ void main() {
     late TeamsListBloc teamsListBloc;
 
     const team1 = Team(
-      id: 1,
+      id: '1',
       users: [
         User(
-          id: 1,
+          id: '1',
           firstName: 'John',
           lastName: 'Doe',
           email: 'email@example.com',
@@ -29,10 +29,10 @@ void main() {
       ],
     );
     const team2 = Team(
-      id: 2,
+      id: '2',
       users: [
         User(
-          id: 2,
+          id: '2',
           firstName: 'Tom',
           lastName: 'Smith',
           email: 'email2@example.com',

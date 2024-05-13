@@ -134,7 +134,7 @@ class AppRouter {
               path: '/user/:id',
               builder: (context, state) {
                 return UserPage(
-                  userId: int.parse(state.pathParameters['id']!),
+                  userId: state.pathParameters['id']!,
                 );
               },
               // routes: [

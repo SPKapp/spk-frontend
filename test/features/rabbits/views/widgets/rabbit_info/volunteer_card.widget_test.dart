@@ -16,12 +16,12 @@ void main() {
 
     const List<User> volunteers = [
       User(
-        id: 1,
+        id: '1',
         firstName: 'John',
         lastName: 'Doe',
       ),
       User(
-        id: 2,
+        id: '2',
         firstName: 'Jane',
         lastName: 'Smith',
       ),

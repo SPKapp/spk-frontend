@@ -17,8 +17,8 @@ void main() {
     late UsersListBloc usersListBloc;
 
     const users = [
-      User(id: 1, firstName: 'John', lastName: 'Doe'),
-      User(id: 2, firstName: 'Jane', lastName: 'Smith'),
+      User(id: '1', firstName: 'John', lastName: 'Doe'),
+      User(id: '2', firstName: 'Jane', lastName: 'Smith'),
     ];
 
     setUp(() {

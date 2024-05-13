@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:spk_app_frontend/features/auth/auth.dart';
+import 'package:spk_app_frontend/features/regions/models/models.dart';
 import 'package:spk_app_frontend/features/users/models/models/role_entity.model.dart';
 
 final class User extends Equatable {
@@ -13,9 +14,10 @@ final class User extends Equatable {
     this.active,
     this.roles,
     this.rolesWithDetails,
+    this.region,
   });
 
-  final int id;
+  final String id;
   final String firstName;
   final String lastName;
   final String? email;
@@ -23,10 +25,11 @@ final class User extends Equatable {
   final bool? active;
   final List<Role>? roles;
   final List<RoleEntity>? rolesWithDetails;
+  final Region? region;
 
   static User fromJson(Map<String, dynamic> json) {
     return User(
-      id: int.parse(json['id']),
+      id: json['id'] as String,
       firstName: json['firstname'] as String,
       lastName: json['lastname'] as String,
       email: json['email'] as String?,
@@ -38,12 +41,22 @@ final class User extends Equatable {
       rolesWithDetails: (json['rolesWithDetails'] as List<dynamic>?)
           ?.map((role) => RoleEntity.fromJson(role))
           .toList(),
+      region: json['region'] != null ? Region.fromJson(json['region']) : null,
     );
   }
 
   String get fullName => '$firstName $lastName';
 
   @override
-  List<Object?> get props =>
-      [id, firstName, lastName, email, phone, active, roles, rolesWithDetails];
+  List<Object?> get props => [
+        id,
+        firstName,
+        lastName,
+        email,
+        phone,
+        active,
+        roles,
+        rolesWithDetails,
+        region
+      ];
 }

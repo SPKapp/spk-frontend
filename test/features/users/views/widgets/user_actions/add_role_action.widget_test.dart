@@ -51,7 +51,7 @@ void main() {
       when(() => regionsAndTeamsCubit.state).thenReturn(
         const RegionsAndTeamsSuccess(
           regions: [Region(id: '1', name: 'Region 1')],
-          teams: [Team(id: 1, users: [])],
+          teams: [Team(id: '1', users: [])],
         ),
       );
 

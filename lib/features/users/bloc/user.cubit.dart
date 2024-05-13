@@ -14,7 +14,7 @@ class UserCubit extends Cubit<UserState> {
   })  : _usersRepository = usersRepository,
         super(const UserInitial());
 
-  final int userId;
+  final String userId;
   final IUsersRepository _usersRepository;
   final logger = LoggerService();
 

@@ -95,13 +95,13 @@ void main() {
     );
 
     const result1 = [
-      User(id: 1, firstName: 'John', lastName: 'Doe'),
-      User(id: 2, firstName: 'Jan', lastName: 'Smith'),
+      User(id: '1', firstName: 'John', lastName: 'Doe'),
+      User(id: '2', firstName: 'Jan', lastName: 'Smith'),
     ];
 
     const result2 = [
-      User(id: 3, firstName: 'Thomas', lastName: 'Doe'),
-      User(id: 4, firstName: 'Jacob', lastName: 'Smith'),
+      User(id: '3', firstName: 'Thomas', lastName: 'Doe'),
+      User(id: '4', firstName: 'Jacob', lastName: 'Smith'),
     ];
 
     blocTest<UsersSearchBloc, UsersSearchState>(

@@ -125,7 +125,7 @@ void main() {
           const UsersListFailure(
             users: [
               User(
-                id: 1,
+                id: '1',
                 firstName: 'John',
                 lastName: 'Foe',
               )
@@ -137,7 +137,7 @@ void main() {
         initialState: const UsersListSuccess(
           users: [
             User(
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Foe',
             )

@@ -31,7 +31,7 @@ void main() {
       gender: Gender.female,
       confirmedBirthDate: false,
       rabbitGroup:
-          RabbitGroup(id: 1, rabbits: [], team: Team(id: 1, users: [])),
+          RabbitGroup(id: 1, rabbits: [], team: Team(id: '1', users: [])),
     );
 
     setUp(() {

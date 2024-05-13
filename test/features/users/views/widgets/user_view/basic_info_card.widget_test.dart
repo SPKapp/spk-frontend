@@ -16,7 +16,7 @@ void main() {
     testWidgets('renders email when user has email',
         (WidgetTester tester) async {
       await tester.pumpWidget(buildWidget(const User(
-        id: 1,
+        id: '1',
         firstName: 'John',
         lastName: 'Doe',
         email: 'test@example.com',
@@ -29,7 +29,7 @@ void main() {
     testWidgets('renders "Brak adresu email" when user does not have email',
         (WidgetTester tester) async {
       await tester.pumpWidget(buildWidget(const User(
-        id: 1,
+        id: '1',
         firstName: 'John',
         lastName: 'Doe',
       )));
@@ -41,7 +41,7 @@ void main() {
     testWidgets('renders phone when user has phone number',
         (WidgetTester tester) async {
       await tester.pumpWidget(buildWidget(const User(
-        id: 1,
+        id: '1',
         firstName: 'John',
         lastName: 'Doe',
         phone: '123456789',
@@ -55,7 +55,7 @@ void main() {
         'renders "Brak numeru telefonu" when user does not have phone number',
         (WidgetTester tester) async {
       await tester.pumpWidget(buildWidget(const User(
-        id: 1,
+        id: '1',
         firstName: 'John',
         lastName: 'Doe',
       )));

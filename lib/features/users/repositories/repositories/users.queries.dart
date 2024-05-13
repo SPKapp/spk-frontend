@@ -44,13 +44,9 @@ query $operationName(\$id: ID!) {
 			role
 			additionalInfo
 		}
-		team {
-			id
-			users {
-				id
-				firstname
-				lastname
-			}
+    region {
+      id
+			name
 		}
 	}
 }

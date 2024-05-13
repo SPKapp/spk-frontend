@@ -46,7 +46,7 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
   }
 
   /// Changes the team of the rabbit group with the given [rabbitGroupId] to the team with the given [teamId].
-  void changeTeam(int rabbitGroupId, int teamId) async {
+  void changeTeam(String rabbitGroupId, String teamId) async {
     try {
       await _rabbitsRepository.updateTeam(rabbitGroupId, teamId);
       emit(

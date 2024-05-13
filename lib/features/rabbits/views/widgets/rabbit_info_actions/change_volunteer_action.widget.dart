@@ -9,6 +9,7 @@ import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/users/bloc/team/teams_list.bloc.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
+import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
 /// A widget that represents an action to change a volunteer of a rabbit.
@@ -29,7 +30,7 @@ class ChangeVolunteerAction extends StatefulWidget {
 }
 
 class _ChangeVolunteerActionState extends State<ChangeVolunteerAction> {
-  late int? _selectedTeamId = widget.rabbit.rabbitGroup!.team?.id;
+  late Team? _selectedTeam = widget.rabbit.rabbitGroup!.team;
 
   @override
   Widget build(BuildContext context) {
@@ -100,26 +101,26 @@ class _ChangeVolunteerActionState extends State<ChangeVolunteerAction> {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            DropdownButton<int>(
+                            DropdownButton<Team>(
                               items: state.teams
                                   .map(
                                     (team) => DropdownMenuItem(
-                                      value: team.id,
+                                      value: team,
                                       child: Text(team.name),
                                     ),
                                   )
                                   .toList(),
                               onChanged: (value) {
                                 setState(() {
-                                  _selectedTeamId = value;
+                                  _selectedTeam = value;
                                 });
                               },
-                              value: _selectedTeamId,
+                              value: _selectedTeam,
                             ),
                             const SizedBox(height: 20),
                             FilledButton(
                               onPressed: () {
-                                if (_selectedTeamId == null) {
+                                if (_selectedTeam == null) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content:
@@ -127,11 +128,12 @@ class _ChangeVolunteerActionState extends State<ChangeVolunteerAction> {
                                     ),
                                   );
                                   context.pop();
-                                } else if (_selectedTeamId !=
-                                    widget.rabbit.rabbitGroup!.team?.id) {
+                                } else if (_selectedTeam !=
+                                    widget.rabbit.rabbitGroup!.team) {
                                   context.read<RabbitUpdateCubit>().changeTeam(
-                                        widget.rabbit.rabbitGroup!.id,
-                                        _selectedTeamId!,
+                                        widget.rabbit.rabbitGroup!.id
+                                            .toString(),
+                                        _selectedTeam!.id,
                                       );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(

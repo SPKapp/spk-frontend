@@ -31,7 +31,7 @@ final class UsersRepository implements IUsersRepository {
   }
 
   @override
-  Future<User> findOne(int id) async {
+  Future<User> findOne(String id) async {
     final result = await _gqlService.query(
       _GetUserQuery.document,
       operationName: _GetUserQuery.operationName,
@@ -58,41 +58,5 @@ final class UsersRepository implements IUsersRepository {
     }
 
     return int.parse(result.data!['createUser']['id']);
-  }
-
-  @override
-  Future<User> fetchUser(int id) async {
-    return const User(
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'email@example.com',
-      phone: '123456789',
-    );
-  }
-
-  @override
-  Future<Paginated<User>> findUsersByName(
-    String name, {
-    bool totalCount = false,
-    int? offset,
-    int? limit,
-  }) async {
-    return const Paginated(data: [
-      User(
-        id: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'email@example.com',
-        phone: '123456789',
-      ),
-      User(
-        id: 2,
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'email@example.com',
-        phone: '123456789',
-      ),
-    ], totalCount: 2);
   }
 }

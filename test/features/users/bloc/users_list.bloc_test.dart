@@ -17,7 +17,7 @@ void main() {
     late UsersListBloc usersListBloc;
 
     const user1 = User(
-      id: 1,
+      id: '1',
       firstName: 'John',
       lastName: 'Doe',
       email: 'email@example.com',
@@ -25,7 +25,7 @@ void main() {
     );
 
     const user2 = User(
-      id: 2,
+      id: '2',
       firstName: 'Tom',
       lastName: 'Smith',
       email: 'email2@example.com',

@@ -27,14 +27,14 @@ void main() {
     late GoRouter goRouter;
 
     const team1 = Team(
-      id: 1,
+      id: '1',
       users: [
-        User(id: 1, firstName: 'User', lastName: 'User'),
+        User(id: '1', firstName: 'User', lastName: 'User'),
       ],
     );
     const team2 = Team(
-      id: 2,
-      users: [User(id: 2, firstName: 'User2', lastName: 'User2')],
+      id: '2',
+      users: [User(id: '2', firstName: 'User2', lastName: 'User2')],
     );
 
     const rabbit = Rabbit(
@@ -90,7 +90,7 @@ void main() {
         await tester.pumpWidget(buildWidget());
 
         expect(find.text('Wybierz nowych opiekunów'), findsOneWidget);
-        expect(find.byType(DropdownButton<int>), findsOneWidget);
+        expect(find.byType(DropdownButton<Team>), findsOneWidget);
         expect(find.byType(FilledButton), findsOneWidget);
 
         expect(find.text(team1.name), findsOneWidget);
@@ -101,7 +101,7 @@ void main() {
           (WidgetTester tester) async {
         await tester.pumpWidget(buildWidget());
 
-        final dropdownButton = find.byType(DropdownButton<int>);
+        final dropdownButton = find.byType(DropdownButton<Team>);
         expect(dropdownButton, findsOneWidget);
 
         await tester.tap(dropdownButton);
@@ -171,7 +171,7 @@ void main() {
 
         await tester.pumpWidget(buildWidget());
 
-        final dropdownButton = find.byType(DropdownButton<int>);
+        final dropdownButton = find.byType(DropdownButton<Team>);
         expect(dropdownButton, findsOneWidget);
 
         await tester.tap(dropdownButton);
@@ -192,7 +192,7 @@ void main() {
         expect(find.text('Zapisano zmiany'), findsOneWidget);
 
         verify(() => rabbitUpdateCubit.changeTeam(
-              rabbit.rabbitGroup!.id,
+              rabbit.rabbitGroup!.id.toString(),
               team2.id,
             )).called(1);
         verify(() => goRouter.pop(true)).called(1);
@@ -210,7 +210,7 @@ void main() {
         await tester.pump();
 
         verifyNever(() => rabbitUpdateCubit.changeTeam(
-              rabbit.rabbitGroup!.id,
+              rabbit.rabbitGroup!.id.toString(),
               rabbit.rabbitGroup!.team!.id,
             ));
 
@@ -257,7 +257,7 @@ void main() {
 
         await tester.pumpWidget(buildWidget());
 
-        final dropdownButton = find.byType(DropdownButton<int>);
+        final dropdownButton = find.byType(DropdownButton<Team>);
         expect(dropdownButton, findsOneWidget);
 
         await tester.tap(dropdownButton);

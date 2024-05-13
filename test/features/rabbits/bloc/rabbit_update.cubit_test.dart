@@ -73,12 +73,12 @@ void main() {
                 .thenAnswer((_) async => 1);
           },
           build: () => rabbitUpdateCubit,
-          act: (cubit) => cubit.changeTeam(1, 1),
+          act: (cubit) => cubit.changeTeam('1', '1'),
           expect: () => [
                 const RabbitUpdated(),
               ],
           verify: (_) {
-            verify(() => rabbitRepository.updateTeam(1, 1)).called(1);
+            verify(() => rabbitRepository.updateTeam('1', '1')).called(1);
           });
 
       blocTest<RabbitUpdateCubit, RabbitUpdateState>(
@@ -88,13 +88,13 @@ void main() {
                 .thenThrow(Exception());
           },
           build: () => rabbitUpdateCubit,
-          act: (cubit) => cubit.changeTeam(1, 1),
+          act: (cubit) => cubit.changeTeam('1', '1'),
           expect: () => [
                 const RabbitUpdateFailure(),
                 const RabbitUpdateInitial(),
               ],
           verify: (_) {
-            verify(() => rabbitRepository.updateTeam(1, 1)).called(1);
+            verify(() => rabbitRepository.updateTeam('1', '1')).called(1);
           });
     });
 

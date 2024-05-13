@@ -17,10 +17,10 @@ void main() {
     late UsersSearchBloc usersSearchBloc;
 
     const users = [
-      User(id: 1, firstName: 'John', lastName: 'Doe'),
-      User(id: 2, firstName: 'Jane', lastName: 'Smith'),
-      User(id: 3, firstName: 'Thoman', lastName: 'Doe'),
-      User(id: 4, firstName: 'Jake', lastName: 'Smith'),
+      User(id: '1', firstName: 'John', lastName: 'Doe'),
+      User(id: '2', firstName: 'Jane', lastName: 'Smith'),
+      User(id: '3', firstName: 'Thoman', lastName: 'Doe'),
+      User(id: '4', firstName: 'Jake', lastName: 'Smith'),
     ];
 
     setUp(() {

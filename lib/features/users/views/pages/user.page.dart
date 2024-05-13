@@ -18,7 +18,7 @@ class UserPage extends StatelessWidget {
     this.userCubit,
   });
 
-  final int userId;
+  final String userId;
   final UserCubit Function(BuildContext)? userCubit;
 
   @override

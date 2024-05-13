@@ -10,7 +10,7 @@ void main() {
         home: Scaffold(
           body: UserView(
             user: User(
-              id: 1,
+              id: '1',
               firstName: 'John',
               lastName: 'Doe',
               email: 'email@example.com',

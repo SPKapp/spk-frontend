@@ -13,12 +13,12 @@ void main() {
     late UserCubit userCubit;
     late IUsersRepository mockUsersRepository;
 
-    const User user = User(id: 1, firstName: 'John', lastName: 'Doe');
+    const User user = User(id: '1', firstName: 'John', lastName: 'Doe');
 
     setUp(() {
       mockUsersRepository = MockUsersRepository();
       userCubit = UserCubit(
-        userId: 1,
+        userId: '1',
         usersRepository: mockUsersRepository,
       );
     });

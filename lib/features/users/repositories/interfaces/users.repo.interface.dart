@@ -10,17 +10,8 @@ abstract interface class IUsersRepository {
   Future<Paginated<User>> findAll(FindUsersArgs args, bool totalCount);
 
   /// Retrieves a single [User] object based on the provided [id].
-  Future<User> findOne(int id);
+  Future<User> findOne(String id);
 
   /// Creates a new [User].
   Future<int> createUser(UserCreateDto user);
-
-  Future<User> fetchUser(int id);
-
-  Future<Paginated<User>> findUsersByName(
-    String name, {
-    bool totalCount = false,
-    int? offset,
-    int? limit,
-  });
 }
