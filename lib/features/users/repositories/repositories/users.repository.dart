@@ -60,7 +60,7 @@ final class UsersRepository implements IUsersRepository {
   }
 
   @override
-  Future<int> createUser(UserCreateDto userCreateDto) async {
+  Future<String> createUser(UserCreateDto userCreateDto) async {
     final result = await _gqlService.mutate(
       _CreateUserMutation.document,
       operationName: _CreateUserMutation.operationName,
@@ -71,6 +71,36 @@ final class UsersRepository implements IUsersRepository {
       throw Exception(result.exception);
     }
 
-    return int.parse(result.data!['createUser']['id']);
+    return result.data!['createUser']['id'] as String;
+  }
+
+  @override
+  Future<void> updateUser(String id, UserUpdateDto userUpdateDto) async {
+    final result = await _gqlService.mutate(
+      _UpdateUserMutation.document,
+      operationName: _UpdateUserMutation.operationName,
+      variables: {
+        'updateUserInput': userUpdateDto.toJson(),
+      },
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
+  }
+
+  @override
+  Future<void> updateMyProfile(UserUpdateDto userUpdateDto) async {
+    final result = await _gqlService.mutate(
+      _UpdateMyProfileMutation.document,
+      operationName: _UpdateMyProfileMutation.operationName,
+      variables: {
+        'updateUserInput': userUpdateDto.toJson(),
+      },
+    );
+
+    if (result.hasException) {
+      throw Exception(result.exception);
+    }
   }
 }

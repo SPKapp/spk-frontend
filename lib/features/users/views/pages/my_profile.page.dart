@@ -52,10 +52,15 @@ class MyProfilePage extends StatelessWidget {
               appBar = AppBar(
                 actions: [
                   IconButton(
-                    key: const Key('editUserButton'),
-                    icon: const Icon(Icons.edit),
-                    onPressed: () => context.go('/myAccount/edit'),
-                  ),
+                      key: const Key('editUserButton'),
+                      icon: const Icon(Icons.edit),
+                      onPressed: () async {
+                        final result = await context.push('/myProfile/edit');
+
+                        if (result == true && context.mounted) {
+                          context.read<UserCubit>().refreshUser();
+                        }
+                      }),
                   PopupMenuButton(
                     key: const Key('userPopupMenu'),
                     itemBuilder: (_) => [

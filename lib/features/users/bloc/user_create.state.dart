@@ -16,7 +16,7 @@ final class UserCreated extends UserCreateState {
     required this.userId,
   });
 
-  final int userId;
+  final String userId;
 
   @override
   List<Object> get props => [userId];

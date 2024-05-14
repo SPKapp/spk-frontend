@@ -10,7 +10,6 @@ import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/users/views/views/user.view.dart';
 import 'package:spk_app_frontend/features/users/views/widgets/user_actions.dart';
 
-// TODO: Implement This
 class UserPage extends StatelessWidget {
   const UserPage({
     super.key,
@@ -51,9 +50,16 @@ class UserPage extends StatelessWidget {
                 actions: [
                   if (state.user.active == true)
                     IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => context.go('/users/$userId/edit'),
-                    ),
+                        key: const Key('editUser'),
+                        icon: const Icon(Icons.edit),
+                        onPressed: () async {
+                          final result =
+                              await context.push('/user/${state.user.id}/edit');
+
+                          if (result == true && context.mounted) {
+                            context.read<UserCubit>().refreshUser();
+                          }
+                        }),
                   PopupMenuButton(
                     key: const Key('userPopupMenu'),
                     itemBuilder: (_) => [
@@ -99,6 +105,7 @@ class UserPage extends StatelessWidget {
                               (currentUser.managerRegions?.isNotEmpty == true &&
                                   currentUser.managerRegions!.length > 1)))
                         PopupMenuItem(
+                          key: const Key('changeRegion'),
                           onTap: () async {
                             final result = await showModalBottomSheet<bool>(
                                 context: context,
@@ -131,6 +138,7 @@ class UserPage extends StatelessWidget {
                             : 'Aktywuj'),
                       ),
                       PopupMenuItem(
+                        key: const Key('deleteUser'),
                         onTap: () async {
                           await showModalBottomSheet<bool>(
                               context: context,

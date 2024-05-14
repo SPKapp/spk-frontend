@@ -108,7 +108,7 @@ void main() {
       expect(saveButton, findsOneWidget);
       expect(find.text('Użytkownik został dodany'), findsNothing);
 
-      streamController.add(const UserCreated(userId: 1));
+      streamController.add(const UserCreated(userId: '1'));
 
       await widgetTester.tap(saveButton);
       await widgetTester.pump();

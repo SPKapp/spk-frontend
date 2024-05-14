@@ -73,6 +73,7 @@ class _UserModifyViewState extends State<UserModifyView> {
                   labelText: 'Email',
                   hintText: 'Wpisz email',
                   icon: Icons.email,
+                  keyboardType: TextInputType.emailAddress,
                   validator: emailValidator,
                 ),
                 AppTextField(
@@ -81,6 +82,7 @@ class _UserModifyViewState extends State<UserModifyView> {
                   labelText: 'Telefon',
                   hintText: 'Wpisz telefon',
                   icon: Icons.phone,
+                  keyboardType: TextInputType.phone,
                   validator: phoneValidator,
                 ),
                 if (widget.regions != null)

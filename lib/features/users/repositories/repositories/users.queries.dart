@@ -87,3 +87,25 @@ mutation $operationName(\$createUserInput: CreateUserInput!) {
 }
 ''';
 }
+
+abstract class _UpdateUserMutation {
+  static String operationName = 'UpdateUser';
+  static String document = '''
+mutation $operationName(\$updateUserInput: UpdateUserInput!) {
+	updateUser(updateUserInput: \$updateUserInput) {
+		id
+	}
+}
+''';
+}
+
+abstract class _UpdateMyProfileMutation {
+  static String operationName = 'UpdateMyProfile';
+  static String document = '''
+mutation $operationName(\$updateUserInput: UpdateProfileInput!) {
+  updateMyProfile(updateUserInput: \$updateUserInput) {
+    id
+  }
+}
+''';
+}

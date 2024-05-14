@@ -137,16 +137,16 @@ class AppRouter {
                   userId: state.pathParameters['id']!,
                 );
               },
-              // routes: [
-              // GoRoute(
-              //   path: 'edit',
-              //   builder: (context, state) {
-              //     return UserUpdatePage(
-              //       userId: int.parse(state.pathParameters['id']!),
-              //     );
-              //   },
-              // ),
-              // ],
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) {
+                    return UserUpdatePage(
+                      userId: state.pathParameters['id']!,
+                    );
+                  },
+                ),
+              ],
             ),
             GoRoute(
               path: '/myProfile',
@@ -155,6 +155,14 @@ class AppRouter {
                   drawer: AppDrawer(),
                 );
               },
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) {
+                    return const UserUpdatePage();
+                  },
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(

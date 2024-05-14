@@ -16,5 +16,11 @@ abstract interface class IUsersRepository {
   Future<User> findMyProfile();
 
   /// Creates a new [User].
-  Future<int> createUser(UserCreateDto user);
+  Future<String> createUser(UserCreateDto user);
+
+  /// Updates an existing [User].
+  Future<void> updateUser(String id, UserUpdateDto user);
+
+  /// Updates the current [User].
+  Future<void> updateMyProfile(UserUpdateDto user);
 }

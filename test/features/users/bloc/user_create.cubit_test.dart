@@ -40,12 +40,12 @@ void main() {
         'emits [UserCreated] when createUser is called',
         setUp: () {
           when(() => usersRepository.createUser(any()))
-              .thenAnswer((_) async => 1);
+              .thenAnswer((_) async => '1');
         },
         build: () => userCreateCubit,
         act: (cubit) => cubit.createUser(dto),
         expect: () => [
-              const UserCreated(userId: 1),
+              const UserCreated(userId: '1'),
             ],
         verify: (_) {
           verify(() => usersRepository.createUser(dto)).called(1);
