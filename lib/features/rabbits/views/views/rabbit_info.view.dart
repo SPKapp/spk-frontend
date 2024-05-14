@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
 
@@ -52,34 +51,6 @@ class RabbitInfoView extends StatelessWidget {
             VolunteerCard(
               volunteers: rabbit.rabbitGroup!.team?.users ?? [],
             ),
-          Row(
-            children: [
-              Expanded(
-                child: RabbitInfoButton(
-                  key: const Key('vet-visit-button'),
-                  onPressed: () =>
-                      context.push('/rabbit/${rabbit.id}/notes', extra: {
-                    'rabbitName': rabbit.name,
-                    'isVetVisit': true,
-                  }),
-                  text: 'Historia Leczenia',
-                  right: false,
-                ),
-              ),
-              Expanded(
-                child: RabbitInfoButton(
-                  key: const Key('notes-button'),
-                  onPressed: () =>
-                      context.push('/rabbit/${rabbit.id}/notes', extra: {
-                    'rabbitName': rabbit.name,
-                    'isVetVisit': false,
-                  }),
-                  text: 'Notatki',
-                  right: true,
-                ),
-              ),
-            ],
-          ),
           FullInfoCard(rabbit: rabbit),
         ],
       ),

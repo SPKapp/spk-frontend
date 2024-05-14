@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:spk_app_frontend/common/extensions/date_time.extension.dart';
 
 import 'package:spk_app_frontend/features/rabbits/views/widgets/form_fields/birth_date.field.dart';
 
@@ -9,14 +10,15 @@ void main() {
     late bool confirmedBirthDate;
     late DateTime selectedDate;
 
-    late Widget widget;
-
     setUp(() {
       controller = TextEditingController();
       confirmedBirthDate = false;
       selectedDate = DateTime(2024, 1, 1);
+      controller.text = selectedDate.toDateString();
+    });
 
-      widget = MaterialApp(
+    Widget buildWidget() {
+      return MaterialApp(
         home: Scaffold(
           body: BirthDateField(
             controller: controller,
@@ -30,7 +32,7 @@ void main() {
           ),
         ),
       );
-    });
+    }
 
     tearDown(() {
       controller.dispose();
@@ -38,7 +40,7 @@ void main() {
 
     testWidgets('renders BirthDateField correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(widget);
+      await tester.pumpWidget(buildWidget());
 
       expect(find.byType(Padding), findsWidgets);
       expect(find.byType(Icon), findsWidgets);
@@ -49,11 +51,11 @@ void main() {
     });
 
     testWidgets('test date confirmation', (WidgetTester tester) async {
-      await tester.pumpWidget(widget);
+      await tester.pumpWidget(buildWidget());
 
       expect(find.text('Przybliżona data'), findsOneWidget);
 
-      await tester.tap(find.byType(TextButton));
+      await tester.tap(find.byKey(const Key('confirmBirthDateButton')));
       await tester.pumpAndSettle();
 
       expect(confirmedBirthDate, true);
@@ -61,7 +63,7 @@ void main() {
     });
 
     testWidgets('test date selection', (WidgetTester tester) async {
-      await tester.pumpWidget(widget);
+      await tester.pumpWidget(buildWidget());
 
       await tester.tap(find.byType(TextFormField));
       await tester.pumpAndSettle();

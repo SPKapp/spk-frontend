@@ -36,6 +36,7 @@ class _BirthDateFieldState extends State<BirthDateField> {
           border: const OutlineInputBorder(),
           prefixIcon: const Icon(FontAwesomeIcons.calendarDay),
           suffix: TextButton(
+            key: const Key('confirmBirthDateButton'),
             onPressed: () {
               setState(() {
                 _confirmedBirthDate = !_confirmedBirthDate;

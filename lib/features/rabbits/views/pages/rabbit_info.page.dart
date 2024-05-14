@@ -37,15 +37,14 @@ class RabbitInfoPage extends StatelessWidget {
           final isAtLeastRegionManager =
               user.checkRole([Role.regionManager, Role.admin]);
 
-          late AppBar appBar;
+          AppBar appBar = AppBar();
+          List<Widget>? persistentFooterButtons;
           late Widget body;
 
           switch (state) {
             case RabbitInitial():
-              appBar = AppBar();
               body = const InitialView();
             case RabbitFailure():
-              appBar = AppBar();
               body = FailureView(
                 message: 'Nie udało się pobrać królika',
                 onPressed: () => context.read<RabbitCubit>().fetchRabbit(),
@@ -147,10 +146,48 @@ class RabbitInfoPage extends StatelessWidget {
                 rabbit: state.rabbit,
                 admin: isAtLeastRegionManager,
               );
+              persistentFooterButtons = [
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 8.0,
+                  children: [
+                    ActionChip(
+                      key: const Key('vetVisitButton'),
+                      backgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      label: const Text(
+                        'Historia Leczenia',
+                        textAlign: TextAlign.center,
+                      ),
+                      onPressed: () => context
+                          .push('/rabbit/${state.rabbit.id}/notes', extra: {
+                        'rabbitName': state.rabbit.name,
+                        'isVetVisit': true,
+                      }),
+                    ),
+                    ActionChip(
+                      key: const Key('notesButton'),
+                      backgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      label: const Text(
+                        'Notatki',
+                        textAlign: TextAlign.center,
+                      ),
+                      onPressed: () => context
+                          .push('/rabbit/${state.rabbit.id}/notes', extra: {
+                        'rabbitName': state.rabbit.name,
+                        'isVetVisit': false,
+                      }),
+                    ),
+                  ],
+                ),
+              ];
           }
           return Scaffold(
             appBar: appBar,
             body: body,
+            persistentFooterAlignment: AlignmentDirectional.bottomCenter,
+            persistentFooterButtons: persistentFooterButtons,
           );
         },
       ),
