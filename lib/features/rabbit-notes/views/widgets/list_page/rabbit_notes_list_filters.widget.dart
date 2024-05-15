@@ -46,62 +46,54 @@ class _RabbitNotesListFiltersState extends State<RabbitNotesListFilters> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8.0,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ChoiceChip(
-                      label: const Text('Wszystkie'),
-                      avatar: Icon(
-                        args.isVetVisit == null
-                            ? FontAwesomeIcons.check
-                            : FontAwesomeIcons.solidNoteSticky,
-                      ),
-                      showCheckmark: false,
-                      selected: args.isVetVisit == null,
-                      onSelected: (bool selected) {
-                        setState(() {
-                          args = args.copyWith(isVetVisit: () => null);
-                        });
-                      },
+                  ChoiceChip(
+                    label: const Text('Wszystkie 1234567890'),
+                    avatar: Icon(
+                      args.isVetVisit == null
+                          ? FontAwesomeIcons.check
+                          : FontAwesomeIcons.solidNoteSticky,
                     ),
+                    showCheckmark: false,
+                    selected: args.isVetVisit == null,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        args = args.copyWith(isVetVisit: () => null);
+                      });
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ChoiceChip(
-                      label: const Text('Wizyty'),
-                      avatar: Icon(
-                        args.isVetVisit == true
-                            ? FontAwesomeIcons.check
-                            : FontAwesomeIcons.stethoscope,
-                      ),
-                      showCheckmark: false,
-                      selected: args.isVetVisit == true,
-                      onSelected: (bool selected) {
-                        setState(() {
-                          args = args.copyWith(isVetVisit: () => true);
-                        });
-                      },
+                  ChoiceChip(
+                    label: const Text('Wizyty'),
+                    avatar: Icon(
+                      args.isVetVisit == true
+                          ? FontAwesomeIcons.check
+                          : FontAwesomeIcons.stethoscope,
                     ),
+                    showCheckmark: false,
+                    selected: args.isVetVisit == true,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        args = args.copyWith(isVetVisit: () => true);
+                      });
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ChoiceChip(
-                      label: const Text('Notatki'),
-                      avatar: Icon(
-                        args.isVetVisit == false
-                            ? FontAwesomeIcons.check
-                            : FontAwesomeIcons.noteSticky,
-                      ),
-                      showCheckmark: false,
-                      selected: args.isVetVisit == false,
-                      onSelected: (bool selected) {
-                        setState(() {
-                          args = args.copyWith(isVetVisit: () => false);
-                        });
-                      },
+                  ChoiceChip(
+                    label: const Text('Notatki'),
+                    avatar: Icon(
+                      args.isVetVisit == false
+                          ? FontAwesomeIcons.check
+                          : FontAwesomeIcons.noteSticky,
                     ),
+                    showCheckmark: false,
+                    selected: args.isVetVisit == false,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        args = args.copyWith(isVetVisit: () => false);
+                      });
+                    },
                   ),
                 ],
               ),

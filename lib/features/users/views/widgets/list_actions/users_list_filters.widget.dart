@@ -38,44 +38,36 @@ class _UsersListFiltersState extends State<UsersListFilters> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8.0,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ChoiceChip(
-                      label: const Text('Wszyscy'),
-                      selected: args.isActive == null,
-                      onSelected: (bool selected) {
-                        setState(() {
-                          args = args.copyWith(isActive: () => null);
-                        });
-                      },
-                    ),
+                  ChoiceChip(
+                    label: const Text('Wszyscy'),
+                    selected: args.isActive == null,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        args = args.copyWith(isActive: () => null);
+                      });
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ChoiceChip(
-                      label: const Text('Aktywni'),
-                      selected: args.isActive == true,
-                      onSelected: (bool selected) {
-                        setState(() {
-                          args = args.copyWith(isActive: () => true);
-                        });
-                      },
-                    ),
+                  ChoiceChip(
+                    label: const Text('Aktywni'),
+                    selected: args.isActive == true,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        args = args.copyWith(isActive: () => true);
+                      });
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ChoiceChip(
-                      label: const Text('Nieaktywni'),
-                      selected: args.isActive == false,
-                      onSelected: (bool selected) {
-                        setState(() {
-                          args = args.copyWith(isActive: () => false);
-                        });
-                      },
-                    ),
+                  ChoiceChip(
+                    label: const Text('Nieaktywni'),
+                    selected: args.isActive == false,
+                    onSelected: (bool selected) {
+                      setState(() {
+                        args = args.copyWith(isActive: () => false);
+                      });
+                    },
                   ),
                 ],
               ),
