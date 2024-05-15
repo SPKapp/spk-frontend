@@ -26,7 +26,7 @@ class _AppDrawerState extends State<AppDrawer> {
         children: <Widget>[
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(
-              color: Theme.of(context).secondaryHeaderColor,
+              color: Theme.of(context).colorScheme.outline,
             ),
             accountName: Text(currentUser.name ?? ''),
             accountEmail: Text(currentUser.email ?? ''),
@@ -55,7 +55,11 @@ class _AppDrawerState extends State<AppDrawer> {
         title: const Text('Użytkownicy'),
         onTap: () => context.go('/users'),
       ),
-      const Divider()
+      const Divider(),
+      ListTile(
+        title: const Text('Ustawienia'),
+        onTap: () => context.go('/settings'),
+      ),
     ];
 
     final List<Widget> adminList = regionManagerList;

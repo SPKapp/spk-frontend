@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 import 'package:spk_app_frontend/app/view/view.dart';
+import 'package:spk_app_frontend/common/views/pages.dart';
 
 import 'package:spk_app_frontend/example2.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
@@ -31,140 +32,148 @@ class AppRouter {
           navigationShell: navigationShell,
         ),
         branches: [
-          StatefulShellBranch(routes: [
-            GoRoute(
-                path: '/myRabbits',
-                builder: (context, state) {
-                  return const RabbitsListPage(
-                    drawer: AppDrawer(),
-                    volunteerView: true,
-                  );
-                }),
-            GoRoute(
-                path: '/rabbits',
-                builder: (context, state) {
-                  return const RabbitsListPage(
-                    drawer: AppDrawer(),
-                    volunteerView: false,
-                  );
-                }),
-            GoRoute(
-              path: '/rabbit/add',
-              builder: (context, state) {
-                return const RabbitCreatePage();
-              },
-            ),
-            GoRoute(
-              path: '/rabbit/:id',
-              builder: (context, state) {
-                return RabbitInfoPage(
-                  rabbitId: int.parse(state.pathParameters['id']!),
-                );
-              },
-              routes: [
-                GoRoute(
-                  path: 'edit',
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                  path: '/myRabbits',
                   builder: (context, state) {
-                    return RabbitUpdatePage(
-                      rabbitId: int.parse(state.pathParameters['id']!),
+                    return const RabbitsListPage(
+                      drawer: AppDrawer(),
+                      volunteerView: true,
                     );
-                  },
-                ),
-                GoRoute(
-                  path: 'notes',
+                  }),
+              GoRoute(
+                  path: '/rabbits',
                   builder: (context, state) {
-                    final extra = state.extra as dynamic;
+                    return const RabbitsListPage(
+                      drawer: AppDrawer(),
+                      volunteerView: false,
+                    );
+                  }),
+              GoRoute(
+                path: '/rabbit/add',
+                builder: (context, state) {
+                  return const RabbitCreatePage();
+                },
+              ),
+              GoRoute(
+                path: '/rabbit/:id',
+                builder: (context, state) {
+                  return RabbitInfoPage(
+                    rabbitId: int.parse(state.pathParameters['id']!),
+                  );
+                },
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) {
+                      return RabbitUpdatePage(
+                        rabbitId: int.parse(state.pathParameters['id']!),
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'notes',
+                    builder: (context, state) {
+                      final extra = state.extra as dynamic;
 
-                    return RabbitNotesListPage(
+                      return RabbitNotesListPage(
+                          rabbitId: state.pathParameters['id']!,
+                          rabbitName: extra?['rabbitName'],
+                          isVetVisit: extra?['isVetVisit']);
+                    },
+                  ),
+                  GoRoute(
+                    path: 'note/create',
+                    builder: (context, state) {
+                      final extra = state.extra as dynamic;
+
+                      return RabbitNoteCreatePage(
                         rabbitId: state.pathParameters['id']!,
+                        isVetVisitInitial: extra?['isVetVisit'],
                         rabbitName: extra?['rabbitName'],
-                        isVetVisit: extra?['isVetVisit']);
-                  },
-                ),
-                GoRoute(
-                  path: 'note/create',
-                  builder: (context, state) {
-                    final extra = state.extra as dynamic;
+                      );
+                    },
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: '/note/:id',
+                builder: (context, state) {
+                  final extra = state.extra as dynamic;
 
-                    return RabbitNoteCreatePage(
-                      rabbitId: state.pathParameters['id']!,
-                      isVetVisitInitial: extra?['isVetVisit'],
-                      rabbitName: extra?['rabbitName'],
-                    );
-                  },
-                ),
-              ],
-            ),
-            GoRoute(
-              path: '/note/:id',
-              builder: (context, state) {
-                final extra = state.extra as dynamic;
-
-                return RabbitNotePage(
-                  id: state.pathParameters['id']!,
-                  rabbitName: extra?['rabbitName'],
-                );
-              },
-              routes: [
-                GoRoute(
-                  path: 'edit',
-                  builder: (context, state) {
-                    return RabbitNoteUpdatePage(
-                      rabbitNoteId: state.pathParameters['id']!,
-                    );
-                  },
-                ),
-              ],
-            ),
-            GoRoute(
-              path: '/users',
-              builder: (context, state) {
-                return const UsersListPage(
+                  return RabbitNotePage(
+                    id: state.pathParameters['id']!,
+                    rabbitName: extra?['rabbitName'],
+                  );
+                },
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) {
+                      return RabbitNoteUpdatePage(
+                        rabbitNoteId: state.pathParameters['id']!,
+                      );
+                    },
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: '/users',
+                builder: (context, state) {
+                  return const UsersListPage(
+                    drawer: AppDrawer(),
+                  );
+                },
+              ),
+              GoRoute(
+                path: '/user/add',
+                builder: (context, state) {
+                  return const UserCreatePage();
+                },
+              ),
+              GoRoute(
+                path: '/user/:id',
+                builder: (context, state) {
+                  return UserPage(
+                    userId: state.pathParameters['id']!,
+                  );
+                },
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) {
+                      return UserUpdatePage(
+                        userId: state.pathParameters['id']!,
+                      );
+                    },
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: '/myProfile',
+                builder: (context, state) {
+                  return const MyProfilePage(
+                    drawer: AppDrawer(),
+                  );
+                },
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) {
+                      return const UserUpdatePage();
+                    },
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsPage(
                   drawer: AppDrawer(),
-                );
-              },
-            ),
-            GoRoute(
-              path: '/user/add',
-              builder: (context, state) {
-                return const UserCreatePage();
-              },
-            ),
-            GoRoute(
-              path: '/user/:id',
-              builder: (context, state) {
-                return UserPage(
-                  userId: state.pathParameters['id']!,
-                );
-              },
-              routes: [
-                GoRoute(
-                  path: 'edit',
-                  builder: (context, state) {
-                    return UserUpdatePage(
-                      userId: state.pathParameters['id']!,
-                    );
-                  },
                 ),
-              ],
-            ),
-            GoRoute(
-              path: '/myProfile',
-              builder: (context, state) {
-                return const MyProfilePage(
-                  drawer: AppDrawer(),
-                );
-              },
-              routes: [
-                GoRoute(
-                  path: 'edit',
-                  builder: (context, state) {
-                    return const UserUpdatePage();
-                  },
-                ),
-              ],
-            ),
-          ]),
+              ),
+            ],
+          ),
           StatefulShellBranch(
             routes: [
               GoRoute(
