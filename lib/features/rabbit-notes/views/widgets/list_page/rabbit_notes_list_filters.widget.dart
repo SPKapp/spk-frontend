@@ -51,7 +51,7 @@ class _RabbitNotesListFiltersState extends State<RabbitNotesListFilters> {
                 spacing: 8.0,
                 children: [
                   ChoiceChip(
-                    label: const Text('Wszystkie 1234567890'),
+                    label: const Text('Wszystkie'),
                     avatar: Icon(
                       args.isVetVisit == null
                           ? FontAwesomeIcons.check
