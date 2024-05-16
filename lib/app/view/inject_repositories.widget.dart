@@ -27,6 +27,9 @@ class InjectRepositories extends StatelessWidget {
         RepositoryProvider<IRabbitsRepository>(
           create: (context) => RabbitsRepository(gqlService),
         ),
+        RepositoryProvider<IRabbitGroupsRepository>(
+          create: (context) => RabbitGroupsRepository(gqlService),
+        ),
         RepositoryProvider<IUsersRepository>(
           create: (context) => UsersRepository(gqlService),
         ),

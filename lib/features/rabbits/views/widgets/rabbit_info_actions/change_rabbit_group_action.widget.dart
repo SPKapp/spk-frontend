@@ -28,7 +28,7 @@ class ChangeRabbitGroupAction extends StatefulWidget {
 }
 
 class _ChangeRabbitGroupActionState extends State<ChangeRabbitGroupAction> {
-  late int? _selectedRabbitGroupId = widget.rabbit.rabbitGroup?.id;
+  late String? _selectedRabbitGroupId = widget.rabbit.rabbitGroup?.id;
 
   @override
   Widget build(BuildContext context) {
@@ -99,10 +99,10 @@ class _ChangeRabbitGroupActionState extends State<ChangeRabbitGroupAction> {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            DropdownButton<int>(
+                            DropdownButton<String>(
                               items: [
                                 const DropdownMenuItem(
-                                  value: 0,
+                                  value: '0',
                                   child: Text('Nowa grupa'),
                                 ),
                                 ...state.rabbitGroups.map(
@@ -122,7 +122,7 @@ class _ChangeRabbitGroupActionState extends State<ChangeRabbitGroupAction> {
                             const SizedBox(height: 20),
                             FilledButton(
                               onPressed: () async {
-                                _selectedRabbitGroupId ??= 0;
+                                _selectedRabbitGroupId ??= '0';
                                 if (_selectedRabbitGroupId !=
                                     widget.rabbit.rabbitGroup!.id) {
                                   final result = await showDialog<bool>(

@@ -8,7 +8,7 @@ import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info/top_
 void main() {
   group(TopInfoCard, () {
     Rabbit rabbit = Rabbit(
-      id: 1,
+      id: '1',
       name: 'Rabbit',
       gender: Gender.unknown,
       admissionType: AdmissionType.found,

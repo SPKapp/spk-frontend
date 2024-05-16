@@ -15,14 +15,14 @@ void main() {
 
     const rabbits = [
       Rabbit(
-        id: 1,
+        id: '1',
         name: 'Rabbit 1',
         gender: Gender.male,
         admissionType: AdmissionType.found,
         confirmedBirthDate: false,
       ),
       Rabbit(
-        id: 2,
+        id: '2',
         name: 'Rabbit 2',
         gender: Gender.male,
         admissionType: AdmissionType.found,

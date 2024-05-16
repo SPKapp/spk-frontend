@@ -32,7 +32,7 @@ void main() {
           navigator: navigator,
           child: Scaffold(
             body: RemoveRabbitAction(
-              rabbitId: 1,
+              rabbitId: '1',
               rabbitUpdateCubit: (context) => rabbitUpdateCubit,
             ),
           ),
@@ -66,7 +66,7 @@ void main() {
       await tester.tap(find.text('Usuń'));
       await tester.pump();
 
-      verify(() => rabbitUpdateCubit.removeRabbit(1)).called(1);
+      verify(() => rabbitUpdateCubit.removeRabbit('1')).called(1);
       verify(() => navigator.pop(true)).called(1);
     });
 

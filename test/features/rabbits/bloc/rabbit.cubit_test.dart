@@ -14,7 +14,7 @@ void main() {
     late RabbitCubit rabbitCubit;
 
     const Rabbit rabbit = Rabbit(
-      id: 1,
+      id: '1',
       name: 'name',
       gender: Gender.male,
       confirmedBirthDate: false,

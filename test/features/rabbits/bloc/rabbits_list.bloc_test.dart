@@ -17,10 +17,10 @@ void main() {
     late RabbitsListBloc rabbitsListBloc;
 
     const rabbitGroup1 = RabbitGroup(
-      id: 1,
+      id: '1',
       rabbits: [
         Rabbit(
-          id: 1,
+          id: '1',
           name: 'name 1',
           gender: Gender.male,
           confirmedBirthDate: false,
@@ -29,10 +29,10 @@ void main() {
       ],
     );
     const rabbitGroup2 = RabbitGroup(
-      id: 2,
+      id: '2',
       rabbits: [
         Rabbit(
-          id: 2,
+          id: '2',
           name: 'name2',
           gender: Gender.male,
           confirmedBirthDate: false,

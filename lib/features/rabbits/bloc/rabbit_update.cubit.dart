@@ -63,7 +63,7 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
   }
 
   /// Changes the rabbit group of the rabbit with the given [rabbitId] to the rabbit group with the given [rabbitGroupId].
-  void changeRabbitGroup(int rabbitId, int rabbitGroupId) async {
+  void changeRabbitGroup(String rabbitId, String rabbitGroupId) async {
     try {
       await _rabbitsRepository.updateRabbitGroup(rabbitId, rabbitGroupId);
       emit(
@@ -80,7 +80,7 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
   }
 
   /// Removes the rabbit with the given [rabbitId].
-  void removeRabbit(int rabbitId) async {
+  void removeRabbit(String rabbitId) async {
     try {
       await _rabbitsRepository.removeRabbit(rabbitId);
       emit(

@@ -10,7 +10,7 @@ import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info.dart
 void main() {
   group(RabbitInfoView, () {
     Rabbit rabbit = Rabbit(
-      id: 1,
+      id: '1',
       name: 'Rabbit',
       gender: Gender.female,
       weight: 5.0,
@@ -23,7 +23,7 @@ void main() {
       admissionDate: DateTime(2024, 5, 1),
       admissionType: AdmissionType.found,
       fillingDate: DateTime(2024, 6, 1),
-      rabbitGroup: RabbitGroup(id: 1, rabbits: List.empty(growable: true)),
+      rabbitGroup: RabbitGroup(id: '1', rabbits: List.empty(growable: true)),
     );
 
     testWidgets('should render correctly - admin', (WidgetTester tester) async {

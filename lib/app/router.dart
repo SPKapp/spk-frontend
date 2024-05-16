@@ -7,6 +7,7 @@ import 'package:spk_app_frontend/app/view/view.dart';
 import 'package:spk_app_frontend/common/views/pages.dart';
 
 import 'package:spk_app_frontend/example2.dart';
+import 'package:spk_app_frontend/features/adoption/views/pages.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/pages.dart';
 import 'package:spk_app_frontend/features/rabbits/views/pages.dart';
@@ -60,7 +61,7 @@ class AppRouter {
                 path: '/rabbit/:id',
                 builder: (context, state) {
                   return RabbitInfoPage(
-                    rabbitId: int.parse(state.pathParameters['id']!),
+                    rabbitId: state.pathParameters['id']!,
                   );
                 },
                 routes: [
@@ -68,7 +69,7 @@ class AppRouter {
                     path: 'edit',
                     builder: (context, state) {
                       return RabbitUpdatePage(
-                        rabbitId: int.parse(state.pathParameters['id']!),
+                        rabbitId: state.pathParameters['id']!,
                       );
                     },
                   ),
@@ -96,6 +97,14 @@ class AppRouter {
                     },
                   ),
                 ],
+              ),
+              GoRoute(
+                path: '/rabbitGroup/:id',
+                builder: (context, state) {
+                  return AdoptionInfoPage(
+                    rabbitGroupId: state.pathParameters['id']!,
+                  );
+                },
               ),
               GoRoute(
                 path: '/note/:id',

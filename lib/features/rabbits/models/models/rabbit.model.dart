@@ -26,8 +26,9 @@ final class Rabbit extends Equatable {
     this.vaccinationDate,
   });
 
+  final String id;
+
   /// Editable fields
-  final int id;
   final String name;
   final String? color;
   final String? breed;
@@ -50,7 +51,7 @@ final class Rabbit extends Equatable {
 
   static Rabbit fromJson(Map<String, dynamic> json) {
     return Rabbit(
-      id: int.parse(json['id']),
+      id: json['id'],
       name: json['name'] as String,
       color: json['color'] as String?,
       breed: json['breed'] as String?,

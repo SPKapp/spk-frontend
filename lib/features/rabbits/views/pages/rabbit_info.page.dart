@@ -20,7 +20,7 @@ class RabbitInfoPage extends StatelessWidget {
     this.rabbitCubit,
   });
 
-  final int rabbitId;
+  final String rabbitId;
   final RabbitCubit Function(BuildContext)? rabbitCubit;
 
   @override
@@ -178,6 +178,17 @@ class RabbitInfoPage extends StatelessWidget {
                         'rabbitName': state.rabbit.name,
                         'isVetVisit': false,
                       }),
+                    ),
+                    ActionChip(
+                      key: const Key('adoptionButton'),
+                      backgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainerLow,
+                      label: const Text(
+                        'Adopcja',
+                        textAlign: TextAlign.center,
+                      ),
+                      onPressed: () => context
+                          .push('/rabbitGroup/${state.rabbit.rabbitGroup!.id}'),
                     ),
                   ],
                 ),

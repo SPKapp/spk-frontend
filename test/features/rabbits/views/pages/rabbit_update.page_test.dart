@@ -34,7 +34,7 @@ void main() {
     late GoRouter goRouter;
 
     const rabbit = Rabbit(
-      id: 1,
+      id: '1',
       name: 'rabbitName',
       admissionType: AdmissionType.found,
       gender: Gender.female,
@@ -42,7 +42,7 @@ void main() {
     );
 
     setUpAll(() {
-      registerFallbackValue(RabbitUpdateDto(id: 1, name: 'rabbitName'));
+      registerFallbackValue(RabbitUpdateDto(id: '1', name: 'rabbitName'));
     });
 
     setUp(() {
@@ -74,7 +74,7 @@ void main() {
           child: BlocProvider<AuthCubit>.value(
             value: authCubit,
             child: RabbitUpdatePage(
-              rabbitId: 1,
+              rabbitId: '1',
               rabbitCubit: (_) => rabbitCubit,
               rabbitUpdateCubit: (_) => rabbitUpdateCubit,
             ),

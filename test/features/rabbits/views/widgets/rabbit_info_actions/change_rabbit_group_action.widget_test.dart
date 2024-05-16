@@ -25,10 +25,10 @@ void main() {
     late GoRouter goRouter;
 
     const rabbitGroup1 = RabbitGroup(
-      id: 1,
+      id: '1',
       rabbits: [
         Rabbit(
-          id: 1,
+          id: '1',
           name: 'Rabbit 1',
           gender: Gender.female,
           admissionType: AdmissionType.found,
@@ -36,9 +36,9 @@ void main() {
         ),
       ],
     );
-    const rabbitGroup2 = RabbitGroup(id: 2, rabbits: [
+    const rabbitGroup2 = RabbitGroup(id: '2', rabbits: [
       Rabbit(
-        id: 2,
+        id: '2',
         name: 'Rabbit 2',
         gender: Gender.female,
         admissionType: AdmissionType.found,
@@ -47,7 +47,7 @@ void main() {
     ]);
 
     const rabbit = Rabbit(
-      id: 1,
+      id: '1',
       name: 'Rabbit 1',
       gender: Gender.female,
       admissionType: AdmissionType.found,

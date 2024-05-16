@@ -9,7 +9,7 @@ class MockGoRouter extends Mock implements GoRouter {}
 
 void main() {
   group(RabbitListItem, () {
-    const int rabbitId = 1;
+    const String rabbitId = '1';
     const String rabbitName = 'Rabbit';
     final MockGoRouter mockGoRouter = MockGoRouter();
 

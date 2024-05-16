@@ -10,7 +10,7 @@ abstract interface class IRabbitsRepository {
   Future<Paginated<RabbitGroup>> findAll(FindRabbitsArgs args, bool totalCount);
 
   /// Retrieves a single [Rabbit] object based on the provided [id].
-  Future<Rabbit> findOne(int id);
+  Future<Rabbit> findOne(String id);
 
   /// Creates a new rabbit.
   Future<int> createRabbit(RabbitCreateDto rabbit);
@@ -32,8 +32,8 @@ abstract interface class IRabbitsRepository {
   /// The [rabbitGroupId] parameter specifies the ID of the new rabbit group.
   ///
   /// Throws an exception if the update fails.
-  Future<void> updateRabbitGroup(int rabbitId, int rabbitGroupId);
+  Future<void> updateRabbitGroup(String rabbitId, String rabbitGroupId);
 
   /// Removes a rabbit with the given [id].
-  Future<void> removeRabbit(int id);
+  Future<void> removeRabbit(String id);
 }

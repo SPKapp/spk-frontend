@@ -29,13 +29,13 @@ void main() {
     late GoRouter goRouter;
 
     const rabbit = Rabbit(
-      id: 1,
+      id: '1',
       name: 'rabbitName',
       admissionType: AdmissionType.found,
       gender: Gender.female,
       confirmedBirthDate: false,
       rabbitGroup:
-          RabbitGroup(id: 1, rabbits: [], team: Team(id: '1', users: [])),
+          RabbitGroup(id: '1', rabbits: [], team: Team(id: '1', users: [])),
     );
 
     setUp(() {
@@ -66,7 +66,7 @@ void main() {
           child: BlocProvider<AuthCubit>.value(
             value: authCubit,
             child: RabbitInfoPage(
-              rabbitId: 1,
+              rabbitId: '1',
               rabbitCubit: (_) => rabbitCubit,
             ),
           ),

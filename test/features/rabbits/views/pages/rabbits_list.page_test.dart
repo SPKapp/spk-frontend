@@ -126,13 +126,13 @@ void main() {
         rabbitsListBloc,
         Stream.fromIterable([
           const RabbitsListFailure(
-            rabbitGroups: [RabbitGroup(id: 1, rabbits: [])],
+            rabbitGroups: [RabbitGroup(id: '1', rabbits: [])],
             hasReachedMax: true,
             totalCount: 0,
           ),
         ]),
         initialState: const RabbitsListSuccess(
-          rabbitGroups: [RabbitGroup(id: 1, rabbits: [])],
+          rabbitGroups: [RabbitGroup(id: '1', rabbits: [])],
           hasReachedMax: true,
           totalCount: 0,
         ),

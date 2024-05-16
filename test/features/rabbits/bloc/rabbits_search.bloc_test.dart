@@ -76,17 +76,17 @@ void main() {
     );
 
     const rabbitGroup1 = RabbitGroup(
-      id: 1,
+      id: '1',
       rabbits: [
         Rabbit(
-          id: 1,
+          id: '1',
           name: 'Timon',
           gender: Gender.male,
           confirmedBirthDate: false,
           admissionType: AdmissionType.found,
         ),
         Rabbit(
-          id: 2,
+          id: '2',
           name: 'Pumba',
           gender: Gender.male,
           confirmedBirthDate: false,
@@ -95,17 +95,17 @@ void main() {
       ],
     );
     const rabbitGroup2 = RabbitGroup(
-      id: 2,
+      id: '2',
       rabbits: [
         Rabbit(
-          id: 3,
+          id: '3',
           name: 'Timon',
           gender: Gender.male,
           confirmedBirthDate: false,
           admissionType: AdmissionType.found,
         ),
         Rabbit(
-          id: 4,
+          id: '4',
           name: 'Pumba',
           gender: Gender.male,
           confirmedBirthDate: false,

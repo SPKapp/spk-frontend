@@ -14,7 +14,7 @@ void main() {
     late RabbitUpdateCubit rabbitUpdateCubit;
 
     final dto = RabbitUpdateDto(
-      id: 1,
+      id: '1',
       name: 'name',
     );
 
@@ -106,12 +106,13 @@ void main() {
                 .thenAnswer((_) async => 1);
           },
           build: () => rabbitUpdateCubit,
-          act: (cubit) => cubit.changeRabbitGroup(1, 1),
+          act: (cubit) => cubit.changeRabbitGroup('1', '1'),
           expect: () => [
                 const RabbitUpdated(),
               ],
           verify: (_) {
-            verify(() => rabbitRepository.updateRabbitGroup(1, 1)).called(1);
+            verify(() => rabbitRepository.updateRabbitGroup('1', '1'))
+                .called(1);
           });
 
       blocTest<RabbitUpdateCubit, RabbitUpdateState>(
@@ -121,13 +122,14 @@ void main() {
                 .thenThrow(Exception());
           },
           build: () => rabbitUpdateCubit,
-          act: (cubit) => cubit.changeRabbitGroup(1, 1),
+          act: (cubit) => cubit.changeRabbitGroup('1', '1'),
           expect: () => [
                 const RabbitUpdateFailure(),
                 const RabbitUpdateInitial(),
               ],
           verify: (_) {
-            verify(() => rabbitRepository.updateRabbitGroup(1, 1)).called(1);
+            verify(() => rabbitRepository.updateRabbitGroup('1', '1'))
+                .called(1);
           });
     });
 
@@ -139,12 +141,12 @@ void main() {
                 .thenAnswer((_) async => 1);
           },
           build: () => rabbitUpdateCubit,
-          act: (cubit) => cubit.removeRabbit(1),
+          act: (cubit) => cubit.removeRabbit('1'),
           expect: () => [
                 const RabbitUpdated(),
               ],
           verify: (_) {
-            verify(() => rabbitRepository.removeRabbit(1)).called(1);
+            verify(() => rabbitRepository.removeRabbit('1')).called(1);
           });
 
       blocTest<RabbitUpdateCubit, RabbitUpdateState>(
@@ -154,13 +156,13 @@ void main() {
                 .thenThrow(Exception());
           },
           build: () => rabbitUpdateCubit,
-          act: (cubit) => cubit.removeRabbit(1),
+          act: (cubit) => cubit.removeRabbit('1'),
           expect: () => [
                 const RabbitUpdateFailure(),
                 const RabbitUpdateInitial(),
               ],
           verify: (_) {
-            verify(() => rabbitRepository.removeRabbit(1)).called(1);
+            verify(() => rabbitRepository.removeRabbit('1')).called(1);
           });
     });
 

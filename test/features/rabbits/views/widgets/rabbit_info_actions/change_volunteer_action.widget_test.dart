@@ -38,13 +38,13 @@ void main() {
     );
 
     const rabbit = Rabbit(
-      id: 1,
+      id: '1',
       name: 'Rabbit',
       gender: Gender.female,
       admissionType: AdmissionType.found,
       confirmedBirthDate: false,
       rabbitGroup: RabbitGroup(
-        id: 1,
+        id: '1',
         rabbits: [],
         team: team1,
       ),
@@ -223,13 +223,13 @@ void main() {
         await tester.pumpWidget(
           buildWidget(
             rabbit: const Rabbit(
-              id: 1,
+              id: '1',
               name: 'Rabbit',
               gender: Gender.female,
               admissionType: AdmissionType.found,
               confirmedBirthDate: false,
               rabbitGroup: RabbitGroup(
-                id: 1,
+                id: '1',
                 rabbits: [],
               ),
             ),

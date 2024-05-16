@@ -24,7 +24,7 @@ class RabbitCubit extends Cubit<RabbitState> {
   })  : _rabbitsRepository = rabbitsRepository,
         super(const RabbitInitial());
 
-  final int rabbitId;
+  final String rabbitId;
   final IRabbitsRepository _rabbitsRepository;
 
   /// Fetches a rabbit with the given [rabbitId].

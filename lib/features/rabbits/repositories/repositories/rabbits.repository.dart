@@ -28,7 +28,7 @@ class RabbitsRepository implements IRabbitsRepository {
   }
 
   @override
-  Future<Rabbit> findOne(int id) async {
+  Future<Rabbit> findOne(String id) async {
     final result = await gqlService.query(
       GetRabbitQuery.document,
       operationName: GetRabbitQuery.operationName,
@@ -87,7 +87,7 @@ class RabbitsRepository implements IRabbitsRepository {
   }
 
   @override
-  Future<void> updateRabbitGroup(int rabbitId, int rabbitGroupId) async {
+  Future<void> updateRabbitGroup(String rabbitId, String rabbitGroupId) async {
     final result = await gqlService.mutate(
       UpdateRabbitGroupMutation.document,
       operationName: UpdateRabbitGroupMutation.operationName,
@@ -103,7 +103,7 @@ class RabbitsRepository implements IRabbitsRepository {
   }
 
   @override
-  Future<void> removeRabbit(int rabbitId) async {
+  Future<void> removeRabbit(String rabbitId) async {
     final result = await gqlService.mutate(
       RemoveRabbitMutation.document,
       operationName: RemoveRabbitMutation.operationName,

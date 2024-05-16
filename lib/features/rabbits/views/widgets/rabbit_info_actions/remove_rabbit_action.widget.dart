@@ -11,7 +11,7 @@ class RemoveRabbitAction extends StatelessWidget {
     this.rabbitUpdateCubit,
   });
 
-  final int rabbitId;
+  final String rabbitId;
   final RabbitUpdateCubit Function(BuildContext)? rabbitUpdateCubit;
 
   @override

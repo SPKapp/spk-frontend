@@ -7,7 +7,7 @@ import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info/full
 void main() {
   group(FullInfoCard, () {
     final rabbit = Rabbit(
-      id: 1,
+      id: '1',
       name: 'Rabbit',
       gender: Gender.female,
       weight: 5.0,

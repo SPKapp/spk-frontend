@@ -22,7 +22,7 @@ class RabbitUpdatePage extends StatefulWidget {
     this.rabbitUpdateCubit,
   });
 
-  final int rabbitId;
+  final String rabbitId;
   final RabbitCubit Function(BuildContext)? rabbitCubit;
   final RabbitUpdateCubit Function(BuildContext)? rabbitUpdateCubit;
 
