@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/rabbit_group.cubit.dart';
@@ -43,6 +44,18 @@ class AdoptionInfoPage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: const Text('Informacje o adopcji'),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () async {
+                    final result =
+                        await context.push('/rabbitGroup/$rabbitGroupId/edit');
+                    if (result == true && context.mounted) {
+                      context.read<RabbitGroupCubit>().fetch();
+                    }
+                  },
+                ),
+              ],
             ),
             body: body,
           );

@@ -17,3 +17,14 @@ query $operationName(\$id: ID!) {
 }
 ''';
 }
+
+abstract class _UpdateRabbitGroupMutation {
+  static const String operationName = 'UpdateRabbitGroup';
+  static const String document = '''
+mutation $operationName(\$updateDto: UpdateRabbitGroupInput!) {
+  updateRabbitGroup(updateDto: \$updateDto) {
+    id
+  }
+}
+''';
+}

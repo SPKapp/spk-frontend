@@ -42,6 +42,8 @@ final class RabbitGroup extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        adoptionDescription,
+        adoptionDate,
         rabbits,
         team,
         region,

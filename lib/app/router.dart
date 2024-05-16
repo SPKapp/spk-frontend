@@ -105,6 +105,16 @@ class AppRouter {
                     rabbitGroupId: state.pathParameters['id']!,
                   );
                 },
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) {
+                      return UpdateAdoptionInfoPage(
+                        rabbitGroupId: state.pathParameters['id']!,
+                      );
+                    },
+                  ),
+                ],
               ),
               GoRoute(
                 path: '/note/:id',
