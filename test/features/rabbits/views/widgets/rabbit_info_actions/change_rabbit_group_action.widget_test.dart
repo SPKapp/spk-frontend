@@ -96,7 +96,7 @@ void main() {
 
         expect(find.text('Wybierz nową grupę zaprzyjaźnionych królików'),
             findsOneWidget);
-        expect(find.byType(DropdownButton<int>), findsOneWidget);
+        expect(find.byType(DropdownButton<String>), findsOneWidget);
         expect(find.byType(FilledButton), findsOneWidget);
 
         expect(find.text(rabbitGroup1.name), findsOneWidget);
@@ -107,7 +107,7 @@ void main() {
           (WidgetTester tester) async {
         await tester.pumpWidget(buildWidget());
 
-        await tester.tap(find.byType(DropdownButton<int>));
+        await tester.tap(find.byType(DropdownButton<String>));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text(rabbitGroup2.name));
@@ -158,7 +158,7 @@ void main() {
           (WidgetTester tester) async {
         await tester.pumpWidget(buildWidget());
 
-        await tester.tap(find.byType(DropdownButton<int>));
+        await tester.tap(find.byType(DropdownButton<String>));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text(rabbitGroup2.name));
@@ -184,7 +184,7 @@ void main() {
 
         await tester.pumpWidget(buildWidget());
 
-        await tester.tap(find.byType(DropdownButton<int>));
+        await tester.tap(find.byType(DropdownButton<String>));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text(rabbitGroup2.name));
@@ -216,7 +216,7 @@ void main() {
 
         await tester.pumpWidget(buildWidget());
 
-        await tester.tap(find.byType(DropdownButton<int>));
+        await tester.tap(find.byType(DropdownButton<String>));
         await tester.pumpAndSettle();
 
         await tester.tap(find.text(rabbitGroup2.name));
