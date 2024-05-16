@@ -1,6 +1,6 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:spk_app_frontend/common/services/logger.service.dart';
+
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 
@@ -8,41 +8,27 @@ part 'rabbit_group.state.dart';
 
 /// A cubit that manages the state of a rabbit group.
 ///
-/// Available functions:
-/// - [fetch] - fetches a rabbit group with the given [rabbitGroupId]
-/// - [refresh] - restarts fetching the rabbit group
-///
-/// Available states:
-/// - [RabbitGroupInitial] - initial state
-/// - [RabbitGroupSuccess] - the rabbit group has been fetched successfully
-/// - [RabbitGroupFailure] - an error occurred while fetching the rabbit group
-class RabbitGroupCubit extends Cubit<RabbitGroupState> {
+/// Needs a [rabbitGroupId] and a [rabbitGroupsRepository].
+class RabbitGroupCubit extends IGetOneCubit<RabbitGroup> {
   RabbitGroupCubit({
     required this.rabbitGroupId,
     required IRabbitGroupsRepository rabbitGroupsRepository,
   })  : _rabbitGroupsRepository = rabbitGroupsRepository,
-        super(const RabbitGroupInitial());
+        super();
 
   final String rabbitGroupId;
   final IRabbitGroupsRepository _rabbitGroupsRepository;
-  final logger = LoggerService();
 
   /// Fetches a rabbit group with the given [rabbitGroupId].
   /// Emits new state only if data was changed.
+  @override
   void fetch() async {
     try {
       final rabbitGroup = await _rabbitGroupsRepository.findOne(rabbitGroupId);
-      emit(RabbitGroupSuccess(rabbitGroup: rabbitGroup));
+      emit(GetOneSuccess(data: rabbitGroup));
     } catch (e) {
       logger.error('Failed to fetch rabbit group', error: e);
-      emit(const RabbitGroupFailure());
+      emit(const GetOneFailure());
     }
-  }
-
-  /// Restarts fetching the rabbit group.
-  /// Always emits new state.
-  void refresh() async {
-    emit(const RabbitGroupInitial());
-    fetch();
   }
 }

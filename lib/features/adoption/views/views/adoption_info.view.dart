@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
-import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
-import 'package:spk_app_frontend/features/adoption/bloc/rabbit_group.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 
 class AdoptionInfoView extends StatelessWidget {
@@ -17,39 +14,57 @@ class AdoptionInfoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ItemView(
-      onRefresh: () async {
-        Future cubit = context.read<RabbitGroupCubit>().stream.skip(1).first;
-        context.read<RabbitGroupCubit>().refresh();
-        return cubit;
-      },
-      child: Column(
-        children: [
-          AppCard(
+    return Column(
+      children: [
+        AppCard(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  rabbitGroup.rabbits.length > 1 ? 'Króliki:' : 'Królik:',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              ...ListTile.divideTiles(
+                context: context,
+                tiles: rabbitGroup.rabbits
+                    .map(
+                      (rabbit) => ListTile(
+                        title: Text(rabbit.name),
+                        leading: const Icon(Icons.pets),
+                        onTap: () => context.push('/rabbit/${rabbit.id}'),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
+          ),
+        ),
+        AppCard(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Text(
+                  'Opis adopcyjny',
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    rabbitGroup.rabbits.length > 1 ? 'Króliki:' : 'Królik:',
-                    style: Theme.of(context).textTheme.titleMedium,
+                    rabbitGroup.adoptionDescription ??
+                        'Błąd pobierania opisu adopcyjnego',
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                ...ListTile.divideTiles(
-                  context: context,
-                  tiles: rabbitGroup.rabbits
-                      .map(
-                        (rabbit) => ListTile(
-                          title: Text(rabbit.name),
-                          leading: const Icon(Icons.pets),
-                          onTap: () => context.push('/rabbit/${rabbit.id}'),
-                        ),
-                      )
-                      .toList(),
                 ),
               ],
             ),
           ),
+        ),
+        if (rabbitGroup.adoptionDate != null)
           AppCard(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -57,49 +72,24 @@ class AdoptionInfoView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Opis adopcyjny',
+                    'Data adopcji:',
                     style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center,
                   ),
+                  const SizedBox(width: 8),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      rabbitGroup.adoptionDescription ??
-                          'Błąd pobierania opisu adopcyjnego',
+                      rabbitGroup.adoptionDate!.toDateString(),
                       textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          if (rabbitGroup.adoptionDate != null)
-            AppCard(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Data adopcji:',
-                      style: Theme.of(context).textTheme.titleLarge,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(width: 8),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        rabbitGroup.adoptionDate!.toDateString(),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
-      ),
+      ],
     );
   }
 }

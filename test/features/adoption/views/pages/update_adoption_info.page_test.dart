@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/rabbit_group.cubit.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/update_rabbit_group.cubit.dart';
@@ -14,7 +15,7 @@ import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 class MockUpdateRabbitGroupCubit extends MockCubit<UpdateRabbitGroupState>
     implements UpdateRabbitGroupCubit {}
 
-class MockRabbitGroupCubit extends MockCubit<RabbitGroupState>
+class MockRabbitGroupCubit extends MockCubit<GetOneState<RabbitGroup>>
     implements RabbitGroupCubit {}
 
 class MockGoRouter extends Mock implements GoRouter {}
@@ -30,8 +31,8 @@ void main() {
       rabbitGroupCubit = MockRabbitGroupCubit();
       goRouter = MockGoRouter();
 
-      when(() => rabbitGroupCubit.state).thenReturn(const RabbitGroupSuccess(
-        rabbitGroup: RabbitGroup(id: '1', rabbits: []),
+      when(() => rabbitGroupCubit.state).thenReturn(const GetOneSuccess(
+        data: RabbitGroup(id: '1', rabbits: []),
       ));
 
       when(() => updateCubit.state)
@@ -58,7 +59,7 @@ void main() {
     testWidgets(
         'renders InitialView when RabbitGroupState is RabbitGroupInitial',
         (WidgetTester tester) async {
-      when(() => rabbitGroupCubit.state).thenReturn(const RabbitGroupInitial());
+      when(() => rabbitGroupCubit.state).thenReturn(const GetOneInitial());
 
       await tester.pumpWidget(buildWidget());
 
@@ -68,7 +69,7 @@ void main() {
     testWidgets(
         'renders FailureView when RabbitGroupState is RabbitGroupFailure',
         (WidgetTester tester) async {
-      when(() => rabbitGroupCubit.state).thenReturn(const RabbitGroupFailure());
+      when(() => rabbitGroupCubit.state).thenReturn(const GetOneFailure());
 
       await tester.pumpWidget(buildWidget());
 

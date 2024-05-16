@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
-import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/rabbit_group.cubit.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/update_rabbit_group.cubit.dart';
 import 'package:spk_app_frontend/features/adoption/views/views/update_adoption_info.view.dart';
@@ -80,42 +80,23 @@ class _UpdateAdoptionInfoPageState extends State<UpdateAdoptionInfoPage> {
               break;
           }
         },
-        child: BlocBuilder<RabbitGroupCubit, RabbitGroupState>(
-          builder: (context, state) {
-            List<Widget>? actions;
-            late final Widget body;
-
-            switch (state) {
-              case RabbitGroupInitial():
-                body = const InitialView();
-              case RabbitGroupFailure():
-                body = FailureView(
-                  message: 'Nie udało się pobrać grupy królików',
-                  onPressed: () => context.read<RabbitGroupCubit>().fetch(),
-                );
-              case RabbitGroupSuccess():
-                _loadFieldControlers(state.rabbitGroup);
-                actions = [
+        child: GetOnePage<RabbitGroup, RabbitGroupCubit>(
+            id: widget.rabbitGroupId,
+            defaultTitle: 'Informacje o adopcji',
+            errorInfo: 'Nie udało się pobrać grupy królików',
+            actionsBuilder: (context, rabbitGroup) => [
                   IconButton(
                     key: const Key('saveButton'),
                     icon: const Icon(Icons.save),
-                    onPressed: () => _onSubmit(context, state.rabbitGroup),
+                    onPressed: () => _onSubmit(context, rabbitGroup),
                   ),
-                ];
-                body = UpdateAdoptionInfoView(
-                  editControlers: _editControlers,
-                );
-            }
-
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Informacje o adopcji'),
-                actions: actions,
-              ),
-              body: body,
-            );
-          },
-        ),
+                ],
+            builder: (context, rabbitGroup) {
+              _loadFieldControlers(rabbitGroup);
+              return UpdateAdoptionInfoView(
+                editControlers: _editControlers,
+              );
+            }),
       ),
     );
   }

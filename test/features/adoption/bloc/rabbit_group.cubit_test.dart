@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/adoption/bloc/rabbit_group.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
@@ -27,10 +28,11 @@ void main() {
     });
 
     test('initial state is RabbitGroupInitial', () {
-      expect(rabbitGroupCubit.state, equals(const RabbitGroupInitial()));
+      expect(
+          rabbitGroupCubit.state, equals(const GetOneInitial<RabbitGroup>()));
     });
 
-    blocTest<RabbitGroupCubit, RabbitGroupState>(
+    blocTest<RabbitGroupCubit, GetOneState>(
       'emits [RabbitGroupSuccess] when fetch is successful',
       setUp: () {
         when(() => mockRabbitGroupsRepository.findOne('1'))
@@ -41,12 +43,11 @@ void main() {
       },
       build: () => rabbitGroupCubit,
       act: (cubit) => cubit.fetch(),
-      expect: () => [
-        const RabbitGroupSuccess(rabbitGroup: RabbitGroup(id: '1', rabbits: []))
-      ],
+      expect: () =>
+          [const GetOneSuccess(data: RabbitGroup(id: '1', rabbits: []))],
     );
 
-    blocTest<RabbitGroupCubit, RabbitGroupState>(
+    blocTest<RabbitGroupCubit, GetOneState>(
       'emits [RabbitGroupFailure] when fetch is unsuccessful',
       setUp: () {
         when(() => mockRabbitGroupsRepository.findOne('1'))
@@ -55,11 +56,11 @@ void main() {
       build: () => rabbitGroupCubit,
       act: (cubit) => cubit.fetch(),
       expect: () => [
-        const RabbitGroupFailure(),
+        const GetOneFailure<RabbitGroup>(),
       ],
     );
 
-    blocTest<RabbitGroupCubit, RabbitGroupState>(
+    blocTest<RabbitGroupCubit, GetOneState>(
       'emits [RabbitGroupInitial, RabbitGroupSuccess] when refresh is called',
       setUp: () {
         when(() => mockRabbitGroupsRepository.findOne('1'))
@@ -71,8 +72,10 @@ void main() {
       build: () => rabbitGroupCubit,
       act: (cubit) => cubit.refresh(),
       expect: () => [
-        const RabbitGroupInitial(),
-        const RabbitGroupSuccess(rabbitGroup: RabbitGroup(id: '1', rabbits: []))
+        const GetOneInitial<RabbitGroup>(),
+        const GetOneSuccess<RabbitGroup>(
+          data: RabbitGroup(id: '1', rabbits: []),
+        )
       ],
     );
   });
