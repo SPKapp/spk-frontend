@@ -1,4 +1,5 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -35,7 +36,10 @@ void main() async {
     );
   }
 
-  FirebaseUIAuth.configureProviders([EmailAuthProvider()]);
+  FirebaseUIAuth.configureProviders([
+    EmailAuthProvider(),
+    GoogleProvider(clientId: AppConfig.googleClientId),
+  ]);
 
   runApp(const MyApp());
 }
