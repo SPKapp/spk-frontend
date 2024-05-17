@@ -22,7 +22,12 @@ class MockRabbitCubit extends MockCubit<GetOneState<Rabbit>>
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
-class MockGoRouter extends Mock implements GoRouter {}
+class MockGoRouter extends Mock implements GoRouter {
+  @override
+  bool canPop() {
+    return false;
+  }
+}
 
 void main() {
   group(RabbitInfoPage, () {

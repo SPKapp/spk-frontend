@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
@@ -12,19 +13,31 @@ import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 class MockRabbitGroupCubit extends MockCubit<GetOneState<RabbitGroup>>
     implements RabbitGroupCubit {}
 
+class MockGoRouter extends Mock implements GoRouter {
+  @override
+  bool canPop() {
+    return false;
+  }
+}
+
 void main() {
   group(AdoptionInfoPage, () {
     late RabbitGroupCubit rabbitGroupCubit;
+    late GoRouter goRouter;
 
     setUp(() {
       rabbitGroupCubit = MockRabbitGroupCubit();
+      goRouter = MockGoRouter();
     });
 
     Widget buildWidget() {
       return MaterialApp(
-        home: AdoptionInfoPage(
-          rabbitGroupId: '1',
-          rabbitGroupCubit: (_) => rabbitGroupCubit,
+        home: InheritedGoRouter(
+          goRouter: goRouter,
+          child: AdoptionInfoPage(
+            rabbitGroupId: '1',
+            rabbitGroupCubit: (_) => rabbitGroupCubit,
+          ),
         ),
       );
     }

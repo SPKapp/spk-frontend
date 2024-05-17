@@ -18,7 +18,12 @@ class MockUpdateRabbitGroupCubit extends MockCubit<UpdateRabbitGroupState>
 class MockRabbitGroupCubit extends MockCubit<GetOneState<RabbitGroup>>
     implements RabbitGroupCubit {}
 
-class MockGoRouter extends Mock implements GoRouter {}
+class MockGoRouter extends Mock implements GoRouter {
+  @override
+  bool canPop() {
+    return false;
+  }
+}
 
 void main() {
   group(UpdateAdoptionInfoPage, () {

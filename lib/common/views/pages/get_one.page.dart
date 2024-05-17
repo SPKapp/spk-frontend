@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/app/view/view.dart';
 
 import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
@@ -64,10 +66,8 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
   Widget build(BuildContext context) {
     return BlocBuilder<Cubit, GetOneState<T>>(
       builder: (context, state) {
-        AppBar appBar = AppBar(
-          title: Text(defaultTitle),
-          actions: actions,
-        );
+        String title = defaultTitle;
+        List<Widget>? actions = this.actions;
         List<Widget>? footerButtons = persistentFooterButtons;
         late final Widget body;
 
@@ -82,17 +82,11 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
               onPressed: () => context.read<Cubit>().fetch(),
             );
           case GetOneSuccess():
-            if (titleBuilder != null || actionsBuilder != null) {
-              appBar = AppBar(
-                title: Text(
-                  titleBuilder != null
-                      ? titleBuilder!(context, state.data)
-                      : defaultTitle,
-                ),
-                actions: actionsBuilder != null
-                    ? actionsBuilder!(context, state.data)
-                    : actions,
-              );
+            if (titleBuilder != null) {
+              title = titleBuilder!(context, state.data);
+            }
+            if (actionsBuilder != null) {
+              actions = actionsBuilder!(context, state.data);
             }
             if (persistentFooterButtonsBuilder != null) {
               footerButtons =
@@ -111,7 +105,13 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
         }
 
         return Scaffold(
-          appBar: appBar,
+          drawer: const AppDrawer(),
+          appBar: AppBar(
+            leading:
+                context.canPop() ? const BackButton() : const DrawerButton(),
+            title: Text(title),
+            actions: actions,
+          ),
           body: body,
           persistentFooterAlignment: AlignmentDirectional.bottomCenter,
           persistentFooterButtons: footerButtons,

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
+
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/users/bloc/user.cubit.dart';
 import 'package:spk_app_frontend/features/users/bloc/user_update.cubit.dart';
@@ -14,9 +16,14 @@ import 'package:spk_app_frontend/features/users/views/views/user_modify.view.dar
 class MockUserUpdateCubit extends MockCubit<UserUpdateState>
     implements UserUpdateCubit {}
 
-class MockUserCubit extends MockCubit<UserState> implements UserCubit {}
+class MockUserCubit extends MockCubit<GetOneState<User>> implements UserCubit {}
 
-class MockGoRouter extends Mock implements GoRouter {}
+class MockGoRouter extends Mock implements GoRouter {
+  @override
+  bool canPop() {
+    return false;
+  }
+}
 
 void main() {
   group(UserUpdatePage, () {
@@ -31,8 +38,8 @@ void main() {
 
       when(() => userUpdateCubit.state).thenReturn(const UserUpdateInitial());
       when(() => userCubit.state).thenReturn(
-        const UserSuccess(
-          user: User(
+        const GetOneSuccess(
+          data: User(
             id: '1',
             firstName: 'Jake',
             lastName: 'Doe',
@@ -68,7 +75,7 @@ void main() {
 
     testWidgets('displays initial view when UserState is UserInitial',
         (WidgetTester tester) async {
-      when(() => userCubit.state).thenReturn(const UserInitial());
+      when(() => userCubit.state).thenReturn(const GetOneInitial());
 
       await tester.pumpWidget(buildWidget());
 
@@ -77,7 +84,7 @@ void main() {
 
     testWidgets('displays failure view when UserState is UserFailure',
         (WidgetTester tester) async {
-      when(() => userCubit.state).thenReturn(const UserFailure());
+      when(() => userCubit.state).thenReturn(const GetOneFailure());
 
       await tester.pumpWidget(buildWidget());
 

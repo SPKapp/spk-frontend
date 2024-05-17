@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
@@ -18,16 +19,25 @@ class MockRabbitNoteCubit extends MockCubit<GetOneState<RabbitNote>>
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
+class MockGoRouter extends Mock implements GoRouter {
+  @override
+  bool canPop() {
+    return false;
+  }
+}
+
 void main() {
   group(RabbitNotePage, () {
     late RabbitNoteCubit rabbitNoteCubit;
     late AuthCubit authCubit;
+    late GoRouter goRouter;
 
     const rabbitNote = RabbitNote(id: '1');
 
     setUp(() {
       rabbitNoteCubit = MockRabbitNoteCubit();
       authCubit = MockAuthCubit();
+      goRouter = MockGoRouter();
 
       when(() => rabbitNoteCubit.state).thenReturn(
         const GetOneSuccess(data: rabbitNote),
@@ -46,12 +56,15 @@ void main() {
 
     Widget buildWidget({String? rabbitName}) {
       return MaterialApp(
-        home: BlocProvider<AuthCubit>.value(
-          value: authCubit,
-          child: RabbitNotePage(
-            id: '1',
-            rabbitNoteCubit: (_) => rabbitNoteCubit,
-            rabbitName: rabbitName,
+        home: InheritedGoRouter(
+          goRouter: goRouter,
+          child: BlocProvider<AuthCubit>.value(
+            value: authCubit,
+            child: RabbitNotePage(
+              id: '1',
+              rabbitNoteCubit: (_) => rabbitNoteCubit,
+              rabbitName: rabbitName,
+            ),
           ),
         ),
       );

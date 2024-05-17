@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/user.cubit.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
@@ -32,19 +33,19 @@ void main() {
       });
 
       test('initial state is UserInitial', () {
-        expect(userCubit.state, equals(const UserInitial()));
+        expect(userCubit.state, equals(const GetOneInitial<User>()));
       });
 
-      blocTest<UserCubit, UserState>(
+      blocTest<UserCubit, GetOneState>(
         'emits [UserSuccess] when fetchUser is called successfully',
         setUp: () {
           when(() => mockUsersRepository.findOne(user.id))
               .thenAnswer((_) async => user);
         },
         build: () => userCubit,
-        act: (cubit) => cubit.fetchUser(),
+        act: (cubit) => cubit.fetch(),
         expect: () => [
-          const UserSuccess(user: user),
+          const GetOneSuccess<User>(data: user),
         ],
         verify: (_) {
           verify(() => mockUsersRepository.findOne(user.id)).called(1);
@@ -52,16 +53,16 @@ void main() {
         },
       );
 
-      blocTest<UserCubit, UserState>(
+      blocTest<UserCubit, GetOneState>(
         'emits [UserFailure] when fetchUser throws an error',
         setUp: () {
           when(() => mockUsersRepository.findOne(user.id))
               .thenThrow(Exception());
         },
         build: () => userCubit,
-        act: (cubit) => cubit.fetchUser(),
+        act: (cubit) => cubit.fetch(),
         expect: () => [
-          const UserFailure(),
+          const GetOneFailure<User>(),
         ],
         verify: (_) {
           verify(() => mockUsersRepository.findOne(user.id)).called(1);
@@ -69,17 +70,17 @@ void main() {
         },
       );
 
-      blocTest<UserCubit, UserState>(
+      blocTest<UserCubit, GetOneState>(
         'emits [UserInitial, UserSuccess] when refreshUser is called',
         setUp: () {
           when(() => mockUsersRepository.findOne(user.id))
               .thenAnswer((_) async => user);
         },
         build: () => userCubit,
-        act: (cubit) => cubit.refreshUser(),
+        act: (cubit) => cubit.refresh(),
         expect: () => [
-          const UserInitial(),
-          const UserSuccess(user: user),
+          const GetOneInitial<User>(),
+          const GetOneSuccess<User>(data: user),
         ],
       );
     });
@@ -92,19 +93,19 @@ void main() {
       });
 
       test('initial state is UserInitial', () {
-        expect(userCubit.state, equals(const UserInitial()));
+        expect(userCubit.state, equals(const GetOneInitial<User>()));
       });
 
-      blocTest<UserCubit, UserState>(
+      blocTest<UserCubit, GetOneState>(
         'emits [UserSuccess] when fetchMyProfile is called successfully',
         setUp: () {
           when(() => mockUsersRepository.findMyProfile())
               .thenAnswer((_) async => user);
         },
         build: () => userCubit,
-        act: (cubit) => cubit.fetchUser(),
+        act: (cubit) => cubit.fetch(),
         expect: () => [
-          const UserSuccess(user: user),
+          const GetOneSuccess<User>(data: user),
         ],
         verify: (_) {
           verify(() => mockUsersRepository.findMyProfile()).called(1);
@@ -112,16 +113,16 @@ void main() {
         },
       );
 
-      blocTest<UserCubit, UserState>(
+      blocTest<UserCubit, GetOneState>(
         'emits [UserFailure] when fetchMyProfile throws an error',
         setUp: () {
           when(() => mockUsersRepository.findMyProfile())
               .thenThrow(Exception());
         },
         build: () => userCubit,
-        act: (cubit) => cubit.fetchUser(),
+        act: (cubit) => cubit.fetch(),
         expect: () => [
-          const UserFailure(),
+          const GetOneFailure<User>(),
         ],
         verify: (_) {
           verify(() => mockUsersRepository.findMyProfile()).called(1);
@@ -129,17 +130,17 @@ void main() {
         },
       );
 
-      blocTest<UserCubit, UserState>(
+      blocTest<UserCubit, GetOneState>(
         'emits [UserInitial, UserSuccess] when refreshMyProfile is called',
         setUp: () {
           when(() => mockUsersRepository.findMyProfile())
               .thenAnswer((_) async => user);
         },
         build: () => userCubit,
-        act: (cubit) => cubit.refreshUser(),
+        act: (cubit) => cubit.refresh(),
         expect: () => [
-          const UserInitial(),
-          const UserSuccess(user: user),
+          const GetOneInitial<User>(),
+          const GetOneSuccess<User>(data: user),
         ],
       );
     });

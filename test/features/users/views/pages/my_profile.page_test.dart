@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/auth/bloc/send_verification_mail.cubit.dart';
@@ -13,14 +14,19 @@ import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/views/pages/my_profile.page.dart';
 import 'package:spk_app_frontend/features/users/views/views/user.view.dart';
 
-class MockUserCubit extends MockCubit<UserState> implements UserCubit {}
+class MockUserCubit extends MockCubit<GetOneState<User>> implements UserCubit {}
 
 class MockSendVerificationMailCubit extends MockCubit<SendVerificationMailState>
     implements SendVerificationMailCubit {}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
-class MockGoRouter extends Mock implements GoRouter {}
+class MockGoRouter extends Mock implements GoRouter {
+  @override
+  bool canPop() {
+    return false;
+  }
+}
 
 void main() {
   group(MyProfilePage, () {
@@ -36,8 +42,8 @@ void main() {
       goRouter = MockGoRouter();
 
       when(() => userCubit.state).thenReturn(
-        const UserSuccess(
-            user: User(id: '1', firstName: 'John', lastName: 'Doe')),
+        const GetOneSuccess(
+            data: User(id: '1', firstName: 'John', lastName: 'Doe')),
       );
       when(() => sendVerificationMailCubit.state).thenReturn(
         const SendVerificationMailInitial(),
@@ -70,7 +76,7 @@ void main() {
 
     testWidgets('renders InitialView when UserInitial state is received',
         (WidgetTester tester) async {
-      when(() => userCubit.state).thenReturn(const UserInitial());
+      when(() => userCubit.state).thenReturn(const GetOneInitial());
 
       await tester.pumpWidget(buildWidget());
 
@@ -81,7 +87,7 @@ void main() {
 
     testWidgets('renders FailureView when UserFailure state is received',
         (WidgetTester tester) async {
-      when(() => userCubit.state).thenReturn(const UserFailure());
+      when(() => userCubit.state).thenReturn(const GetOneFailure());
 
       await tester.pumpWidget(buildWidget());
 

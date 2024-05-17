@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spk_app_frontend/common/views/views.dart';
+
+import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/features/users/bloc/user.cubit.dart';
 import 'package:spk_app_frontend/features/users/bloc/user_update.cubit.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
@@ -51,7 +52,7 @@ class _UserUpdatePageState extends State<UserUpdatePage> {
               (context) => UserCubit(
                     userId: widget.userId,
                     usersRepository: context.read<IUsersRepository>(),
-                  )..fetchUser(),
+                  )..fetch(),
         ),
       ],
       child: BlocListener<UserUpdateCubit, UserUpdateState>(
@@ -76,42 +77,23 @@ class _UserUpdatePageState extends State<UserUpdatePage> {
               break;
           }
         },
-        child: BlocBuilder<UserCubit, UserState>(
-          builder: (context, state) {
-            late final AppBar appBar;
-            late final Widget body;
-
-            switch (state) {
-              case UserInitial():
-                appBar = AppBar();
-                body = const InitialView();
-              case UserFailure():
-                appBar = AppBar();
-                body = FailureView(
-                  message: 'Nie udało się pobrać użytkownika',
-                  onPressed: () => context.read<UserCubit>().fetchUser(),
-                );
-              case UserSuccess():
-                _loadData(state.user);
-                appBar = AppBar(
-                  title: const Text('Edycja użytkownika'),
-                  actions: [
-                    IconButton(
-                      key: const Key('saveButton'),
-                      icon: const Icon(Icons.save),
-                      onPressed: () => _onSubmit(context, state.user),
-                    ),
-                  ],
-                );
-                body = Form(
-                  key: _formKey,
-                  child: UserModifyView(editControlers: _editControlers),
-                );
-            }
-
-            return Scaffold(
-              appBar: appBar,
-              body: body,
+        child: GetOnePage<User, UserCubit>(
+          defaultTitle: 'Edycja użytkownika',
+          errorInfo: 'Nie udało się pobrać użytkownika',
+          actionsBuilder: (context, user) {
+            return [
+              IconButton(
+                key: const Key('saveButton'),
+                icon: const Icon(Icons.save),
+                onPressed: () => _onSubmit(context, user),
+              ),
+            ];
+          },
+          builder: (context, user) {
+            _loadData(user);
+            return Form(
+              key: _formKey,
+              child: UserModifyView(editControlers: _editControlers),
             );
           },
         ),

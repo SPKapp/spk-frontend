@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
@@ -10,19 +11,28 @@ import 'package:spk_app_frontend/common/views/views.dart';
 class MockGetOneCubit extends MockCubit<GetOneState<String>>
     implements IGetOneCubit<String> {}
 
+class MockGoRouter extends Mock implements GoRouter {}
+
 void main() {
   group(GetOnePage, () {
     late IGetOneCubit<String> getOneCubit;
+    late GoRouter goRouter;
 
     setUp(() {
       getOneCubit = MockGetOneCubit();
+      goRouter = MockGoRouter();
+
+      when(() => goRouter.canPop()).thenReturn(false);
     });
 
     Widget buildWidget(GetOnePage<String, IGetOneCubit<String>> child) {
       return MaterialApp(
-        home: BlocProvider.value(
-          value: getOneCubit,
-          child: child,
+        home: InheritedGoRouter(
+          goRouter: goRouter,
+          child: BlocProvider.value(
+            value: getOneCubit,
+            child: child,
+          ),
         ),
       );
     }
@@ -230,6 +240,39 @@ void main() {
 
       expect(find.text('Persistent Footer Button'), findsOneWidget);
       expect(find.text('Persistent Footer Button Builder'), findsNothing);
+    });
+
+    testWidgets('displays drawer button', (WidgetTester tester) async {
+      when(() => getOneCubit.state).thenReturn(const GetOneInitial());
+
+      await tester.pumpWidget(
+        buildWidget(
+          GetOnePage<String, IGetOneCubit<String>>(
+            builder: (context, data) => Text(data),
+            defaultTitle: 'Default Title',
+            errorInfo: 'Error Info',
+          ),
+        ),
+      );
+
+      expect(find.byType(DrawerButton), findsOneWidget);
+    });
+
+    testWidgets('displays back button', (WidgetTester tester) async {
+      when(() => getOneCubit.state).thenReturn(const GetOneInitial());
+      when(() => goRouter.canPop()).thenReturn(true);
+
+      await tester.pumpWidget(
+        buildWidget(
+          GetOnePage<String, IGetOneCubit<String>>(
+            builder: (context, data) => Text(data),
+            defaultTitle: 'Default Title',
+            errorInfo: 'Error Info',
+          ),
+        ),
+      );
+
+      expect(find.byType(BackButton), findsOneWidget);
     });
   });
 }

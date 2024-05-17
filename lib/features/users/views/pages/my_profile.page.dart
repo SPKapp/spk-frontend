@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spk_app_frontend/common/views/views.dart';
+
+import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/auth/bloc/send_verification_mail.cubit.dart';
@@ -31,71 +32,49 @@ class MyProfilePage extends StatelessWidget {
       create: userCubit ??
           (context) => UserCubit(
                 usersRepository: context.read<IUsersRepository>(),
-              )..fetchUser(),
-      child: BlocBuilder<UserCubit, UserState>(
-        builder: (context, state) {
-          late final AppBar appBar;
-          late final Widget body;
+              )..fetch(),
+      child: GetOnePage<User, UserCubit>(
+        defaultTitle: 'Mój Profil',
+        titleBuilder: (context, user) => user.fullName,
+        errorInfo: 'Nie udało się pobrać użytkownika',
+        actionsBuilder: (context, data) {
+          return [
+            IconButton(
+                key: const Key('editUserButton'),
+                icon: const Icon(Icons.edit),
+                onPressed: () async {
+                  final result = await context.push('/myProfile/edit');
 
-          switch (state) {
-            case UserInitial():
-              appBar = AppBar();
-              body = const InitialView();
-            case UserFailure():
-              appBar = AppBar();
-              body = FailureView(
-                message: 'Nie udało się pobrać użytkownika',
-                onPressed: () => context.read<UserCubit>().fetchUser(),
-              );
-            case UserSuccess():
-              final roleInfo = RoleInfo(state.user.rolesWithDetails);
-              appBar = AppBar(
-                actions: [
-                  IconButton(
-                      key: const Key('editUserButton'),
-                      icon: const Icon(Icons.edit),
-                      onPressed: () async {
-                        final result = await context.push('/myProfile/edit');
-
-                        if (result == true && context.mounted) {
-                          context.read<UserCubit>().refreshUser();
-                        }
-                      }),
-                  PopupMenuButton(
-                    key: const Key('userPopupMenu'),
-                    itemBuilder: (_) => [
-                      PopupMenuItem(
-                        key: const Key('changePassword'),
-                        onTap: () async {
-                          await showModalBottomSheet<bool>(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (_) => const ChangePasswordAction(),
-                          );
-                        },
-                        child: const Text('Zmień Hasło'),
-                      ),
-                    ],
-                  )
-                ],
-                title: Text(state.user.fullName),
-              );
-              body = UserView(
-                user: state.user,
-                roleInfo: roleInfo,
-                errorWidget:
-                    context.read<AuthCubit>().currentUser.emailVerified == false
-                        ? buildEmailVerificationError(context)
-                        : null,
-              );
-          }
-
-          return Scaffold(
-            drawer: drawer,
-            appBar: appBar,
-            body: body,
-          );
+                  if (result == true && context.mounted) {
+                    context.read<UserCubit>().fetch();
+                  }
+                }),
+            PopupMenuButton(
+              key: const Key('userPopupMenu'),
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  key: const Key('changePassword'),
+                  onTap: () async {
+                    await showModalBottomSheet<bool>(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (_) => const ChangePasswordAction(),
+                    );
+                  },
+                  child: const Text('Zmień Hasło'),
+                ),
+              ],
+            )
+          ];
         },
+        builder: (context, user) => UserView(
+          user: user,
+          roleInfo: RoleInfo(user.rolesWithDetails),
+          errorWidget:
+              context.read<AuthCubit>().currentUser.emailVerified == false
+                  ? buildEmailVerificationError(context)
+                  : null,
+        ),
       ),
     );
   }
