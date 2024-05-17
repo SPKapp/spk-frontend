@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spk_app_frontend/common/views/views.dart';
-import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info.dart';
@@ -19,41 +16,33 @@ class RabbitInfoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ItemView(
-      onRefresh: () async {
-        // skip initial state
-        Future cubit = context.read<RabbitCubit>().stream.skip(1).first;
-        context.read<RabbitCubit>().refreshRabbit();
-        return cubit;
-      },
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: TopPhotoCard(
-                  rabbit: rabbit,
-                ),
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: TopPhotoCard(
+                rabbit: rabbit,
               ),
-              Expanded(
-                child: TopInfoCard(
-                  rabbit: rabbit,
-                ),
+            ),
+            Expanded(
+              child: TopInfoCard(
+                rabbit: rabbit,
               ),
-            ],
+            ),
+          ],
+        ),
+        if (rabbit.rabbitGroup!.rabbits.length > 1)
+          RabbitGroupCard(
+            rabbits:
+                rabbit.rabbitGroup!.rabbits.where((r) => r.id != rabbit.id),
           ),
-          if (rabbit.rabbitGroup!.rabbits.length > 1)
-            RabbitGroupCard(
-              rabbits:
-                  rabbit.rabbitGroup!.rabbits.where((r) => r.id != rabbit.id),
-            ),
-          if (admin)
-            VolunteerCard(
-              volunteers: rabbit.rabbitGroup!.team?.users ?? [],
-            ),
-          FullInfoCard(rabbit: rabbit),
-        ],
-      ),
+        if (admin)
+          VolunteerCard(
+            volunteers: rabbit.rabbitGroup!.team?.users ?? [],
+          ),
+        FullInfoCard(rabbit: rabbit),
+      ],
     );
   }
 }

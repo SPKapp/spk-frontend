@@ -1,55 +1,30 @@
-import 'package:equatable/equatable.dart';
-import 'package:bloc/bloc.dart';
-
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
 
-part 'rabbit.state.dart';
-
 /// A cubit that manages the state of a rabbit.
 ///
-/// Available functions:
-/// - [fetchRabbit] - fetches a rabbit with the given [rabbitId]
-/// - [refreshRabbit] - restarts fetching the rabbit
-///
-/// Available states:
-/// - [RabbitInitial] - initial state
-/// - [RabbitSuccess] - the rabbit has been fetched successfully
-/// - [RabbitFailure] - an error occurred while fetching the rabbit
-///
-class RabbitCubit extends Cubit<RabbitState> {
+/// Needs a [rabbitId] and a [rabbitsRepository].
+class RabbitCubit extends IGetOneCubit<Rabbit> {
   RabbitCubit({
     required this.rabbitId,
     required IRabbitsRepository rabbitsRepository,
   })  : _rabbitsRepository = rabbitsRepository,
-        super(const RabbitInitial());
+        super();
 
   final String rabbitId;
   final IRabbitsRepository _rabbitsRepository;
 
   /// Fetches a rabbit with the given [rabbitId].
   /// Emits new state only if data was changed.
-  void fetchRabbit() async {
+  @override
+  void fetch() async {
     try {
       final rabbit = await _rabbitsRepository.findOne(rabbitId);
-      emit(
-        RabbitSuccess(
-          rabbit: rabbit,
-        ),
-      );
+      emit(GetOneSuccess(data: rabbit));
     } catch (e) {
-      emit(
-        const RabbitFailure(),
-      );
+      logger.error('Failed to fetch rabbit', error: e);
+      emit(const GetOneFailure());
     }
-  }
-
-  /// Restarts fetching the rabbit.
-  /// Always emits new state.
-  void refreshRabbit() async {
-    emit(
-      const RabbitInitial(),
-    );
-    fetchRabbit();
   }
 }

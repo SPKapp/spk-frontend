@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
@@ -34,19 +35,19 @@ void main() {
     });
 
     test('initial state', () {
-      expect(rabbitCubit.state, equals(const RabbitInitial()));
+      expect(rabbitCubit.state, equals(const GetOneInitial<Rabbit>()));
     });
 
-    blocTest<RabbitCubit, RabbitState>(
+    blocTest<RabbitCubit, GetOneState>(
       'emits [RabbitSuccess] when fetchRabbit is called',
       setUp: () {
         when(() => rabbitRepository.findOne(rabbit.id))
             .thenAnswer((_) async => rabbit);
       },
       build: () => rabbitCubit,
-      act: (cubit) => cubit.fetchRabbit(),
+      act: (cubit) => cubit.fetch(),
       expect: () => [
-        const RabbitSuccess(rabbit: rabbit),
+        const GetOneSuccess<Rabbit>(data: rabbit),
       ],
       verify: (_) {
         verify(() => rabbitRepository.findOne(rabbit.id)).called(1);
@@ -54,15 +55,15 @@ void main() {
       },
     );
 
-    blocTest<RabbitCubit, RabbitState>(
+    blocTest<RabbitCubit, GetOneState>(
       'emits [RabbitFailure] when fetchRabbit is called',
       setUp: () {
         when(() => rabbitRepository.findOne(rabbit.id)).thenThrow(Exception());
       },
       build: () => rabbitCubit,
-      act: (cubit) => cubit.fetchRabbit(),
+      act: (cubit) => cubit.fetch(),
       expect: () => [
-        const RabbitFailure(),
+        const GetOneFailure<Rabbit>(),
       ],
       verify: (_) {
         verify(() => rabbitRepository.findOne(rabbit.id)).called(1);
@@ -70,17 +71,17 @@ void main() {
       },
     );
 
-    blocTest<RabbitCubit, RabbitState>(
+    blocTest<RabbitCubit, GetOneState>(
       'emits [RabbitInitial, RabbitSuccess] when refreshRabbit is called',
       setUp: () {
         when(() => rabbitRepository.findOne(rabbit.id))
             .thenAnswer((_) async => rabbit);
       },
       build: () => rabbitCubit,
-      act: (cubit) => cubit.refreshRabbit(),
+      act: (cubit) => cubit.refresh(),
       expect: () => [
-        const RabbitInitial(),
-        const RabbitSuccess(rabbit: rabbit),
+        const GetOneInitial<Rabbit>(),
+        const GetOneSuccess<Rabbit>(data: rabbit),
       ],
     );
   });

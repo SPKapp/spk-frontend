@@ -6,6 +6,7 @@ import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
@@ -16,7 +17,8 @@ import 'package:spk_app_frontend/features/rabbits/views/pages/rabbit_info.page.d
 import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_info.view.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 
-class MockRabbitCubit extends MockCubit<RabbitState> implements RabbitCubit {}
+class MockRabbitCubit extends MockCubit<GetOneState<Rabbit>>
+    implements RabbitCubit {}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 
@@ -44,7 +46,7 @@ void main() {
       goRouter = MockGoRouter();
 
       when(() => rabbitCubit.state)
-          .thenReturn(const RabbitSuccess(rabbit: rabbit));
+          .thenReturn(const GetOneSuccess(data: rabbit));
 
       when(() => authCubit.currentUser).thenAnswer(
         (_) => CurrentUser(
@@ -75,7 +77,7 @@ void main() {
     }
 
     testWidgets('should render InitialView when RabbitInitial', (tester) async {
-      when(() => rabbitCubit.state).thenReturn(const RabbitInitial());
+      when(() => rabbitCubit.state).thenReturn(const GetOneInitial());
 
       await tester.pumpWidget(buildWidget());
 
@@ -85,7 +87,7 @@ void main() {
     });
 
     testWidgets('should render FailureView when RabbitFailure', (tester) async {
-      when(() => rabbitCubit.state).thenReturn(const RabbitFailure());
+      when(() => rabbitCubit.state).thenReturn(const GetOneFailure());
 
       await tester.pumpWidget(buildWidget());
 
@@ -96,19 +98,19 @@ void main() {
 
     testWidgets('should refresh Rabbit when FailureView onPressed',
         (tester) async {
-      when(() => rabbitCubit.state).thenReturn(const RabbitFailure());
+      when(() => rabbitCubit.state).thenReturn(const GetOneFailure());
 
       await tester.pumpWidget(buildWidget());
 
       await tester.tap(find.text('Spróbuj ponownie'));
 
-      verify(() => rabbitCubit.fetchRabbit()).called(1);
+      verify(() => rabbitCubit.fetch()).called(1);
     });
 
     testWidgets('should render RabbitInfoView when RabbitSuccess - admin',
         (tester) async {
       when(() => rabbitCubit.state)
-          .thenReturn(const RabbitSuccess(rabbit: rabbit));
+          .thenReturn(const GetOneSuccess(data: rabbit));
 
       await mockNetworkImages(() async => tester.pumpWidget(buildWidget()));
 

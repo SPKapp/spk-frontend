@@ -30,9 +30,11 @@ void main() {
       await mockNetworkImages(() async => tester.pumpWidget(
             MaterialApp(
               home: Scaffold(
-                body: RabbitInfoView(
-                  rabbit: rabbit,
-                  admin: true,
+                body: SingleChildScrollView(
+                  child: RabbitInfoView(
+                    rabbit: rabbit,
+                    admin: true,
+                  ),
                 ),
               ),
             ),
@@ -54,9 +56,11 @@ void main() {
       await mockNetworkImages(() async => tester.pumpWidget(
             MaterialApp(
               home: Scaffold(
-                body: RabbitInfoView(
-                  rabbit: rabbit,
-                  admin: false,
+                body: SingleChildScrollView(
+                  child: RabbitInfoView(
+                    rabbit: rabbit,
+                    admin: false,
+                  ),
                 ),
               ),
             ),

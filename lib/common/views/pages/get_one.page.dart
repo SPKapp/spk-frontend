@@ -19,6 +19,8 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
     this.errorInfoBuilder,
     this.actions,
     this.actionsBuilder,
+    this.persistentFooterButtons,
+    this.persistentFooterButtonsBuilder,
     this.refreshable = true,
   });
 
@@ -47,6 +49,14 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
   /// The builder function to build the actions with the fetched data
   final List<Widget>? Function(BuildContext context, T data)? actionsBuilder;
 
+  /// The persistent footer buttons to display in the view
+  /// If persistentFooterButtonsBuilder is provided, this will be ignored in fetched state
+  final List<Widget>? persistentFooterButtons;
+
+  /// The builder function to build the persistent footer buttons with the fetched data
+  final List<Widget>? Function(BuildContext context, T data)?
+      persistentFooterButtonsBuilder;
+
   /// Whether the view should be refreshable
   final bool refreshable;
 
@@ -58,6 +68,7 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
           title: Text(defaultTitle),
           actions: actions,
         );
+        List<Widget>? footerButtons = persistentFooterButtons;
         late final Widget body;
 
         switch (state) {
@@ -83,6 +94,10 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
                     : actions,
               );
             }
+            if (persistentFooterButtonsBuilder != null) {
+              footerButtons =
+                  persistentFooterButtonsBuilder!(context, state.data);
+            }
             body = refreshable
                 ? ItemView(
                     onRefresh: () async {
@@ -98,6 +113,8 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
         return Scaffold(
           appBar: appBar,
           body: body,
+          persistentFooterAlignment: AlignmentDirectional.bottomCenter,
+          persistentFooterButtons: footerButtons,
         );
       },
     );

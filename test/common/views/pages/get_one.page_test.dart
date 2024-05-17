@@ -182,5 +182,54 @@ void main() {
       expect(find.text('Action'), findsNothing);
       expect(find.text('Action Builder'), findsOneWidget);
     });
+
+    testWidgets(
+        'renders persistent footer buttons when GetOneSuccess state is received',
+        (WidgetTester tester) async {
+      when(() => getOneCubit.state)
+          .thenReturn(const GetOneSuccess(data: 'Data'));
+
+      await tester.pumpWidget(
+        buildWidget(
+          GetOnePage<String, IGetOneCubit<String>>(
+            builder: (context, data) => Text(data, key: const Key('testKey')),
+            defaultTitle: 'Default Title',
+            titleBuilder: (context, data) => 'Title Builder $data',
+            errorInfo: 'Error Info',
+            actions: const [Text('Action')],
+            persistentFooterButtons: const [Text('Persistent Footer Button')],
+            persistentFooterButtonsBuilder: (context, data) =>
+                const [Text('Persistent Footer Button Builder')],
+          ),
+        ),
+      );
+
+      expect(find.text('Persistent Footer Button'), findsNothing);
+      expect(find.text('Persistent Footer Button Builder'), findsOneWidget);
+    });
+
+    testWidgets(
+        'renders persistent footer buttons when GetOneInitial state is received',
+        (WidgetTester tester) async {
+      when(() => getOneCubit.state).thenReturn(const GetOneInitial());
+
+      await tester.pumpWidget(
+        buildWidget(
+          GetOnePage<String, IGetOneCubit<String>>(
+            builder: (context, data) => Text(data, key: const Key('testKey')),
+            defaultTitle: 'Default Title',
+            titleBuilder: (context, data) => 'Title Builder $data',
+            errorInfo: 'Error Info',
+            actions: const [Text('Action')],
+            persistentFooterButtons: const [Text('Persistent Footer Button')],
+            persistentFooterButtonsBuilder: (context, data) =>
+                const [Text('Persistent Footer Button Builder')],
+          ),
+        ),
+      );
+
+      expect(find.text('Persistent Footer Button'), findsOneWidget);
+      expect(find.text('Persistent Footer Button Builder'), findsNothing);
+    });
   });
 }

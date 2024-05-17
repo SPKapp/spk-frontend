@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
-import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
@@ -42,6 +42,8 @@ class _RabbitUpdatePageState extends State<RabbitUpdatePage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = context.read<AuthCubit>().currentUser;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -49,7 +51,7 @@ class _RabbitUpdatePageState extends State<RabbitUpdatePage> {
               (context) => RabbitCubit(
                     rabbitsRepository: context.read<IRabbitsRepository>(),
                     rabbitId: widget.rabbitId,
-                  )..fetchRabbit(),
+                  )..fetch(),
         ),
         BlocProvider(
           create: widget.rabbitUpdateCubit ??
@@ -67,7 +69,7 @@ class _RabbitUpdatePageState extends State<RabbitUpdatePage> {
                   content: Text('Królik został zaktualizowany'),
                 ),
               );
-              context.pop();
+              context.pop(true);
               break;
             case RabbitUpdateFailure():
               ScaffoldMessenger.of(context).showSnackBar(
@@ -78,53 +80,28 @@ class _RabbitUpdatePageState extends State<RabbitUpdatePage> {
             default:
           }
         },
-        child: BlocBuilder<RabbitCubit, RabbitState>(
-          builder: (context, state) {
-            late AppBar appBar;
-            late Widget body;
-
-            final currentUser = context.read<AuthCubit>().currentUser;
-
-            switch (state) {
-              case RabbitInitial():
-                appBar = AppBar();
-                body = const InitialView();
-              case RabbitFailure():
-                appBar = AppBar();
-                body = FailureView(
-                  message: 'Nie udało się pobrać królika',
-                  onPressed: () => context.read<RabbitCubit>().fetchRabbit(),
-                );
-              case RabbitSuccess():
-                _loadFieldControlers(state.rabbit);
-
-                appBar = AppBar(
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.save),
-                      onPressed: () => _onSubmit(context, state.rabbit),
-                    ),
-                  ],
-                  title: Text(
-                    state.rabbit.name,
-                    style: Theme.of(context)
-                        .textTheme
-                        .displaySmall!
-                        .copyWith(fontWeight: FontWeight.w500),
-                  ),
-                );
-                body = Form(
-                  key: _formKey,
-                  child: RabbitModifyView(
-                    editControlers: _editControlers,
-                    privileged:
-                        currentUser.checkRole([Role.regionManager, Role.admin]),
-                  ),
-                );
-            }
-            return Scaffold(
-              appBar: appBar,
-              body: body,
+        child: GetOnePage<Rabbit, RabbitCubit>(
+          refreshable: false,
+          defaultTitle: 'Królik',
+          titleBuilder: (context, rabbit) => rabbit.name,
+          errorInfo: 'Nie udało się pobrać królika',
+          actionsBuilder: (context, rabbit) {
+            return [
+              IconButton(
+                icon: const Icon(Icons.save),
+                onPressed: () => _onSubmit(context, rabbit),
+              ),
+            ];
+          },
+          builder: (context, rabbit) {
+            _loadFieldControlers(rabbit);
+            return Form(
+              key: _formKey,
+              child: RabbitModifyView(
+                editControlers: _editControlers,
+                privileged:
+                    currentUser.checkRole([Role.regionManager, Role.admin]),
+              ),
             );
           },
         ),
