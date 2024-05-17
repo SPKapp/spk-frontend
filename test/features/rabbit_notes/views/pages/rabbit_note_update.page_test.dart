@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_note.cubit.dart';
@@ -13,7 +14,7 @@ import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/pages/rabbit_note_update.page.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/views/rabbit_note_modify.view.dart';
 
-class MockRabbitNoteCubit extends MockCubit<RabbitNoteState>
+class MockRabbitNoteCubit extends MockCubit<GetOneState<RabbitNote>>
     implements RabbitNoteCubit {}
 
 class MockRabbitNoteUpdateCubit extends MockCubit<RabbitNoteUpdateState>
@@ -33,8 +34,8 @@ void main() {
       goRouter = MockGoRouter();
 
       when(() => rabbitNoteCubit.state).thenReturn(
-        const RabbitNoteSuccess(
-            rabbitNote: RabbitNote(id: '1', description: 'Test')),
+        const GetOneSuccess<RabbitNote>(
+            data: RabbitNote(id: '1', description: 'Test')),
       );
 
       when(() => rabbitNoteUpdateCubit.state).thenReturn(
@@ -61,7 +62,8 @@ void main() {
 
     testWidgets('should render correctly - initialView',
         (WidgetTester tester) async {
-      when(() => rabbitNoteCubit.state).thenReturn(const RabbitNoteInitial());
+      when(() => rabbitNoteCubit.state)
+          .thenReturn(const GetOneInitial<RabbitNote>());
 
       await tester.pumpWidget(buildWidget());
 
@@ -72,7 +74,8 @@ void main() {
 
     testWidgets('should render correctly - failureView',
         (WidgetTester tester) async {
-      when(() => rabbitNoteCubit.state).thenReturn(const RabbitNoteFailure());
+      when(() => rabbitNoteCubit.state)
+          .thenReturn(const GetOneFailure<RabbitNote>());
 
       await tester.pumpWidget(buildWidget());
 

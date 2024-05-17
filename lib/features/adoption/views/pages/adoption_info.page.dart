@@ -27,7 +27,6 @@ class AdoptionInfoPage extends StatelessWidget {
                 rabbitGroupsRepository: context.read<IRabbitGroupsRepository>(),
               )..fetch(),
       child: GetOnePage<RabbitGroup, RabbitGroupCubit>(
-        id: rabbitGroupId,
         defaultTitle: 'Informacje o adopcji',
         errorInfo: 'Nie udało się pobrać grupy królików',
         actionsBuilder: (context, _) => [

@@ -1,10 +1,6 @@
-import 'package:equatable/equatable.dart';
-
 import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
-
-part 'rabbit_group.state.dart';
 
 /// A cubit that manages the state of a rabbit group.
 ///

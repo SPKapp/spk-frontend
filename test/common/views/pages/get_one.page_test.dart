@@ -34,7 +34,6 @@ void main() {
       await tester.pumpWidget(
         buildWidget(
           GetOnePage<String, IGetOneCubit<String>>(
-            id: '1',
             builder: (context, data) => Text(data, key: const Key('testKey')),
             defaultTitle: 'Default Title',
             titleBuilder: (context, data) => 'Title Builder',
@@ -63,7 +62,6 @@ void main() {
       await tester.pumpWidget(
         buildWidget(
           GetOnePage<String, IGetOneCubit<String>>(
-            id: '1',
             builder: (context, data) => Text(
               data,
               key: const Key('testKey'),
@@ -99,7 +97,6 @@ void main() {
       await tester.pumpWidget(
         buildWidget(
           GetOnePage<String, IGetOneCubit<String>>(
-            id: '1',
             builder: (context, data) => Text(data, key: const Key('testKey')),
             defaultTitle: 'Default Title',
             errorInfo: 'Error Info',
@@ -130,7 +127,6 @@ void main() {
       await tester.pumpWidget(
         buildWidget(
           GetOnePage<String, IGetOneCubit<String>>(
-            id: '1',
             builder: (context, data) => Text(data, key: const Key('testKey')),
             defaultTitle: 'Default Title',
             errorInfo: 'Error Info',
@@ -162,7 +158,6 @@ void main() {
       await tester.pumpWidget(
         buildWidget(
           GetOnePage<String, IGetOneCubit<String>>(
-            id: '1',
             builder: (context, data) => Text(data, key: const Key('testKey')),
             defaultTitle: 'Default Title',
             titleBuilder: (context, data) => 'Title Builder $data',

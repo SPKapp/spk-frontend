@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_note.cubit.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
@@ -32,21 +33,19 @@ void main() {
     });
 
     test('initial state is RabbitNoteInitial', () {
-      expect(rabbitNoteCubit.state, const RabbitNoteInitial());
+      expect(rabbitNoteCubit.state, const GetOneInitial<RabbitNote>());
     });
 
-    blocTest<RabbitNoteCubit, RabbitNoteState>(
+    blocTest<RabbitNoteCubit, GetOneState>(
       'emits [RabbitNoteSuccess] when fetchRabbitNote is called',
       setUp: () {
         when(() => rabbitNotesRepository.findOne('1'))
             .thenAnswer((_) async => rabbitNote);
       },
       build: () => rabbitNoteCubit,
-      act: (cubit) => cubit.fetchRabbitNote(),
+      act: (cubit) => cubit.fetch(),
       expect: () => [
-        const RabbitNoteSuccess(
-          rabbitNote: rabbitNote,
-        ),
+        const GetOneSuccess<RabbitNote>(data: rabbitNote),
       ],
       verify: (_) {
         verify(() => rabbitNotesRepository.findOne('1')).called(1);
@@ -54,15 +53,15 @@ void main() {
       },
     );
 
-    blocTest<RabbitNoteCubit, RabbitNoteState>(
+    blocTest<RabbitNoteCubit, GetOneState>(
       'emits [RabbitNoteFailure] when fetchRabbitNote is called',
       setUp: () {
         when(() => rabbitNotesRepository.findOne('1')).thenThrow(Exception());
       },
       build: () => rabbitNoteCubit,
-      act: (cubit) => cubit.fetchRabbitNote(),
+      act: (cubit) => cubit.fetch(),
       expect: () => [
-        const RabbitNoteFailure(),
+        const GetOneFailure<RabbitNote>(),
       ],
       verify: (_) {
         verify(() => rabbitNotesRepository.findOne('1')).called(1);

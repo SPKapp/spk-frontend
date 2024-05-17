@@ -81,7 +81,6 @@ class _UpdateAdoptionInfoPageState extends State<UpdateAdoptionInfoPage> {
           }
         },
         child: GetOnePage<RabbitGroup, RabbitGroupCubit>(
-            id: widget.rabbitGroupId,
             defaultTitle: 'Informacje o adopcji',
             errorInfo: 'Nie udało się pobrać grupy królików',
             actionsBuilder: (context, rabbitGroup) => [

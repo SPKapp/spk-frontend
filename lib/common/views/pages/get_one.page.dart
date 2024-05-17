@@ -12,7 +12,6 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
     extends StatelessWidget {
   const GetOnePage({
     super.key,
-    required this.id,
     required this.builder,
     required this.defaultTitle,
     this.titleBuilder,
@@ -22,9 +21,6 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
     this.actionsBuilder,
     this.refreshable = true,
   });
-
-  /// The id of the object to fetch
-  final String id;
 
   /// The builder function to build the view with the fetched data
   final Widget Function(BuildContext context, T data) builder;

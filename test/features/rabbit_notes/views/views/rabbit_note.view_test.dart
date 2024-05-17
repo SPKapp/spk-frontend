@@ -1,34 +1,17 @@
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spk_app_frontend/common/extensions/date_time.extension.dart';
 
-import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_note.cubit.dart';
+import 'package:spk_app_frontend/common/extensions/date_time.extension.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/views/rabbit_note.view.dart';
 
-class MockRabbitNoteCubit extends MockCubit<RabbitNoteState>
-    implements RabbitNoteCubit {}
-
 void main() {
   group(RabbitNoteView, () {
-    late RabbitNoteCubit rabbitNoteCubit;
-
-    setUp(() {
-      rabbitNoteCubit = MockRabbitNoteCubit();
-    });
-
     Widget buildWidget({required RabbitNote rabbitNote}) {
       return MaterialApp(
-        home: BlocProvider.value(
-          value: rabbitNoteCubit,
-          child: Scaffold(
-            body: RabbitNoteView(
-              rabbitNote: rabbitNote,
-            ),
+        home: Scaffold(
+          body: RabbitNoteView(
+            rabbitNote: rabbitNote,
           ),
         ),
       );
@@ -138,32 +121,6 @@ void main() {
 
         expect(find.text('Nieznana'), findsOneWidget);
       });
-    });
-
-    testWidgets('should call refreshRabbitNote when refreshing',
-        (WidgetTester tester) async {
-      whenListen(
-        rabbitNoteCubit,
-        Stream.fromIterable(
-          [
-            const RabbitNoteInitial(),
-            const RabbitNoteSuccess(rabbitNote: RabbitNote(id: '1')),
-          ],
-        ),
-      );
-
-      await tester.pumpWidget(
-        buildWidget(rabbitNote: const RabbitNote(id: '1')),
-      );
-
-      await tester.fling(
-        find.byType(RabbitNoteView),
-        const Offset(0, 400),
-        1000,
-      );
-      await tester.pumpAndSettle();
-
-      verify(() => rabbitNoteCubit.refreshRabbitNote()).called(1);
     });
   });
 }

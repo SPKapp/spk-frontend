@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
-import 'package:spk_app_frontend/common/views/views.dart';
+import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_note.cubit.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_note_update.cubit.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
@@ -49,7 +49,7 @@ class _RabbitNoteUpdatePageState extends State<RabbitNoteUpdatePage> {
                     rabbitNoteId: widget.rabbitNoteId,
                     rabbitNotesRepository:
                         context.read<IRabbitNotesRepository>(),
-                  )..fetchRabbitNote(),
+                  )..fetch(),
         ),
         BlocProvider(
           create: widget.rabbitNoteUpdateCubit ??
@@ -81,46 +81,28 @@ class _RabbitNoteUpdatePageState extends State<RabbitNoteUpdatePage> {
             default:
           }
         },
-        child: BlocBuilder<RabbitNoteCubit, RabbitNoteState>(
-          builder: (context, state) {
-            late final Widget body;
-            late final List<Widget>? actions;
-
-            switch (state) {
-              case RabbitNoteInitial():
-                actions = null;
-                body = const InitialView();
-              case RabbitNoteFailure():
-                actions = null;
-                body = FailureView(
-                  message: 'Nie udało się pobrać notatki',
-                  onPressed: () =>
-                      context.read<RabbitNoteCubit>().fetchRabbitNote(),
-                );
-              case RabbitNoteSuccess():
-                _loadFieldControlers(state.rabbitNote);
-                actions = [
-                  IconButton(
-                    key: const Key('saveButton'),
-                    icon: const Icon(Icons.save),
-                    onPressed: () => _onSubmit(context, state.rabbitNote),
-                  ),
-                ];
-                body = Form(
-                  key: _formKey,
-                  child: RabbitNoteModifyView(
-                    editControlers: _editControlers,
-                    canChangeType: false,
-                  ),
-                );
-            }
-
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Edytuj notatkę'),
-                actions: actions,
+        child: GetOnePage<RabbitNote, RabbitNoteCubit>(
+          refreshable: false,
+          defaultTitle: 'Edytuj notatkę',
+          errorInfo: 'Nie udało się pobrać notatki',
+          actionsBuilder: (context, rabbitNote) {
+            return [
+              IconButton(
+                key: const Key('saveButton'),
+                icon: const Icon(Icons.save),
+                onPressed: () => _onSubmit(context, rabbitNote),
               ),
-              body: body,
+            ];
+          },
+          builder: (context, rabbitNote) {
+            _loadFieldControlers(rabbitNote);
+
+            return Form(
+              key: _formKey,
+              child: RabbitNoteModifyView(
+                editControlers: _editControlers,
+                canChangeType: false,
+              ),
             );
           },
         ),

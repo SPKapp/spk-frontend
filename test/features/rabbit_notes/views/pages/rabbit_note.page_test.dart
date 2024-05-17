@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
@@ -12,7 +13,7 @@ import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/pages/rabbit_note.page.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/views/rabbit_note.view.dart';
 
-class MockRabbitNoteCubit extends MockCubit<RabbitNoteState>
+class MockRabbitNoteCubit extends MockCubit<GetOneState<RabbitNote>>
     implements RabbitNoteCubit {}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
@@ -29,7 +30,7 @@ void main() {
       authCubit = MockAuthCubit();
 
       when(() => rabbitNoteCubit.state).thenReturn(
-        const RabbitNoteSuccess(rabbitNote: rabbitNote),
+        const GetOneSuccess(data: rabbitNote),
       );
 
       when(() => authCubit.currentUser).thenAnswer(
@@ -58,7 +59,8 @@ void main() {
 
     testWidgets('renders InitialView when state is RabbitNoteInitial',
         (WidgetTester tester) async {
-      when(() => rabbitNoteCubit.state).thenReturn(const RabbitNoteInitial());
+      when(() => rabbitNoteCubit.state)
+          .thenReturn(const GetOneInitial<RabbitNote>());
 
       await tester.pumpWidget(buildWidget());
 
@@ -70,7 +72,8 @@ void main() {
 
     testWidgets('renders FailureView when state is RabbitNoteFailure',
         (WidgetTester tester) async {
-      when(() => rabbitNoteCubit.state).thenReturn(const RabbitNoteFailure());
+      when(() => rabbitNoteCubit.state)
+          .thenReturn(const GetOneFailure<RabbitNote>());
 
       await tester.pumpWidget(buildWidget());
 
