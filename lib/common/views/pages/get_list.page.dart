@@ -17,7 +17,8 @@ class GetListPage<T extends Object, Args extends Object,
     required this.title,
     required this.errorInfo,
     this.errorInfoBuilder,
-    this.actions,
+    this.actions = const [],
+    this.filterBuilder,
     this.floatingActionButton,
     this.emptyMessage,
     required this.itemBuilder,
@@ -35,7 +36,14 @@ class GetListPage<T extends Object, Args extends Object,
       errorInfoBuilder;
 
   /// The actions to display in the app bar
-  final List<Widget>? actions;
+  final List<Widget> actions;
+
+  /// The builder function to build the filter widget
+  final Widget Function(
+    BuildContext context,
+    Args args,
+    void Function(Args args) callback,
+  )? filterBuilder;
 
   /// The floating action button to display in the view
   final Widget? floatingActionButton;
@@ -104,10 +112,44 @@ class GetListPage<T extends Object, Args extends Object,
             leading:
                 context.canPop() ? const BackButton() : const DrawerButton(),
             title: Text(title),
-            actions: actions,
+            actions: [
+              ...actions,
+              if (filterBuilder != null) _buidFilter(context),
+            ],
           ),
           floatingActionButton: floatingActionButton,
           body: body,
+        );
+      },
+    );
+  }
+
+  Widget _buidFilter(BuildContext context) {
+    return IconButton(
+      key: const Key('filterAction'),
+      icon: const Icon(Icons.filter_alt),
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (_) {
+            return BlocProvider.value(
+              value: context.read<Bloc>(),
+              child: FractionallySizedBox(
+                widthFactor: 1.0,
+                heightFactor: 0.7,
+                child: SingleChildScrollView(
+                  child: filterBuilder!(
+                    context,
+                    context.read<Bloc>().args,
+                    (args) {
+                      context.read<Bloc>().add(RefreshList(args));
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
         );
       },
     );

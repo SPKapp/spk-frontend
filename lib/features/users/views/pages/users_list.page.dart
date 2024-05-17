@@ -45,25 +45,11 @@ class UsersListPage extends StatelessWidget {
                 key: const Key('searchAction'),
                 args: context.read<UsersListBloc>().args,
               ),
-              IconButton(
-                key: const Key('filterAction'),
-                icon: const Icon(Icons.filter_alt),
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (_) {
-                      return BlocProvider.value(
-                        value: context.read<UsersListBloc>(),
-                        child: UsersListFilters(
-                          args: context.read<UsersListBloc>().args,
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
             ],
+            filterBuilder: (context, args, callback) => UsersListFilters(
+              args: args,
+              onFilter: callback,
+            ),
             emptyMessage: 'Brak użytkowników.',
             itemBuilder: (context, user) => AppCard(
               child: ListTile(

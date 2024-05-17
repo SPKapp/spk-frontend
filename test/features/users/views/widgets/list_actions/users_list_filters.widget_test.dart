@@ -1,43 +1,29 @@
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
-import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
-import 'package:spk_app_frontend/features/users/models/models.dart';
 
 import 'package:spk_app_frontend/features/users/views/widgets/list_actions/users_list_filters.widget.dart';
-
-class MockUsersListBloc extends MockBloc<GetListEvent, GetListState<User>>
-    implements UsersListBloc {}
 
 class MockGoRouter extends Mock implements GoRouter {}
 
 void main() {
   group(UsersListFilters, () {
-    late UsersListBloc usersListBloc;
     late GoRouter goRouter;
 
     setUp(() {
-      usersListBloc = MockUsersListBloc();
       goRouter = MockGoRouter();
     });
 
-    Widget buildWidget(FindUsersArgs args) {
+    Widget buildWidget(UsersListFilters child) {
       return MaterialApp(
         home: InheritedGoRouter(
           goRouter: goRouter,
-          child: BlocProvider(
-            create: (context) => usersListBloc,
-            child: Scaffold(
-              body: UsersListFilters(
-                args: args,
-              ),
-            ),
+          child: Scaffold(
+            body: child,
           ),
         ),
       );
@@ -45,7 +31,12 @@ void main() {
 
     testWidgets('renders correctly', (WidgetTester tester) async {
       await tester.pumpWidget(
-        buildWidget(const FindUsersArgs()),
+        buildWidget(
+          UsersListFilters(
+            args: const FindUsersArgs(),
+            onFilter: (args) {},
+          ),
+        ),
       );
 
       expect(find.text('Filtruj użytkowników'), findsOneWidget);
@@ -54,19 +45,24 @@ void main() {
     });
 
     testWidgets('should send new args when saved', (WidgetTester tester) async {
+      bool onFilterCalled = false;
+
       await tester.pumpWidget(
-        buildWidget(const FindUsersArgs()),
+        buildWidget(
+          UsersListFilters(
+            args: const FindUsersArgs(),
+            onFilter: (args) {
+              onFilterCalled = true;
+            },
+          ),
+        ),
       );
 
       await tester.tap(find.byType(ChoiceChip).last);
       await tester.tap(find.text('Filtruj'));
       await tester.pumpAndSettle();
 
-      verify(
-        () => usersListBloc.add(
-          const RefreshList<FindUsersArgs>(FindUsersArgs(isActive: false)),
-        ),
-      ).called(1);
+      expect(onFilterCalled, isTrue);
       verify(() => goRouter.pop()).called(1);
     });
   });

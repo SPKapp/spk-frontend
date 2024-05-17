@@ -24,6 +24,8 @@ void main() {
       goRouter = MockGoRouter();
 
       when(() => goRouter.canPop()).thenReturn(false);
+
+      when(() => getListPage.args).thenReturn('args');
     });
 
     Widget buildWidget(
@@ -182,6 +184,40 @@ void main() {
       expect(find.text('Error Info'), findsNothing);
       expect(find.text('Error Info Builder 500'), findsNothing);
       expect(find.text('Empty Message'), findsOneWidget);
+    });
+
+    testWidgets('should display filters when filterBuilder is provided',
+        (WidgetTester tester) async {
+      when(() => getListPage.state).thenReturn(
+        GetListSuccess<String>(
+          data: const [],
+          hasReachedMax: true,
+          totalCount: 0,
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildWidget(
+          GetListPage<String, String, IGetListBloc<String, String>>(
+            title: 'Default Title',
+            errorInfo: 'Error Info',
+            itemBuilder: (context, item) => Text(item),
+            filterBuilder: (context, args, callback) => TextButton(
+              onPressed: () => callback(args),
+              child: const Text('Filters'),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('filterAction')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Filters'), findsOneWidget);
+
+      await tester.tap(find.text('Filters'));
+
+      verify(() => getListPage.add(const RefreshList('args'))).called(1);
     });
   });
 }
