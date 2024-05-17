@@ -1,79 +1,31 @@
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-
-import 'package:spk_app_frontend/common/bloc/debounce.transformer.dart';
-import 'package:spk_app_frontend/common/services/logger.service.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
+import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
 
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
-part 'users_list.event.dart';
-part 'users_list.state.dart';
-
 /// A bloc that manages the state of a list with teams.
-///
-/// Available functions:
-/// - [FetchUsers] - fetches the next page of teams
-/// it uses the previous arguments to fetch the next page
-/// - [RefreshUsers] - restarts fetching the teams with the given arguments
-/// if no arguments are provided it will use the previous arguments otherwise new arguments will be used
-///
-/// Available states:
-/// - [UsersListInitial] - initial state
-/// - [UsersListSuccess] - the teams have been fetched successfully
-/// - [UsersListFailure] - an error occurred while fetching the teams
-///
-class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
+class UsersListBloc extends IGetListBloc<User, FindUsersArgs> {
   UsersListBloc({
     required IUsersRepository usersRepository,
-    required FindUsersArgs args,
+    required super.args,
   })  : _usersRepository = usersRepository,
-        _args = args,
-        super(const UsersListInitial()) {
-    on<FetchUsers>(
-      _onFetchUsers,
-      transformer: debounceTransformer(const Duration(milliseconds: 500)),
-    );
-    on<RefreshUsers>(_onRefreshUsers);
-  }
+        super(fetchError: 'Error while fetching users');
 
   final IUsersRepository _usersRepository;
-  final logger = LoggerService();
-  FindUsersArgs _args;
 
-  FindUsersArgs get args => _args;
-
-  void _onFetchUsers(FetchUsers event, Emitter<UsersListState> emit) async {
-    if (state.hasReachedMax) return;
-
-    try {
-      final paginatedResult = await _usersRepository.findAll(
-        _args.copyWith(offset: () => state.users.length),
-        state.totalCount == 0,
-      );
-
-      final totalCount = paginatedResult.totalCount ?? state.totalCount;
-      final newData = state.users + paginatedResult.data;
-
-      emit(UsersListSuccess(
-        users: newData,
-        hasReachedMax: newData.length >= totalCount,
-        totalCount: totalCount,
-      ));
-    } catch (e) {
-      logger.error('Error while fetching users', error: e);
-      emit(UsersListFailure(
-        users: state.users,
-        hasReachedMax: state.hasReachedMax,
-        totalCount: state.totalCount,
-      ));
-    }
+  @override
+  Future<Paginated<User>> fetchData(int offset, bool getTotalCount) async {
+    return await _usersRepository.findAll(
+      args.copyWith(offset: () => state.data.length),
+      state.totalCount == 0,
+    );
   }
 
-  void _onRefreshUsers(RefreshUsers event, Emitter<UsersListState> emit) async {
-    _args = event.args ?? _args;
-    emit(const UsersListInitial());
-    add(const FetchUsers());
+  @override
+  String? createErrorCode(Object error) {
+    logger.error(fetchError, error: error);
+    return null;
   }
 }

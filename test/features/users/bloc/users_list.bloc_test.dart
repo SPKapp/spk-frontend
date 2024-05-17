@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 
@@ -54,21 +55,21 @@ void main() {
       usersListBloc.close();
     });
 
-    test('initial state is UsersListInitial', () {
-      expect(usersListBloc.state, const UsersListInitial());
+    test('initial state is GetListInitial<User>', () {
+      expect(usersListBloc.state, GetListInitial<User>());
     });
 
-    blocTest<UsersListBloc, UsersListState>(
-      'emits [UsersListSuccess] when FetchUsers event is added',
+    blocTest<UsersListBloc, GetListState>(
+      'emits [GetListSuccess<User>] when FetchList event is added',
       setUp: () {
         when(() => usersRepository.findAll(any(), any()))
             .thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => usersListBloc,
-      act: (bloc) => bloc.add(const FetchUsers()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        UsersListSuccess(
-          users: paginatedResultTotalCount.data,
+        GetListSuccess(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -83,16 +84,16 @@ void main() {
       },
     );
 
-    blocTest<UsersListBloc, UsersListState>(
-      'emits [UsersListFailure] when an error occurs on initial fetch',
+    blocTest<UsersListBloc, GetListState>(
+      'emits [GetListFailure<User>] when an error occurs on initial fetch',
       setUp: () {
         when(() => usersRepository.findAll(any(), any()))
             .thenThrow(Exception('An error occurred'));
       },
       build: () => usersListBloc,
-      act: (bloc) => bloc.add(const FetchUsers()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        const UsersListFailure(),
+        GetListFailure<User>(),
       ],
       verify: (_) {
         verify(() => usersRepository.findAll(
@@ -104,22 +105,22 @@ void main() {
       },
     );
 
-    blocTest<UsersListBloc, UsersListState>(
-      'emits [UsersListFailure] when an error occurs on next fetch',
+    blocTest<UsersListBloc, GetListState>(
+      'emits [GetListFailure<User>] when an error occurs on next fetch',
       setUp: () {
         when(() => usersRepository.findAll(any(), any()))
             .thenThrow(Exception('An error occurred'));
       },
       build: () => usersListBloc,
-      seed: () => UsersListSuccess(
-        users: paginatedResultTotalCount.data,
+      seed: () => GetListSuccess<User>(
+        data: paginatedResultTotalCount.data,
         hasReachedMax: false,
         totalCount: paginatedResultTotalCount.totalCount!,
       ),
-      act: (bloc) => bloc.add(const FetchUsers()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        UsersListFailure(
-          users: paginatedResultTotalCount.data,
+        GetListFailure<User>(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -134,22 +135,22 @@ void main() {
       },
     );
 
-    blocTest<UsersListBloc, UsersListState>(
-      'emits [UsersListSuccess] when FetchUsers event is added and hasReachedMax is false',
+    blocTest<UsersListBloc, GetListState>(
+      'emits [GetListSuccess<User>] when FetchList event is added and hasReachedMax is false',
       setUp: () {
         when(() => usersRepository.findAll(any(), any()))
             .thenAnswer((invocation) async => paginatedResult);
       },
       build: () => usersListBloc,
-      seed: () => UsersListSuccess(
-        users: paginatedResultTotalCount.data,
+      seed: () => GetListSuccess<User>(
+        data: paginatedResultTotalCount.data,
         hasReachedMax: false,
         totalCount: paginatedResultTotalCount.totalCount!,
       ),
-      act: (bloc) => bloc.add(const FetchUsers()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        UsersListSuccess(
-          users: paginatedResultTotalCount.data + paginatedResult.data,
+        GetListSuccess<User>(
+          data: paginatedResultTotalCount.data + paginatedResult.data,
           hasReachedMax: true,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -164,33 +165,33 @@ void main() {
       },
     );
 
-    blocTest<UsersListBloc, UsersListState>(
-      'does not emit any state when FetchUsers event is added and hasReachedMax is true',
+    blocTest<UsersListBloc, GetListState>(
+      'does not emit any state when FetchList event is added and hasReachedMax is true',
       build: () => usersListBloc,
-      seed: () => UsersListSuccess(
-        users: paginatedResultTotalCount.data,
+      seed: () => GetListSuccess<User>(
+        data: paginatedResultTotalCount.data,
         hasReachedMax: true,
         totalCount: 1,
       ),
-      act: (bloc) => bloc.add(const FetchUsers()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [],
       verify: (_) {
         verifyNoMoreInteractions(usersRepository);
       },
     );
 
-    blocTest<UsersListBloc, UsersListState>(
-        'emits [UsersListSuccess] when RefreshUsers event is added',
+    blocTest<UsersListBloc, GetListState>(
+        'emits [GetListSuccess<User>] when RefreshUsers event is added',
         setUp: () {
           when(() => usersRepository.findAll(any(), any()))
               .thenAnswer((invocation) async => paginatedResultTotalCount);
         },
         build: () => usersListBloc,
-        act: (bloc) => bloc.add(const RefreshUsers(null)),
+        act: (bloc) => bloc.add(const RefreshList<FindUsersArgs>(null)),
         expect: () => [
-              const UsersListInitial(),
-              UsersListSuccess(
-                users: paginatedResultTotalCount.data,
+              GetListInitial<User>(),
+              GetListSuccess<User>(
+                data: paginatedResultTotalCount.data,
                 hasReachedMax: false,
                 totalCount: paginatedResultTotalCount.totalCount!,
               ),
@@ -204,18 +205,18 @@ void main() {
           verifyNoMoreInteractions(usersRepository);
         });
 
-    blocTest<UsersListBloc, UsersListState>(
-      'emits [UsersListSuccess] when RefreshUsers event is added with args',
+    blocTest<UsersListBloc, GetListState>(
+      'emits [GetListSuccess<User>] when RefreshUsers event is added with args',
       setUp: () {
         when(() => usersRepository.findAll(any(), any()))
             .thenAnswer((invocation) async => paginatedResultTotalCount);
       },
       build: () => usersListBloc,
-      act: (bloc) => bloc.add(const RefreshUsers(FindUsersArgs(name: 'name'))),
+      act: (bloc) => bloc.add(const RefreshList(FindUsersArgs(name: 'name'))),
       expect: () => [
-        const UsersListInitial(),
-        UsersListSuccess(
-          users: paginatedResultTotalCount.data,
+        GetListInitial<User>(),
+        GetListSuccess<User>(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),

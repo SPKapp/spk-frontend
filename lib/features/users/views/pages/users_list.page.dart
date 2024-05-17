@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:spk_app_frontend/common/views/views.dart';
-
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
+import 'package:spk_app_frontend/common/views/pages/get_list.page.dart';
+import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
+import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
-import 'package:spk_app_frontend/features/users/views/views/users_list.view.dart';
 import 'package:spk_app_frontend/features/users/views/widgets/list_actions.dart';
 
 /// Represents a page that displays a list of users.
@@ -16,11 +17,9 @@ import 'package:spk_app_frontend/features/users/views/widgets/list_actions.dart'
 class UsersListPage extends StatelessWidget {
   const UsersListPage({
     super.key,
-    this.drawer,
     this.usersListBloc,
   });
 
-  final Widget? drawer;
   final UsersListBloc Function(BuildContext)? usersListBloc;
 
   @override
@@ -29,81 +28,56 @@ class UsersListPage extends StatelessWidget {
             (context) => UsersListBloc(
                   usersRepository: context.read<IUsersRepository>(),
                   args: const FindUsersArgs(),
-                )..add(const FetchUsers()),
-        child: BlocConsumer<UsersListBloc, UsersListState>(
-          listener: (context, state) {
-            if (state is UsersListFailure && state.users.isNotEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Wystąpił błąd podczas pobierania użytkowników.',
-                  ),
-                ),
-              );
-            }
-          },
-          buildWhen: (previous, current) =>
-              previous is! UsersListSuccess || current is UsersListSuccess,
-          builder: (context, state) {
-            late Widget body;
-
-            switch (state) {
-              case UsersListInitial():
-                body = const InitialView();
-              case UsersListFailure():
-                body = FailureView(
-                  message: 'Wystąpił błąd podczas pobierania użytkowników.',
-                  onPressed: () => context
-                      .read<UsersListBloc>()
-                      .add(const RefreshUsers(null)),
-                );
-              case UsersListSuccess():
-                body = UsersListView(
-                  users: state.users,
-                  hasReachedMax: state.hasReachedMax,
-                );
-                break;
-            }
-
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text('Użytkownicy'),
-                actions: [
-                  UsersSearchAction(
-                    key: const Key('searchAction'),
-                    args: context.read<UsersListBloc>().args,
-                  ),
-                  IconButton(
-                    key: const Key('filterAction'),
-                    icon: const Icon(Icons.filter_alt),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (_) {
-                          return BlocProvider.value(
-                            value: context.read<UsersListBloc>(),
-                            child: UsersListFilters(
-                              args: context.read<UsersListBloc>().args,
-                            ),
-                          );
-                        },
+                )..add(const FetchList()),
+        child: Builder(builder: (context) {
+          return GetListPage<User, FindUsersArgs, UsersListBloc>(
+            title: 'Użytkownicy',
+            errorInfo: 'Wystąpił błąd podczas pobierania użytkowników.',
+            floatingActionButton: FloatingActionButton(
+              key: const Key('addUserButton'),
+              onPressed: () => context.push(
+                '/user/add',
+              ),
+              child: const Icon(Icons.add),
+            ),
+            actions: [
+              UsersSearchAction(
+                key: const Key('searchAction'),
+                args: context.read<UsersListBloc>().args,
+              ),
+              IconButton(
+                key: const Key('filterAction'),
+                icon: const Icon(Icons.filter_alt),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (_) {
+                      return BlocProvider.value(
+                        value: context.read<UsersListBloc>(),
+                        child: UsersListFilters(
+                          args: context.read<UsersListBloc>().args,
+                        ),
                       );
                     },
-                  ),
-                ],
+                  );
+                },
               ),
-              drawer: drawer,
-              floatingActionButton: FloatingActionButton(
-                key: const Key('addUserButton'),
-                onPressed: () => context.push(
-                  '/user/add',
+            ],
+            emptyMessage: 'Brak użytkowników.',
+            itemBuilder: (context, user) => AppCard(
+              child: ListTile(
+                leading: const Icon(Icons.person),
+                onTap: () => context.push('/user/${user.id}'),
+                title: Text(
+                  '${user.firstName} ${user.lastName}',
                 ),
-                child: const Icon(Icons.add),
+                subtitle: Text(
+                  user.roles?.map((e) => e.displayName).join(', ') ?? '',
+                ),
               ),
-              body: body,
-            );
-          },
-        ),
+            ),
+          );
+        }),
       );
 }

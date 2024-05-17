@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
@@ -78,7 +79,7 @@ class _UsersListFiltersState extends State<UsersListFilters> {
               ),
               FilledButton.tonal(
                 onPressed: () {
-                  context.read<UsersListBloc>().add(RefreshUsers(args));
+                  context.read<UsersListBloc>().add(RefreshList(args));
                   context.pop();
                 },
                 child: const Text('Filtruj'),

@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
+import 'package:spk_app_frontend/features/users/models/models.dart';
 
 import 'package:spk_app_frontend/features/users/views/widgets/list_actions/users_list_filters.widget.dart';
 
-class MockUsersListBloc extends MockBloc<UsersListEvent, UsersListState>
+class MockUsersListBloc extends MockBloc<GetListEvent, GetListState<User>>
     implements UsersListBloc {}
 
 class MockGoRouter extends Mock implements GoRouter {}
@@ -62,7 +64,7 @@ void main() {
 
       verify(
         () => usersListBloc.add(
-          const RefreshUsers(FindUsersArgs(isActive: false)),
+          const RefreshList<FindUsersArgs>(FindUsersArgs(isActive: false)),
         ),
       ).called(1);
       verify(() => goRouter.pop()).called(1);

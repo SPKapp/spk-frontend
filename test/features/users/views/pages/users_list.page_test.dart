@@ -1,8 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/users/bloc/users_list.bloc.dart';
@@ -10,132 +12,67 @@ import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/models/models/user.model.dart';
 import 'package:spk_app_frontend/features/users/views/pages/users_list.page.dart';
-import 'package:spk_app_frontend/features/users/views/views/users_list.view.dart';
 
-class MockUsersListBloc extends MockBloc<UsersListEvent, UsersListState>
+class MockUsersListBloc extends MockBloc<GetListEvent, GetListState<User>>
     implements UsersListBloc {}
+
+class MockGoRouter extends Mock implements GoRouter {
+  @override
+  bool canPop() => false;
+}
 
 void main() {
   group(UsersListPage, () {
     late UsersListBloc usersListBloc;
+    late GoRouter goRouter;
 
     setUp(() {
       usersListBloc = MockUsersListBloc();
+      goRouter = MockGoRouter();
 
       when(() => usersListBloc.args).thenReturn(const FindUsersArgs());
     });
 
-    testWidgets(
-        'UsersListPage should display CircularProgressIndicator when state is UsersListInitial',
-        (WidgetTester tester) async {
-      when(() => usersListBloc.state)
-          .thenAnswer((_) => const UsersListInitial());
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UsersListPage(
+    Widget buildWidget() {
+      return MaterialApp(
+        home: InheritedGoRouter(
+          goRouter: goRouter,
+          child: UsersListPage(
             usersListBloc: (_) => usersListBloc,
-            drawer: const Drawer(),
           ),
         ),
       );
+    }
+
+    testWidgets(
+        'UsersListPage should display CircularProgressIndicator when state is UsersListInitial',
+        (WidgetTester tester) async {
+      when(() => usersListBloc.state).thenAnswer((_) => GetListInitial<User>());
+
+      await tester.pumpWidget(buildWidget());
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      expect(find.byType(UsersListView), findsNothing);
+      expect(find.byType(ListTile), findsNothing);
       expect(find.byType(FailureView), findsNothing);
     });
 
     testWidgets(
         'UsersListPage should display "Failed to fetch users" when state is UsersListFailure',
         (WidgetTester tester) async {
-      when(() => usersListBloc.state)
-          .thenAnswer((_) => const UsersListFailure());
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UsersListPage(
-            usersListBloc: (_) => usersListBloc,
-          ),
-        ),
-      );
+      when(() => usersListBloc.state).thenAnswer((_) => GetListFailure<User>());
+      await tester.pumpWidget(buildWidget());
 
       expect(find.byType(CircularProgressIndicator), findsNothing);
-      expect(find.byType(UsersListView), findsNothing);
+      expect(find.byType(ListTile), findsNothing);
       expect(find.byType(FailureView), findsOneWidget);
     });
 
     testWidgets(
-        'UsersListPage should display UsersListView when state is UsersListSuccess',
+        'should display ListTile with user name when state is UsersListSuccess and data is not empty',
         (WidgetTester tester) async {
       when(() => usersListBloc.state).thenAnswer(
-        (_) => const UsersListSuccess(
-          users: [],
-          hasReachedMax: true,
-          totalCount: 0,
-        ),
-      );
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UsersListPage(
-            usersListBloc: (_) => usersListBloc,
-          ),
-        ),
-      );
-
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-      expect(find.byType(UsersListView), findsOneWidget);
-      expect(find.byKey(const Key('usersListFailureText')), findsNothing);
-    });
-
-    testWidgets(
-        'UsersListPage should not rebuild when state is UsersListInitial and previous state is UsersListSuccess',
-        (WidgetTester tester) async {
-      whenListen(
-        usersListBloc,
-        Stream.fromIterable([
-          const UsersListInitial(),
-        ]),
-        initialState: const UsersListSuccess(
-          users: [],
-          hasReachedMax: true,
-          totalCount: 0,
-        ),
-      );
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UsersListPage(
-            usersListBloc: (_) => usersListBloc,
-          ),
-        ),
-      );
-      await tester.pump();
-
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-      expect(find.byType(UsersListView), findsOneWidget);
-      expect(find.byType(FailureView), findsNothing);
-    });
-
-    testWidgets(
-        'UsersListPage should display Snackbar with error and not rebuild',
-        (WidgetTester tester) async {
-      whenListen(
-        usersListBloc,
-        Stream.fromIterable([
-          const UsersListFailure(
-            users: [
-              User(
-                id: '1',
-                firstName: 'John',
-                lastName: 'Foe',
-              )
-            ],
-            hasReachedMax: true,
-            totalCount: 0,
-          ),
-        ]),
-        initialState: const UsersListSuccess(
-          users: [
+        (_) => GetListSuccess<User>(
+          data: const [
             User(
               id: '1',
               firstName: 'John',
@@ -147,20 +84,30 @@ void main() {
         ),
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: UsersListPage(
-            usersListBloc: (_) => usersListBloc,
-          ),
+      await tester.pumpWidget(buildWidget());
+
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.text('John Foe'), findsOneWidget);
+      expect(find.byKey(const Key('usersListFailureText')), findsNothing);
+    });
+
+    testWidgets(
+        'should display "Brak użytkowników." when state is UsersListSuccess and data is empty',
+        (WidgetTester tester) async {
+      when(() => usersListBloc.state).thenAnswer(
+        (_) => GetListSuccess<User>(
+          data: const [],
+          hasReachedMax: true,
+          totalCount: 0,
         ),
       );
 
+      await tester.pumpWidget(buildWidget());
       await tester.pump();
 
       expect(find.byType(CircularProgressIndicator), findsNothing);
-      expect(find.byType(UsersListView), findsOneWidget);
+      expect(find.text('Brak użytkowników.'), findsOneWidget);
       expect(find.byType(FailureView), findsNothing);
-      expect(find.byType(SnackBar), findsOneWidget);
     });
   });
 }

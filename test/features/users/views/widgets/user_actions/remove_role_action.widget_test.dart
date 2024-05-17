@@ -98,7 +98,7 @@ void main() {
       await tester.tap(find.byKey(const Key('roleDropdown')));
       await tester.pumpAndSettle();
 
-      expect(find.text(Role.admin.toHumanReadable()), findsNothing);
+      expect(find.text(Role.admin.displayName), findsNothing);
     });
 
     testWidgets('render admin role', (tester) async {
@@ -111,7 +111,7 @@ void main() {
       await tester.tap(find.byKey(const Key('roleDropdown')));
       await tester.pumpAndSettle();
 
-      expect(find.text(Role.admin.toHumanReadable()), findsAny);
+      expect(find.text(Role.admin.displayName), findsAny);
     });
 
     testWidgets('display region dropdown', (tester) async {
@@ -123,7 +123,7 @@ void main() {
       await tester.tap(find.byKey(const Key('roleDropdown')));
       await tester.pumpAndSettle();
 
-      expect(find.text(Role.regionManager.toHumanReadable()), findsAny);
+      expect(find.text(Role.regionManager.displayName), findsAny);
     });
 
     testWidgets('click delete role', (tester) async {
@@ -139,7 +139,7 @@ void main() {
       await tester.tap(find.byKey(const Key('roleDropdown')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(Role.regionManager.toHumanReadable()).last);
+      await tester.tap(find.text(Role.regionManager.displayName).last);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(FilledButton));
@@ -171,7 +171,7 @@ void main() {
       await tester.tap(find.byKey(const Key('roleDropdown')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text(Role.regionManager.toHumanReadable()).last);
+      await tester.tap(find.text(Role.regionManager.displayName).last);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(FilledButton));

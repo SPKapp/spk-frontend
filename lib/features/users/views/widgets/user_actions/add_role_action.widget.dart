@@ -110,22 +110,21 @@ class _AddRoleActionState extends State<AddRoleAction> {
                             if (asAdmin && !widget.roleInfo.isAdmin)
                               DropdownMenuEntry(
                                 value: Role.admin,
-                                label: Role.admin.toHumanReadable(),
+                                label: Role.admin.displayName,
                               ),
                             DropdownMenuEntry(
                               value: Role.volunteer,
-                              label: Role.volunteer.toHumanReadable(),
+                              label: Role.volunteer.displayName,
                             ),
                             if (managerRegions.isNotEmpty)
                               DropdownMenuEntry(
                                 value: Role.regionManager,
-                                label: Role.regionManager.toHumanReadable(),
+                                label: Role.regionManager.displayName,
                               ),
                             if (observerRegions.isNotEmpty)
                               DropdownMenuEntry(
                                 value: Role.regionRabbitObserver,
-                                label:
-                                    Role.regionRabbitObserver.toHumanReadable(),
+                                label: Role.regionRabbitObserver.displayName,
                               ),
                           ],
                         ),

@@ -140,9 +140,7 @@ class AppRouter {
               GoRoute(
                 path: '/users',
                 builder: (context, state) {
-                  return const UsersListPage(
-                    drawer: AppDrawer(),
-                  );
+                  return const UsersListPage();
                 },
               ),
               GoRoute(
@@ -172,9 +170,7 @@ class AppRouter {
               GoRoute(
                 path: '/myProfile',
                 builder: (context, state) {
-                  return const MyProfilePage(
-                    drawer: AppDrawer(),
-                  );
+                  return const MyProfilePage();
                 },
                 routes: [
                   GoRoute(

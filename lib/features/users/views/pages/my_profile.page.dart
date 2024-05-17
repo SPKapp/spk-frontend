@@ -16,12 +16,10 @@ import 'package:spk_app_frontend/features/users/views/views/user.view.dart';
 class MyProfilePage extends StatelessWidget {
   const MyProfilePage({
     super.key,
-    this.drawer,
     this.userCubit,
     this.sendVerificationMailCubit,
   });
 
-  final Widget? drawer;
   final UserCubit Function(BuildContext)? userCubit;
   final SendVerificationMailCubit Function(BuildContext)?
       sendVerificationMailCubit;

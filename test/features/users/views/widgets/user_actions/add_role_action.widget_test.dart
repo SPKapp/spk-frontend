@@ -103,13 +103,12 @@ void main() {
         await tester.tap(find.byKey(const Key('roleDropdown')));
         await tester.pumpAndSettle();
 
-        expect(find.text(Role.admin.toHumanReadable()), findsNothing);
-        expect(find.text(Role.volunteer.toHumanReadable()), findsAny);
-        expect(find.text(Role.regionManager.toHumanReadable()), findsAny);
-        expect(
-            find.text(Role.regionRabbitObserver.toHumanReadable()), findsAny);
+        expect(find.text(Role.admin.displayName), findsNothing);
+        expect(find.text(Role.volunteer.displayName), findsAny);
+        expect(find.text(Role.regionManager.displayName), findsAny);
+        expect(find.text(Role.regionRabbitObserver.displayName), findsAny);
 
-        await tester.tap(find.text(Role.regionManager.toHumanReadable()).last);
+        await tester.tap(find.text(Role.regionManager.displayName).last);
         await tester.pumpAndSettle();
 
         expect(find.byKey(const Key('regionDropdown')), findsOneWidget);
@@ -131,7 +130,7 @@ void main() {
         await tester.tap(find.byKey(const Key('roleDropdown')));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text(Role.volunteer.toHumanReadable()).last);
+        await tester.tap(find.text(Role.volunteer.displayName).last);
         await tester.pumpAndSettle();
 
         expect(find.byKey(const Key('regionDropdown')), findsOneWidget);
@@ -157,7 +156,7 @@ void main() {
         await tester.tap(find.byKey(const Key('roleDropdown')));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text(Role.admin.toHumanReadable()).last);
+        await tester.tap(find.text(Role.admin.displayName).last);
         await tester.pumpAndSettle();
 
         expect(find.byKey(const Key('regionDropdown')), findsNothing);
@@ -183,11 +182,10 @@ void main() {
         await tester.tap(find.byKey(const Key('roleDropdown')));
         await tester.pumpAndSettle();
 
-        expect(find.text(Role.admin.toHumanReadable()), findsNothing);
-        expect(find.text(Role.volunteer.toHumanReadable()), findsAny);
-        expect(find.text(Role.regionManager.toHumanReadable()), findsAny);
-        expect(find.text(Role.regionRabbitObserver.toHumanReadable()),
-            findsNothing);
+        expect(find.text(Role.admin.displayName), findsNothing);
+        expect(find.text(Role.volunteer.displayName), findsAny);
+        expect(find.text(Role.regionManager.displayName), findsAny);
+        expect(find.text(Role.regionRabbitObserver.displayName), findsNothing);
       });
     });
 
@@ -249,7 +247,7 @@ void main() {
 
         await tester.tap(find.byKey(const Key('roleDropdown')));
         await tester.pumpAndSettle();
-        await tester.tap(find.text(Role.regionManager.toHumanReadable()).last);
+        await tester.tap(find.text(Role.regionManager.displayName).last);
         await tester.pumpAndSettle();
 
         await tester.tap(find.byType(FilledButton));

@@ -116,24 +116,23 @@ class _RemoveRoleActionState extends State<RemoveRoleAction> {
                                           .checkId(int.parse(widget.userId)))
                                     DropdownMenuEntry(
                                       value: Role.admin,
-                                      label: Role.admin.toHumanReadable(),
+                                      label: Role.admin.displayName,
                                     ),
                                   if (widget.roleInfo.isVolunteer)
                                     DropdownMenuEntry(
                                       value: Role.volunteer,
-                                      label: Role.volunteer.toHumanReadable(),
+                                      label: Role.volunteer.displayName,
                                     ),
                                   if (managerRegions.isNotEmpty)
                                     DropdownMenuEntry(
                                       value: Role.regionManager,
-                                      label:
-                                          Role.regionManager.toHumanReadable(),
+                                      label: Role.regionManager.displayName,
                                     ),
                                   if (observerRegions.isNotEmpty)
                                     DropdownMenuEntry(
                                       value: Role.regionRabbitObserver,
-                                      label: Role.regionRabbitObserver
-                                          .toHumanReadable(),
+                                      label:
+                                          Role.regionRabbitObserver.displayName,
                                     ),
                                 ],
                               ),

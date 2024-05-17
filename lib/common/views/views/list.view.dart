@@ -10,22 +10,22 @@ class AppListView<T> extends StatefulWidget {
     required this.hasReachedMax,
     required this.onRefresh,
     required this.onFetch,
-    this.emptyMessage = 'Brak wyników.',
+    String? emptyMessage,
     required this.itemBuilder,
-  });
+  }) : emptyMessage = emptyMessage ?? 'Brak wyników.';
 
   final List<T> items;
   final bool hasReachedMax;
   final Future<void> Function() onRefresh;
   final void Function() onFetch;
   final String emptyMessage;
-  final Widget Function(T) itemBuilder;
+  final Widget Function(T item) itemBuilder;
 
   @override
-  State<AppListView> createState() => _AppListViewState();
+  State<AppListView> createState() => _AppListViewState<T>();
 }
 
-class _AppListViewState extends State<AppListView> {
+class _AppListViewState<T> extends State<AppListView<T>> {
   final _scrollController = ScrollController();
   Timer? _timer;
 

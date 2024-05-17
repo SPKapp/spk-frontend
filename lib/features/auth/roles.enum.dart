@@ -11,7 +11,7 @@ enum Role {
   static Role fromJson(jsonValue) =>
       Role.values.firstWhere((element) => jsonValue == element.jsonValue);
 
-  String toHumanReadable() {
+  String get displayName {
     switch (this) {
       case Role.admin:
         return 'Administrator';
