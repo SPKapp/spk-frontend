@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/search.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 
@@ -30,12 +31,12 @@ void main() {
       usersSearchBloc.close();
     });
 
-    test('initial state is UsersSearchInitial', () {
-      expect(usersSearchBloc.state, const UsersSearchInitial());
+    test('initial state is SearchInitial<User>', () {
+      expect(usersSearchBloc.state, SearchInitial<User>());
     });
 
-    blocTest<UsersSearchBloc, UsersSearchState>(
-      'emits [UsersSearchSuccess] when query is changed successfully',
+    blocTest<UsersSearchBloc, SearchState>(
+      'emits [SearchSuccess<User>] when query is changed successfully',
       setUp: () {
         when(() => mockUsersRepository.findAll(
             const FindUsersArgs(
@@ -48,12 +49,14 @@ void main() {
             ));
       },
       build: () => usersSearchBloc,
-      act: (bloc) => bloc.add(const UsersSearchRefresh('search query')),
+      act: (bloc) => bloc.add(const RefreshSearch('search query')),
       expect: () => [
-        const UsersSearchInitial(),
-        const UsersSearchSuccess(
+        SearchInitial<User>(
           query: 'search query',
-          users: [],
+        ),
+        SearchSuccess<User>(
+          query: 'search query',
+          data: const [],
           hasReachedMax: true,
           totalCount: 0,
         ),
@@ -68,8 +71,8 @@ void main() {
       },
     );
 
-    blocTest<UsersSearchBloc, UsersSearchState>(
-      'emits [UsersSearchFailure] when query change fails',
+    blocTest<UsersSearchBloc, SearchState>(
+      'emits [SearchFailure<User>] when query change fails',
       setUp: () {
         when(() => mockUsersRepository.findAll(
             const FindUsersArgs(
@@ -79,10 +82,17 @@ void main() {
             true)).thenThrow(Exception('Error'));
       },
       build: () => usersSearchBloc,
-      act: (bloc) => bloc.add(const UsersSearchRefresh('search query')),
+      act: (bloc) => bloc.add(const RefreshSearch('search query')),
       expect: () => [
-        const UsersSearchInitial(),
-        const UsersSearchFailure(),
+        SearchInitial<User>(
+          query: 'search query',
+        ),
+        SearchFailure<User>(
+          query: 'search query',
+          data: const [],
+          hasReachedMax: false,
+          totalCount: 0,
+        ),
       ],
       verify: (_) {
         verify(() => mockUsersRepository.findAll(
@@ -104,8 +114,8 @@ void main() {
       User(id: '4', firstName: 'Jacob', lastName: 'Smith'),
     ];
 
-    blocTest<UsersSearchBloc, UsersSearchState>(
-      'emits [UsersSearchSuccess] when fetching next page successfully',
+    blocTest<UsersSearchBloc, SearchState>(
+      'emits [SearchSuccess<User>] when fetching next page successfully',
       setUp: () {
         when(() => mockUsersRepository.findAll(
             const FindUsersArgs(
@@ -115,17 +125,17 @@ void main() {
             false)).thenAnswer((_) async => const Paginated(data: result2));
       },
       build: () => usersSearchBloc,
-      act: (bloc) => bloc.add(const UsersSearchFetch()),
-      seed: () => const UsersSearchSuccess(
+      act: (bloc) => bloc.add(const FetchSearch()),
+      seed: () => SearchSuccess<User>(
         query: 'search query',
-        users: result1,
+        data: result1,
         hasReachedMax: false,
         totalCount: 4,
       ),
       expect: () => [
-        UsersSearchSuccess(
+        SearchSuccess<User>(
           query: 'search query',
-          users: result1 + result2,
+          data: result1 + result2,
           hasReachedMax: true,
           totalCount: 4,
         ),
@@ -140,8 +150,8 @@ void main() {
       },
     );
 
-    blocTest<UsersSearchBloc, UsersSearchState>(
-      'emits [UsersSearchFailure] when fetching next page fails',
+    blocTest<UsersSearchBloc, SearchState>(
+      'emits [SearchFailure<User>] when fetching next page fails',
       setUp: () {
         when(() => mockUsersRepository.findAll(
             const FindUsersArgs(
@@ -151,17 +161,17 @@ void main() {
             false)).thenThrow(Exception('Error'));
       },
       build: () => usersSearchBloc,
-      act: (bloc) => bloc.add(const UsersSearchFetch()),
-      seed: () => const UsersSearchSuccess(
+      act: (bloc) => bloc.add(const FetchSearch()),
+      seed: () => SearchSuccess<User>(
         query: 'search query',
-        users: result1,
+        data: result1,
         hasReachedMax: false,
         totalCount: 4,
       ),
       expect: () => [
-        const UsersSearchFailure(
+        SearchFailure<User>(
           query: 'search query',
-          users: result1,
+          data: result1,
           hasReachedMax: false,
           totalCount: 4,
         ),
@@ -176,13 +186,13 @@ void main() {
       },
     );
 
-    blocTest<UsersSearchBloc, UsersSearchState>(
-        'emits [UsersSearchSuccess] when loadMore is called and hasReachedMax is true',
+    blocTest<UsersSearchBloc, SearchState>(
+        'emits [SearchSuccess<User>] when loadMore is called and hasReachedMax is true',
         build: () => usersSearchBloc,
-        act: (bloc) => bloc.add(const UsersSearchFetch()),
-        seed: () => const UsersSearchSuccess(
+        act: (bloc) => bloc.add(const FetchSearch()),
+        seed: () => SearchSuccess<User>(
               query: 'search query',
-              users: result1,
+              data: result1,
               hasReachedMax: true,
               totalCount: 3,
             ),
@@ -191,12 +201,12 @@ void main() {
           verifyZeroInteractions(mockUsersRepository);
         });
 
-    blocTest<UsersSearchBloc, UsersSearchState>(
-      'emits [UsersSearchInitial] when clear event is added',
+    blocTest<UsersSearchBloc, SearchState>(
+      'emits [SearchInitial<User>] when clear event is added',
       build: () => usersSearchBloc,
-      act: (bloc) => bloc.add(const UsersSearchClear()),
+      act: (bloc) => bloc.add(const ClearSearch()),
       expect: () => [
-        const UsersSearchInitial(),
+        SearchInitial<User>(),
       ],
     );
   });

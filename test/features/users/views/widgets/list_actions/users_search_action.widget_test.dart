@@ -1,8 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
-
 import 'package:flutter/material.dart';
+
+import 'package:spk_app_frontend/common/bloc/interfaces/search.bloc.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/common/views/widgets/actions.dart';
 
@@ -11,7 +12,7 @@ import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/views/widgets/list_actions.dart';
 
-class MockUsersSearchBloc extends MockBloc<UsersSearchEvent, UsersSearchState>
+class MockUsersSearchBloc extends MockBloc<SearchEvent, SearchState<User>>
     implements UsersSearchBloc {}
 
 void main() {
@@ -36,15 +37,15 @@ void main() {
     testWidgets('renders SearchAction widget', (WidgetTester tester) async {
       await tester.pumpWidget(buildWidget());
 
-      expect(find.byType(SearchAction), findsOneWidget);
+      expect(find.byType(SimpleSearchAction), findsOneWidget);
     });
 
     testWidgets('should display nothing when initial state',
         (WidgetTester tester) async {
-      when(() => usersSearchBloc.state).thenReturn(const UsersSearchInitial());
+      when(() => usersSearchBloc.state).thenReturn(SearchInitial());
 
       await tester.pumpWidget(buildWidget());
-      await tester.tap(find.byType(SearchAction));
+      await tester.tap(find.byType(SimpleSearchAction));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('searchInitial')), findsOneWidget);
@@ -54,10 +55,10 @@ void main() {
 
     testWidgets('should display FailureView when failure state',
         (WidgetTester tester) async {
-      when(() => usersSearchBloc.state).thenReturn(const UsersSearchFailure());
+      when(() => usersSearchBloc.state).thenReturn(SearchFailure());
 
       await tester.pumpWidget(buildWidget());
-      await tester.tap(find.byType(SearchAction));
+      await tester.tap(find.byType(SimpleSearchAction));
       await tester.pumpAndSettle();
 
       expect(find.byType(FailureView), findsOneWidget);
@@ -65,15 +66,15 @@ void main() {
 
     testWidgets('should display AppListView when success state',
         (WidgetTester tester) async {
-      when(() => usersSearchBloc.state).thenReturn(const UsersSearchSuccess(
+      when(() => usersSearchBloc.state).thenReturn(SearchSuccess(
         query: 'query',
-        users: [],
+        data: const [],
         totalCount: 0,
         hasReachedMax: false,
       ));
 
       await tester.pumpWidget(buildWidget());
-      await tester.tap(find.byType(SearchAction));
+      await tester.tap(find.byType(SimpleSearchAction));
       await tester.pumpAndSettle();
 
       expect(find.byType(AppListView<User>), findsOneWidget);

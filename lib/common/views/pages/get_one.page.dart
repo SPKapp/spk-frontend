@@ -17,14 +17,17 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
     required this.builder,
     required this.defaultTitle,
     this.titleBuilder,
-    required this.errorInfo,
+    this.errorInfo,
     this.errorInfoBuilder,
     this.actions,
     this.actionsBuilder,
     this.persistentFooterButtons,
     this.persistentFooterButtonsBuilder,
     this.refreshable = true,
-  });
+  }) : assert(
+          errorInfo != null || errorInfoBuilder != null,
+          'errorInfo or errorInfoBuilder must be provided',
+        );
 
   /// The builder function to build the view with the fetched data
   final Widget Function(BuildContext context, T data) builder;
@@ -37,8 +40,9 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
   final String Function(BuildContext context, T data)? titleBuilder;
 
   /// The error info to display in the view
-  /// If errorInfoBuilder is provided, this will be ignored in fetched state
-  final String errorInfo;
+  /// If errorInfoBuilder is provided, this will be ignored
+  /// else this must be provided
+  final String? errorInfo;
 
   /// The builder function to build the error info with the current error code from cubit
   final String Function(BuildContext context, String errorCode)?
@@ -79,7 +83,7 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
             body = FailureView(
               message: errorInfoBuilder != null
                   ? errorInfoBuilder!(context, state.code)
-                  : errorInfo,
+                  : errorInfo!,
               onPressed: () => context.read<Cubit>().fetch(),
             );
           case GetOneSuccess():

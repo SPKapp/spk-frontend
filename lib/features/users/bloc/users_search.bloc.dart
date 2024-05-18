@@ -1,100 +1,41 @@
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
-import 'package:spk_app_frontend/common/bloc/debounce.transformer.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/search.bloc.interface.dart';
+import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
 
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
-part 'users_search.event.dart';
-part 'users_search.state.dart';
-
-/// A bloc that manages the state of a list with users.
+/// This bloc is used to search for users
 ///
-/// Available functions:
-/// - [UsersSearchFetch] - fetches the next page of users
-/// - [UsersSearchRefresh] - restarts fetching the users with the given name
-/// - [UsersSearchClear] - clears the search query
-///
-/// Available states:
-/// - [UsersSearchInitial] - initial state
-/// - [UsersSearchSuccess] - the users have been fetched successfully
-/// - [UsersSearchFailure] - an error occurred while fetching the users
-///
-class UsersSearchBloc extends Bloc<UsersSearchEvent, UsersSearchState> {
+/// It uses the [IUsersRepository] to fetch the users
+class UsersSearchBloc extends ISearchBloc<User> {
   UsersSearchBloc({
     required IUsersRepository usersRepository,
     required FindUsersArgs args,
   })  : _usersRepository = usersRepository,
-        _args = args,
-        super(const UsersSearchInitial()) {
-    on<UsersSearchRefresh>(
-      _onRefresh,
-      transformer: debounceTransformer(const Duration(milliseconds: 500)),
-    );
-
-    on<UsersSearchFetch>(
-      _onFetchNextPage,
-      transformer: debounceTransformer(const Duration(milliseconds: 500)),
-    );
-
-    on<UsersSearchClear>(_onClear);
-  }
+        _args = args;
 
   final IUsersRepository _usersRepository;
-  FindUsersArgs _args;
+  final FindUsersArgs _args;
 
-  void _onFetchNextPage(
-    UsersSearchFetch event,
-    Emitter<UsersSearchState> emit,
-  ) async {
-    if (state.hasReachedMax) return;
-
-    if (_args.name == null || _args.name!.isEmpty) {
-      emit(const UsersSearchInitial());
-      return;
-    }
-
-    try {
-      final paginatedResult = await _usersRepository.findAll(
-        _args.copyWith(offset: () => state.users.length),
-        state.totalCount == 0,
-      );
-
-      final totalCount = paginatedResult.totalCount ?? state.totalCount;
-      final newData = state.users + paginatedResult.data;
-
-      emit(UsersSearchSuccess(
-        query: _args.name ?? '',
-        users: newData,
-        hasReachedMax: newData.length >= totalCount,
-        totalCount: totalCount,
-      ));
-    } catch (_) {
-      emit(UsersSearchFailure(
-        query: state.query,
-        users: state.users,
-        hasReachedMax: state.hasReachedMax,
-        totalCount: state.totalCount,
-      ));
-    }
+  @override
+  @visibleForOverriding
+  Future<Paginated<User>> fetchData(bool getTotalCount) async {
+    return await _usersRepository.findAll(
+      _args.copyWith(
+        offset: () => state.data.length,
+        name: () => state.query,
+      ),
+      getTotalCount,
+    );
   }
 
-  void _onRefresh(
-    UsersSearchRefresh event,
-    Emitter<UsersSearchState> emit,
-  ) {
-    _args = _args.copyWith(name: () => event.query, offset: () => 0);
-    emit(const UsersSearchInitial());
-    add(const UsersSearchFetch());
-  }
-
-  void _onClear(
-    UsersSearchClear event,
-    Emitter<UsersSearchState> emit,
-  ) {
-    _args = _args.copyWith(name: () => '', offset: () => 0);
-    emit(const UsersSearchInitial());
+  @override
+  @visibleForOverriding
+  String? createErrorCode(Object error) {
+    logger.error('Error while fetching users', error: error);
+    return null;
   }
 }

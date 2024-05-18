@@ -1,96 +1,56 @@
-import 'package:flutter_test/flutter_test.dart';
-
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/search.bloc.interface.dart';
+import 'package:spk_app_frontend/common/views/widgets/actions.dart';
 
-import 'package:spk_app_frontend/common/views/widgets/actions/search_action.widget.dart';
+class MockGetListbloc extends MockBloc<SearchEvent, SearchState<String>>
+    implements ISearchBloc<String> {}
 
 void main() {
   group(SearchAction, () {
-    testWidgets('renders IconButton with search icon',
+    late ISearchBloc<String> searchBloc;
+
+    setUp(() {
+      searchBloc = MockGetListbloc();
+    });
+
+    Widget buildWidget(SearchAction<String, ISearchBloc<String>> child) {
+      return MaterialApp(
+        home: BlocProvider.value(
+          value: searchBloc,
+          child: Scaffold(
+            body: child,
+          ),
+        ),
+      );
+    }
+
+    testWidgets('renders SimpleSearchAction widget',
         (WidgetTester tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              actions: [
-                SearchAction(
-                  generateResults: (context, query) => Container(),
-                  onClear: () {},
-                ),
-              ],
-            ),
+        buildWidget(
+          SearchAction<String, ISearchBloc<String>>(
+            errorInfo: 'Error',
+            itemBuilder: (context, item) => Text(item),
           ),
         ),
       );
 
-      expect(find.byIcon(Icons.search), findsOneWidget);
+      expect(find.byType(SimpleSearchAction), findsOneWidget);
     });
 
-    testWidgets('calls showSearch when IconButton is pressed',
+    testWidgets('calls onClear when clear button is pressed',
         (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              actions: [
-                SearchAction(
-                  generateResults: (context, query) => Container(
-                    key: const Key('testKey'),
-                  ),
-                  onClear: () {},
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.byIcon(Icons.search));
-      await tester.pumpAndSettle();
-
-      expect(find.byKey(const Key('testKey')), findsOneWidget);
-    });
-
-    testWidgets('renders IconButton with clear icon',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              actions: [
-                SearchAction(
-                  generateResults: (context, query) => Container(),
-                  onClear: () {},
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.byIcon(Icons.search));
-      await tester.pumpAndSettle();
-
-      expect(find.byIcon(Icons.clear), findsOneWidget);
-    });
-
-    testWidgets('calls onClear when clear IconButton is pressed',
-        (WidgetTester tester) async {
-      bool onClearCalled = false;
+      when(() => searchBloc.state).thenReturn(SearchInitial());
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              actions: [
-                SearchAction(
-                  generateResults: (context, query) => Container(),
-                  onClear: () {
-                    onClearCalled = true;
-                  },
-                ),
-              ],
-            ),
+        buildWidget(
+          SearchAction<String, ISearchBloc<String>>(
+            errorInfo: 'Error',
+            itemBuilder: (context, item) => Text(item),
           ),
         ),
       );
@@ -101,28 +61,38 @@ void main() {
       await tester.tap(find.byIcon(Icons.clear));
       await tester.pumpAndSettle();
 
-      expect(onClearCalled, isTrue);
+      verify(() => searchBloc.add(const ClearSearch())).called(1);
     });
 
-    testWidgets('calls close and onClear when back IconButton is pressed',
+    testWidgets('calls RefreshSearch when query changes',
         (WidgetTester tester) async {
-      bool onClearCalled = false;
+      when(() => searchBloc.state).thenReturn(SearchInitial());
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              actions: [
-                SearchAction(
-                  generateResults: (context, query) => Container(
-                    key: const Key('testKey'),
-                  ),
-                  onClear: () {
-                    onClearCalled = true;
-                  },
-                ),
-              ],
-            ),
+        buildWidget(
+          SearchAction<String, ISearchBloc<String>>(
+            errorInfo: 'Error',
+            itemBuilder: (context, item) => Text(item),
+          ),
+        ),
+      );
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField), 'test');
+      await tester.pumpAndSettle();
+
+      verify(() => searchBloc.add(const RefreshSearch('test'))).called(1);
+    });
+
+    testWidgets('renders SearchInitial state', (WidgetTester tester) async {
+      when(() => searchBloc.state).thenReturn(SearchInitial());
+
+      await tester.pumpWidget(
+        buildWidget(
+          SearchAction<String, ISearchBloc<String>>(
+            errorInfo: 'Error',
+            itemBuilder: (context, item) => Text(item),
           ),
         ),
       );
@@ -130,84 +100,17 @@ void main() {
       await tester.tap(find.byIcon(Icons.search));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pumpAndSettle();
-
-      expect(onClearCalled, isTrue);
-      expect(find.byKey(const Key('testKey')), findsNothing);
+      expect(find.byKey(const Key('searchInitial')), findsOneWidget);
     });
 
-    testWidgets(
-        'calls generateResults with correct empty query in buildSuggestions',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              actions: [
-                SearchAction(
-                  generateResults: (context, query) => Container(
-                    key: Key(query.toString()),
-                  ),
-                  onClear: () {},
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.byIcon(Icons.search));
-      await tester.pumpAndSettle();
-
-      expect(find.byKey(const Key('')), findsOneWidget);
-    });
-
-    testWidgets('calls onClear when clear IconButton is pressed',
-        (WidgetTester tester) async {
-      bool onClearCalled = false;
+    testWidgets('renders SearchFailure state', (WidgetTester tester) async {
+      when(() => searchBloc.state).thenReturn(SearchFailure(code: '500'));
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              actions: [
-                SearchAction(
-                  generateResults: (context, query) => Container(),
-                  onClear: () {
-                    onClearCalled = true;
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.byIcon(Icons.search));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byIcon(Icons.clear));
-      await tester.pumpAndSettle();
-
-      expect(onClearCalled, isTrue);
-    });
-
-    testWidgets('calls generateResults with correct query in buildSuggestions',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            appBar: AppBar(
-              actions: [
-                SearchAction(
-                  generateResults: (context, query) => Container(
-                    key: Key(query.toString()),
-                  ),
-                  onClear: () {},
-                ),
-              ],
-            ),
+        buildWidget(
+          SearchAction<String, ISearchBloc<String>>(
+            errorInfo: 'Error',
+            itemBuilder: (context, item) => Text(item),
           ),
         ),
       );
@@ -218,7 +121,70 @@ void main() {
       await tester.enterText(find.byType(TextField), 'test');
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const Key('test')), findsAny);
+      expect(find.text('Error'), findsOneWidget);
+    });
+
+    testWidgets('renders SearchFailure state errorInfoBuilder',
+        (WidgetTester tester) async {
+      when(() => searchBloc.state).thenReturn(SearchFailure(code: '500'));
+
+      await tester.pumpWidget(
+        buildWidget(
+          SearchAction<String, ISearchBloc<String>>(
+            errorInfoBuilder: (context, errorCode) {
+              return 'Error $errorCode';
+            },
+            itemBuilder: (context, item) => Text(item),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField), 'test');
+      await tester.pumpAndSettle();
+
+      verify(() => searchBloc.add(const RefreshSearch('test'))).called(1);
+
+      expect(find.text('Error 500'), findsOneWidget);
+    });
+
+    test('should throw an error if errorInfo and errorInfoBuilder are null',
+        () {
+      expect(
+        () => SearchAction<String, ISearchBloc<String>>(
+          itemBuilder: (context, item) => Text(item),
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    testWidgets('renders SearchSuccess state', (WidgetTester tester) async {
+      when(() => searchBloc.state).thenReturn(SearchSuccess(
+        query: 'Item',
+        data: const ['Item 1', 'Item 2'],
+        hasReachedMax: true,
+        totalCount: 2,
+      ));
+
+      await tester.pumpWidget(
+        buildWidget(
+          SearchAction<String, ISearchBloc<String>>(
+            errorInfo: 'Error',
+            itemBuilder: (context, item) => Text(item),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byIcon(Icons.search));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField), 'Item');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Item 1'), findsOneWidget);
+      expect(find.text('Item 2'), findsOneWidget);
     });
   });
 }

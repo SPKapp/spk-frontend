@@ -15,21 +15,25 @@ class GetListPage<T extends Object, Args extends Object,
   const GetListPage({
     super.key,
     required this.title,
-    required this.errorInfo,
+    this.errorInfo,
     this.errorInfoBuilder,
     this.actions = const [],
     this.filterBuilder,
     this.floatingActionButton,
     this.emptyMessage,
     required this.itemBuilder,
-  });
+  }) : assert(
+          errorInfo != null || errorInfoBuilder != null,
+          'errorInfo or errorInfoBuilder must be provided',
+        );
 
   /// The Title to display in the app bar
   final String title;
 
   /// The error info to display in the view
-  /// If errorInfoBuilder is provided, this will be ignored in fetched state
-  final String errorInfo;
+  /// If errorInfoBuilder is provided, this will be ignored
+  /// else this must be provided
+  final String? errorInfo;
 
   /// The builder function to build the error info with the current error code from cubit
   final String Function(BuildContext context, String errorCode)?
@@ -64,7 +68,7 @@ class GetListPage<T extends Object, Args extends Object,
               content: Text(
                 errorInfoBuilder != null
                     ? errorInfoBuilder!(context, (state as GetListFailure).code)
-                    : errorInfo,
+                    : errorInfo!,
               ),
             ),
           );
@@ -83,7 +87,7 @@ class GetListPage<T extends Object, Args extends Object,
             body = FailureView(
               message: errorInfoBuilder != null
                   ? errorInfoBuilder!(context, state.code)
-                  : errorInfo,
+                  : errorInfo!,
               onPressed: () => context.read<Bloc>().add(const FetchList()),
             );
           case GetListSuccess():
@@ -100,9 +104,7 @@ class GetListPage<T extends Object, Args extends Object,
                 context.read<Bloc>().add(const FetchList());
               },
               emptyMessage: emptyMessage,
-              itemBuilder: (T user) {
-                return itemBuilder(context, user);
-              },
+              itemBuilder: (T item) => itemBuilder(context, item),
             );
         }
 

@@ -29,7 +29,7 @@ class RabbitsSearchAction extends StatelessWidget {
                 args: args,
               ),
       child: Builder(builder: (context) {
-        return SearchAction(
+        return SimpleSearchAction(
           onClear: () => context.read<RabbitsSearchBloc>().add(
                 const RabbitsSearchClear(),
               ),

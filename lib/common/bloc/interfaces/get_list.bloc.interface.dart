@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meta/meta.dart';
 import 'package:spk_app_frontend/common/bloc/debounce.transformer.dart';
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/common/services/logger.service.dart';
@@ -9,7 +9,7 @@ import 'package:spk_app_frontend/common/services/logger.service.dart';
 ///
 /// Available functions:
 /// - [FetchList] - fetches the next page of objects - this function is debounced
-/// - [RefreshList] - restarts fetching the objects with the given arguments
+/// - [RefreshList] - restarts fetching the objects with the given arguments, if no arguments are provided it will use the previous arguments
 ///
 /// Available states:
 /// - [GetListInitial] - initial state
@@ -20,7 +20,6 @@ abstract class IGetListBloc<T extends Object, Args extends Object>
     extends Bloc<GetListEvent, GetListState<T>> {
   IGetListBloc({
     required Args args,
-    required this.fetchError,
   })  : _args = args,
         super(GetListInitial<T>()) {
     on<FetchList>(
@@ -31,7 +30,6 @@ abstract class IGetListBloc<T extends Object, Args extends Object>
   }
 
   final logger = LoggerService();
-  String fetchError;
 
   Args _args;
   Args get args => _args;
@@ -41,20 +39,12 @@ abstract class IGetListBloc<T extends Object, Args extends Object>
     if (state.hasReachedMax) return;
 
     try {
-      logger.info('Fetching list of $T objects');
       final paginatedResult =
           await fetchData(state.data.length, state.totalCount == 0);
-      logger.info('Fetched list of ${paginatedResult.data.length} $T objects');
 
       final totalCount = paginatedResult.totalCount ?? state.totalCount;
 
-      logger.info(
-          'Type of paginatedResult.data: ${paginatedResult.data.runtimeType}');
-      logger.info('Type of state.data: ${state.data.runtimeType}');
-
       final newData = state.data + paginatedResult.data;
-
-      logger.info('Total count of $T objects: $totalCount');
 
       emit(GetListSuccess(
         data: newData,
@@ -81,7 +71,7 @@ abstract class IGetListBloc<T extends Object, Args extends Object>
   }
 
   /// Fetches the data from the server.
-  @protected
+  @visibleForOverriding
   Future<Paginated<T>> fetchData(int offset, bool getTotalCount);
 
   /// Creates an error code from the given error.
@@ -98,6 +88,7 @@ abstract class IGetListBloc<T extends Object, Args extends Object>
     add(const FetchList());
   }
 }
+
 // ***************************
 // ********** Event **********
 // ***************************

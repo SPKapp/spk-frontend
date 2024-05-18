@@ -37,7 +37,7 @@ void main() {
     testWidgets('renders SearchAction widget', (WidgetTester tester) async {
       await tester.pumpWidget(buildWidget());
 
-      expect(find.byType(SearchAction), findsOneWidget);
+      expect(find.byType(SimpleSearchAction), findsOneWidget);
     });
 
     testWidgets('should display nothing when initial state',
@@ -45,7 +45,7 @@ void main() {
       when(() => rabbitsSearchBloc.state).thenReturn(RabbitsSearchInitial());
 
       await tester.pumpWidget(buildWidget());
-      await tester.tap(find.byType(SearchAction));
+      await tester.tap(find.byType(SimpleSearchAction));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('searchInitial')), findsOneWidget);
@@ -58,7 +58,7 @@ void main() {
       when(() => rabbitsSearchBloc.state).thenReturn(RabbitsSearchFailure());
 
       await tester.pumpWidget(buildWidget());
-      await tester.tap(find.byType(SearchAction));
+      await tester.tap(find.byType(SimpleSearchAction));
       await tester.pumpAndSettle();
 
       expect(find.byType(FailureView), findsOneWidget);
@@ -76,7 +76,7 @@ void main() {
       ));
 
       await tester.pumpWidget(buildWidget());
-      await tester.tap(find.byType(SearchAction));
+      await tester.tap(find.byType(SimpleSearchAction));
       await tester.pumpAndSettle();
 
       expect(find.byType(AppListView<Rabbit>), findsOneWidget);

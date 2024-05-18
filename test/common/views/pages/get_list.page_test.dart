@@ -219,5 +219,20 @@ void main() {
 
       verify(() => getListPage.add(const RefreshList('args'))).called(1);
     });
+
+    testWidgets(
+        'should throw an error when errorInfo and errorInfoBuilder '
+        'are not provided', (WidgetTester tester) async {
+      when(() => getListPage.state)
+          .thenReturn(GetListFailure<String>(code: '500'));
+
+      expect(
+        () => GetListPage<String, String, IGetListBloc<String, String>>(
+          title: 'Default Title',
+          itemBuilder: (context, item) => Text(item, key: const Key('testKey')),
+        ),
+        throwsAssertionError,
+      );
+    });
   });
 }

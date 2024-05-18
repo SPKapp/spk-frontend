@@ -274,5 +274,17 @@ void main() {
 
       expect(find.byType(BackButton), findsOneWidget);
     });
+
+    testWidgets(
+        'should throw assertion errorInfo and errorInfoBuilder are null',
+        (WidgetTester tester) async {
+      expect(
+        () => GetOnePage<String, IGetOneCubit<String>>(
+          builder: (context, data) => Text(data),
+          defaultTitle: 'Default Title',
+        ),
+        throwsAssertionError,
+      );
+    });
   });
 }
