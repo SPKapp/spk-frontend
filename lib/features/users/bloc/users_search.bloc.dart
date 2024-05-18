@@ -22,13 +22,13 @@ class UsersSearchBloc extends ISearchBloc<User> {
 
   @override
   @visibleForOverriding
-  Future<Paginated<User>> fetchData(bool getTotalCount) async {
+  Future<Paginated<User>> fetchData() async {
     return await _usersRepository.findAll(
       _args.copyWith(
         offset: () => state.data.length,
         name: () => state.query,
       ),
-      getTotalCount,
+      state.totalCount == 0,
     );
   }
 

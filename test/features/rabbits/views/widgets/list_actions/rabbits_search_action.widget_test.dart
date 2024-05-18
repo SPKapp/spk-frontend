@@ -3,6 +3,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/search.bloc.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/common/views/widgets/actions.dart';
 
@@ -12,7 +13,7 @@ import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/list_actions/rabbits_search_action.widget.dart';
 
 class MockRabbitsSearchBloc
-    extends MockBloc<RabbitsSearchEvent, RabbitsSearchState>
+    extends MockBloc<SearchEvent, SearchState<RabbitGroup>>
     implements RabbitsSearchBloc {}
 
 void main() {
@@ -42,7 +43,7 @@ void main() {
 
     testWidgets('should display nothing when initial state',
         (WidgetTester tester) async {
-      when(() => rabbitsSearchBloc.state).thenReturn(RabbitsSearchInitial());
+      when(() => rabbitsSearchBloc.state).thenReturn(SearchInitial());
 
       await tester.pumpWidget(buildWidget());
       await tester.tap(find.byType(SimpleSearchAction));
@@ -55,7 +56,7 @@ void main() {
 
     testWidgets('should display FailureView when failure state',
         (WidgetTester tester) async {
-      when(() => rabbitsSearchBloc.state).thenReturn(RabbitsSearchFailure());
+      when(() => rabbitsSearchBloc.state).thenReturn(SearchFailure());
 
       await tester.pumpWidget(buildWidget());
       await tester.tap(find.byType(SimpleSearchAction));
@@ -68,9 +69,9 @@ void main() {
 
     testWidgets('should display AppListView<Rabbit> when success state',
         (WidgetTester tester) async {
-      when(() => rabbitsSearchBloc.state).thenReturn(RabbitsSearchSuccess(
+      when(() => rabbitsSearchBloc.state).thenReturn(SearchSuccess(
         query: 'query',
-        rabbitGroups: const [],
+        data: const [],
         totalCount: 0,
         hasReachedMax: false,
       ));
@@ -79,7 +80,7 @@ void main() {
       await tester.tap(find.byType(SimpleSearchAction));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AppListView<Rabbit>), findsOneWidget);
+      expect(find.text('Brak wyników.'), findsOneWidget);
       expect(find.byKey(const Key('searchInitial')), findsNothing);
       expect(find.byType(FailureView), findsNothing);
     });

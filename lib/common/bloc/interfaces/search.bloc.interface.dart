@@ -32,7 +32,7 @@ abstract class ISearchBloc<T extends Object>
     }
 
     try {
-      final paginatedResult = await fetchData(state.totalCount == 0);
+      final paginatedResult = await fetchData();
 
       final totalCount = paginatedResult.totalCount ?? state.totalCount;
 
@@ -67,7 +67,7 @@ abstract class ISearchBloc<T extends Object>
 
   /// Fetches the data from the server.
   @visibleForOverriding
-  Future<Paginated<T>> fetchData(bool getTotalCount);
+  Future<Paginated<T>> fetchData();
 
   /// Creates an error code from the given error.
   ///

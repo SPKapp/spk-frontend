@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/search.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 
@@ -29,12 +30,12 @@ void main() {
       rabbitsSearchBloc.close();
     });
 
-    test('initial state is RabbitsSearchInitial', () {
-      expect(rabbitsSearchBloc.state, equals(RabbitsSearchInitial()));
+    test('initial state is SearchInitial<RabbitGroup>', () {
+      expect(rabbitsSearchBloc.state, equals(SearchInitial<RabbitGroup>()));
     });
 
-    blocTest<RabbitsSearchBloc, RabbitsSearchState>(
-        'emits [RabbitsSearchSuccess] when query is changed successfully',
+    blocTest<RabbitsSearchBloc, SearchState>(
+        'emits [SearchSuccess<RabbitGroup>] when query is changed successfully',
         setUp: () {
           when(() => rabbitsRepository.findAll(any(), any()))
               .thenAnswer((_) async => const Paginated(
@@ -43,12 +44,14 @@ void main() {
                   ));
         },
         build: () => rabbitsSearchBloc,
-        act: (bloc) => bloc.add(const RabbitsSearchRefresh('search query')),
+        act: (bloc) => bloc.add(const RefreshSearch('search query')),
         expect: () => [
-              RabbitsSearchInitial(),
-              RabbitsSearchSuccess(
+              SearchInitial<RabbitGroup>(
                 query: 'search query',
-                rabbitGroups: const [],
+              ),
+              SearchSuccess<RabbitGroup>(
+                query: 'search query',
+                data: const [],
                 hasReachedMax: true,
                 totalCount: 0,
               ),
@@ -57,18 +60,22 @@ void main() {
           verify(() => rabbitsRepository.findAll(any(), true)).called(1);
         });
 
-    blocTest<RabbitsSearchBloc, RabbitsSearchState>(
-      'emits [RabbitsSearchFailure] when query is changed and an error occurs',
+    blocTest<RabbitsSearchBloc, SearchState>(
+      'emits [SearchFailure<RabbitGroup>] when query is changed and an error occurs',
       setUp: () {
         when(
           () => rabbitsRepository.findAll(any(), any()),
         ).thenThrow(Exception());
       },
       build: () => rabbitsSearchBloc,
-      act: (bloc) => bloc.add(const RabbitsSearchRefresh('search query')),
+      act: (bloc) => bloc.add(const RefreshSearch('search query')),
       expect: () => [
-        RabbitsSearchInitial(),
-        RabbitsSearchFailure(),
+        SearchInitial<RabbitGroup>(
+          query: 'search query',
+        ),
+        SearchFailure<RabbitGroup>(
+          query: 'search query',
+        ),
       ],
       verify: (_) {
         verify(() => rabbitsRepository.findAll(any(), true)).called(1);
@@ -114,24 +121,24 @@ void main() {
       ],
     );
 
-    blocTest<RabbitsSearchBloc, RabbitsSearchState>(
-      'emits [RabbitsSearchSuccess] when loadMore is called successfully',
+    blocTest<RabbitsSearchBloc, SearchState>(
+      'emits [SearchSuccess<RabbitGroup>] when loadMore is called successfully',
       setUp: () {
         when(() => rabbitsRepository.findAll(any(), any()))
             .thenAnswer((_) async => const Paginated(data: [rabbitGroup2]));
       },
       build: () => rabbitsSearchBloc,
-      act: (bloc) => bloc.add(const RabbitsSearchFetch()),
-      seed: () => RabbitsSearchSuccess(
+      act: (bloc) => bloc.add(const FetchSearch()),
+      seed: () => SearchSuccess<RabbitGroup>(
         query: 'search query',
-        rabbitGroups: const [rabbitGroup1],
+        data: const [rabbitGroup1],
         hasReachedMax: false,
         totalCount: 2,
       ),
       expect: () => [
-        RabbitsSearchSuccess(
+        SearchSuccess<RabbitGroup>(
           query: 'search query',
-          rabbitGroups: const [rabbitGroup1, rabbitGroup2],
+          data: const [rabbitGroup1, rabbitGroup2],
           hasReachedMax: true,
           totalCount: 2,
         ),
@@ -145,24 +152,24 @@ void main() {
       },
     );
 
-    blocTest<RabbitsSearchBloc, RabbitsSearchState>(
-      'emits [RabbitsSearchFailure] when loadMore is called and an error occurs',
+    blocTest<RabbitsSearchBloc, SearchState>(
+      'emits [SearchFailure<RabbitGroup>] when loadMore is called and an error occurs',
       setUp: () {
         when(() => rabbitsRepository.findAll(any(), any()))
             .thenThrow(Exception('Error'));
       },
       build: () => rabbitsSearchBloc,
-      act: (bloc) => bloc.add(const RabbitsSearchFetch()),
-      seed: () => RabbitsSearchSuccess(
+      act: (bloc) => bloc.add(const FetchSearch()),
+      seed: () => SearchSuccess<RabbitGroup>(
         query: 'search query',
-        rabbitGroups: const [rabbitGroup1],
+        data: const [rabbitGroup1],
         hasReachedMax: false,
         totalCount: 2,
       ),
       expect: () => [
-        RabbitsSearchFailure(
+        SearchFailure<RabbitGroup>(
           query: 'search query',
-          rabbitGroups: const [rabbitGroup1],
+          data: const [rabbitGroup1],
           hasReachedMax: false,
           totalCount: 2,
         ),
@@ -176,13 +183,13 @@ void main() {
       },
     );
 
-    blocTest<RabbitsSearchBloc, RabbitsSearchState>(
-      'emits [RabbitsSearchSuccess] when loadMore is called and hasReachedMax is true',
+    blocTest<RabbitsSearchBloc, SearchState>(
+      'emits [SearchSuccess<RabbitGroup>] when loadMore is called and hasReachedMax is true',
       build: () => rabbitsSearchBloc,
-      act: (bloc) => bloc.add(const RabbitsSearchFetch()),
-      seed: () => RabbitsSearchSuccess(
+      act: (bloc) => bloc.add(const FetchSearch()),
+      seed: () => SearchSuccess<RabbitGroup>(
         query: 'search query',
-        rabbitGroups: const [rabbitGroup1],
+        data: const [rabbitGroup1],
         hasReachedMax: true,
         totalCount: 2,
       ),
@@ -192,12 +199,12 @@ void main() {
       },
     );
 
-    blocTest<RabbitsSearchBloc, RabbitsSearchState>(
-      'emits [RabbitsSearchInitial] when clear is called',
+    blocTest<RabbitsSearchBloc, SearchState>(
+      'emits [SearchInitial<RabbitGroup>] when clear is called',
       build: () => rabbitsSearchBloc,
-      act: (bloc) => bloc.add(const RabbitsSearchClear()),
+      act: (bloc) => bloc.add(const ClearSearch()),
       expect: () => [
-        RabbitsSearchInitial(),
+        SearchInitial<RabbitGroup>(),
       ],
     );
   });
