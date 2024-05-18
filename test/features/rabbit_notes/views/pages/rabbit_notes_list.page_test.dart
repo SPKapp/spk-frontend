@@ -4,19 +4,23 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bloc.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/pages/rabbit_notes_list.page.dart';
-import 'package:spk_app_frontend/features/rabbit-notes/views/views/rabbit_notes_list.view.dart';
+import 'package:spk_app_frontend/features/rabbit-notes/views/widgets/list_page/rabbit_notes_list_item.widget.dart';
 
 class MockRabbitNotesListBloc
-    extends MockBloc<RabbitNotesListEvent, RabbitNotesListState>
+    extends MockBloc<GetListEvent, GetListState<RabbitNote>>
     implements RabbitNotesListBloc {}
 
-class MockGoRouter extends Mock implements GoRouter {}
+class MockGoRouter extends Mock implements GoRouter {
+  @override
+  bool canPop() => false;
+}
 
 void main() {
   group(RabbitNotesListPage, () {
@@ -45,8 +49,7 @@ void main() {
     testWidgets(
         'should render initial view when state is RabbitNotesListInitial',
         (WidgetTester tester) async {
-      when(() => rabbitNotesListBloc.state)
-          .thenReturn(const RabbitNotesListInitial());
+      when(() => rabbitNotesListBloc.state).thenReturn(GetListInitial());
 
       await tester.pumpWidget(
         buildWidget(name: 'Test Rabbit'),
@@ -55,14 +58,13 @@ void main() {
       expect(find.text('Test Rabbit'), findsOneWidget);
       expect(find.byType(InitialView), findsOneWidget);
       expect(find.byType(FailureView), findsNothing);
-      expect(find.byType(RabbitNotesListView), findsNothing);
+      expect(find.byType(RabbitNoteListItem), findsNothing);
       expect(find.byKey(const Key('errorSnackBar')), findsNothing);
     });
 
     testWidgets('should render initial view without rabbit name',
         (WidgetTester tester) async {
-      when(() => rabbitNotesListBloc.state)
-          .thenReturn(const RabbitNotesListInitial());
+      when(() => rabbitNotesListBloc.state).thenReturn(GetListInitial());
 
       await tester.pumpWidget(
         buildWidget(name: null),
@@ -71,15 +73,14 @@ void main() {
       expect(find.text('Historia Notatek'), findsOneWidget);
       expect(find.byType(InitialView), findsOneWidget);
       expect(find.byType(FailureView), findsNothing);
-      expect(find.byType(RabbitNotesListView), findsNothing);
+      expect(find.byType(RabbitNoteListItem), findsNothing);
       expect(find.byKey(const Key('errorSnackBar')), findsNothing);
     });
 
     testWidgets(
         'should render failure view when state is RabbitNotesListFailure and rabbit notes are empty',
         (WidgetTester tester) async {
-      when(() => rabbitNotesListBloc.state)
-          .thenReturn(const RabbitNotesListFailure());
+      when(() => rabbitNotesListBloc.state).thenReturn(GetListFailure());
 
       await tester.pumpWidget(
         buildWidget(name: 'Test Rabbit'),
@@ -88,7 +89,7 @@ void main() {
       expect(find.text('Test Rabbit'), findsOneWidget);
       expect(find.byType(InitialView), findsNothing);
       expect(find.byType(FailureView), findsOneWidget);
-      expect(find.byType(RabbitNotesListView), findsNothing);
+      expect(find.byType(RabbitNoteListItem), findsNothing);
       expect(find.byKey(const Key('errorSnackBar')), findsNothing);
     });
 
@@ -98,8 +99,8 @@ void main() {
       whenListen(
           rabbitNotesListBloc,
           Stream.fromIterable([
-            const RabbitNotesListFailure(
-              rabbitNotes: [
+            GetListFailure(
+              data: const [
                 RabbitNote(
                   id: '1',
                   description: 'Test note',
@@ -109,8 +110,8 @@ void main() {
               totalCount: 1,
             ),
           ]),
-          initialState: const RabbitNotesListSuccess(
-            rabbitNotes: [
+          initialState: GetListSuccess(
+            data: const [
               RabbitNote(
                 id: '1',
                 description: 'Test note',
@@ -129,7 +130,7 @@ void main() {
       expect(find.text('Test Rabbit'), findsOneWidget);
       expect(find.byType(InitialView), findsNothing);
       expect(find.byType(FailureView), findsNothing);
-      expect(find.byType(RabbitNotesListView), findsOneWidget);
+      expect(find.byType(RabbitNoteListItem), findsOneWidget);
       expect(find.byKey(const Key('errorSnackBar')), findsOneWidget);
     });
 
@@ -137,8 +138,8 @@ void main() {
         'should render rabbit notes list view when state is RabbitNotesListSuccess',
         (WidgetTester tester) async {
       when(() => rabbitNotesListBloc.state).thenReturn(
-        const RabbitNotesListSuccess(
-          rabbitNotes: [
+        GetListSuccess(
+          data: const [
             RabbitNote(
               id: '1',
               description: 'Test note',
@@ -156,7 +157,7 @@ void main() {
       expect(find.text('Test Rabbit'), findsOneWidget);
       expect(find.byType(InitialView), findsNothing);
       expect(find.byType(FailureView), findsNothing);
-      expect(find.byType(RabbitNotesListView), findsOneWidget);
+      expect(find.byType(RabbitNoteListItem), findsOneWidget);
       expect(find.byKey(const Key('errorSnackBar')), findsNothing);
     });
 
@@ -164,8 +165,8 @@ void main() {
         'should render rabbit notes list view without rabbit name when state is RabbitNotesListSuccess',
         (WidgetTester tester) async {
       when(() => rabbitNotesListBloc.state).thenReturn(
-        const RabbitNotesListSuccess(
-          rabbitNotes: [
+        GetListSuccess(
+          data: const [
             RabbitNote(
               id: '1',
               description: 'Test note',
@@ -183,15 +184,15 @@ void main() {
       expect(find.text('Historia Notatek'), findsOneWidget);
       expect(find.byType(InitialView), findsNothing);
       expect(find.byType(FailureView), findsNothing);
-      expect(find.byType(RabbitNotesListView), findsOneWidget);
+      expect(find.byType(RabbitNoteListItem), findsOneWidget);
       expect(find.byKey(const Key('errorSnackBar')), findsNothing);
     });
 
     testWidgets('should open filter dialog when filter button is pressed',
         (WidgetTester tester) async {
       when(() => rabbitNotesListBloc.state).thenReturn(
-        const RabbitNotesListSuccess(
-          rabbitNotes: [
+        GetListSuccess(
+          data: const [
             RabbitNote(
               id: '1',
               description: 'Test note',
@@ -218,8 +219,8 @@ void main() {
         'should navigate to create note page when add note button is pressed',
         (WidgetTester tester) async {
       when(() => rabbitNotesListBloc.state).thenReturn(
-        const RabbitNotesListSuccess(
-          rabbitNotes: [],
+        GetListSuccess(
+          data: const [],
           hasReachedMax: true,
           totalCount: 0,
         ),
@@ -251,8 +252,8 @@ void main() {
         'should navigate to create note page with isVetVisit extra when add note button is pressed',
         (WidgetTester tester) async {
       when(() => rabbitNotesListBloc.state).thenReturn(
-        const RabbitNotesListSuccess(
-          rabbitNotes: [],
+        GetListSuccess(
+          data: const [],
           hasReachedMax: true,
           totalCount: 0,
         ),

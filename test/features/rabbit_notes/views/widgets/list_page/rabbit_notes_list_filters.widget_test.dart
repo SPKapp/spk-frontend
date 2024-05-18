@@ -1,53 +1,42 @@
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:spk_app_frontend/common/views/widgets/filter_chips.dart';
-import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bloc.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/widgets/list_page/rabbit_notes_list_filters.widget.dart';
-
-class MockRabbitNotesListBloc
-    extends MockBloc<RabbitNotesListEvent, RabbitNotesListState>
-    implements RabbitNotesListBloc {}
 
 class MockGoRouter extends Mock implements GoRouter {}
 
 void main() {
   group(RabbitNotesListFilters, () {
-    late RabbitNotesListBloc rabbitNotesListBloc;
     late GoRouter goRouter;
 
     setUp(() {
-      rabbitNotesListBloc = MockRabbitNotesListBloc();
       goRouter = MockGoRouter();
     });
 
-    Widget buildWidget(FindRabbitNotesArgs args) {
+    Widget buildWidget(RabbitNotesListFilters child) {
       return MaterialApp(
         home: InheritedGoRouter(
           goRouter: goRouter,
-          child: BlocProvider(
-            create: (context) => rabbitNotesListBloc,
-            child: Scaffold(
-              body: RabbitNotesListFilters(
-                args: args,
-              ),
-            ),
+          child: Scaffold(
+            body: child,
           ),
         ),
       );
     }
 
     testWidgets('should render correctly - all', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        buildWidget(const FindRabbitNotesArgs(rabbitId: '1')),
-      );
+      await tester.pumpWidget(buildWidget(
+        RabbitNotesListFilters(
+          args: const FindRabbitNotesArgs(rabbitId: '1'),
+          onFilter: (args) {},
+        ),
+      ));
 
       expect(find.text('Filtruj notatki'), findsOneWidget);
       expect(find.byType(ChoiceChip), findsNWidgets(3));
@@ -57,9 +46,12 @@ void main() {
     });
 
     testWidgets('should render correctly - notes', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        buildWidget(const FindRabbitNotesArgs(rabbitId: '1')),
-      );
+      await tester.pumpWidget(buildWidget(
+        RabbitNotesListFilters(
+          args: const FindRabbitNotesArgs(rabbitId: '1'),
+          onFilter: (args) {},
+        ),
+      ));
 
       expect(find.text('Filtruj notatki'), findsOneWidget);
       expect(find.byType(ChoiceChip), findsNWidgets(3));
@@ -70,9 +62,12 @@ void main() {
 
     testWidgets('should render correctly - vet visit',
         (WidgetTester tester) async {
-      await tester.pumpWidget(
-        buildWidget(const FindRabbitNotesArgs(rabbitId: '1', isVetVisit: true)),
-      );
+      await tester.pumpWidget(buildWidget(
+        RabbitNotesListFilters(
+          args: const FindRabbitNotesArgs(rabbitId: '1', isVetVisit: true),
+          onFilter: (args) {},
+        ),
+      ));
 
       expect(find.text('Filtruj notatki'), findsOneWidget);
       expect(find.byType(ChoiceChip), findsNWidgets(3));
@@ -83,10 +78,13 @@ void main() {
 
     testWidgets('should update args when choice chips are selected',
         (WidgetTester tester) async {
-      FindRabbitNotesArgs args = const FindRabbitNotesArgs(rabbitId: '1');
-
       await tester.pumpWidget(
-        buildWidget(args),
+        buildWidget(
+          RabbitNotesListFilters(
+            args: const FindRabbitNotesArgs(rabbitId: '1'),
+            onFilter: (args) {},
+          ),
+        ),
       );
 
       expect(find.byKey(const Key('visitDate')), findsNothing);
@@ -107,8 +105,17 @@ void main() {
 
     testWidgets('should update args when filter chips are selected',
         (WidgetTester tester) async {
+      bool callbackCalled = false;
+
       await tester.pumpWidget(
-        buildWidget(const FindRabbitNotesArgs(rabbitId: '1', isVetVisit: true)),
+        buildWidget(
+          RabbitNotesListFilters(
+            args: const FindRabbitNotesArgs(rabbitId: '1', isVetVisit: true),
+            onFilter: (args) {
+              callbackCalled = true;
+            },
+          ),
+        ),
       );
 
       await tester.tap(find.byType(FilterChip).first);
@@ -119,19 +126,7 @@ void main() {
 
       await tester.tap(find.text('Filtruj'));
 
-      verify(
-        () => rabbitNotesListBloc.add(
-          RefreshRabbitNotes(
-            FindRabbitNotesArgs(
-              rabbitId: '1',
-              isVetVisit: true,
-              vetVisit: VetVisitArgs(
-                visitTypes: [VisitType.values.first, VisitType.values.last],
-              ),
-            ),
-          ),
-        ),
-      ).called(1);
+      expect(callbackCalled, isTrue);
     });
   });
 }

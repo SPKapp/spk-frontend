@@ -28,7 +28,7 @@ void main() {
       return MaterialApp(
         home: Scaffold(
           body: RabbitsSearchAction(
-            args: const FindRabbitsArgs(),
+            args: () => const FindRabbitsArgs(),
             rabbitsSearchBloc: (context) => rabbitsSearchBloc,
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bloc.dart';
@@ -30,21 +31,21 @@ class WeightHistory extends StatelessWidget {
                   rabbitNoteRepository: context.read<IRabbitNotesRepository>(),
                   args:
                       FindRabbitNotesArgs(rabbitId: rabbitId, withWeight: true),
-                )..add(const FetchRabbitNotes()),
-        child: BlocBuilder<RabbitNotesListBloc, RabbitNotesListState>(
+                )..add(const FetchList()),
+        child: BlocBuilder<RabbitNotesListBloc, GetListState<RabbitNote>>(
           builder: (context, state) {
             switch (state) {
-              case RabbitNotesListInitial():
+              case GetListInitial():
                 return const InitialView();
-              case RabbitNotesListFailure():
+              case GetListFailure():
                 return FailureView(
                   message: 'Nie udało się pobrać historii wagi królika.',
                   onPressed: () => context
                       .read<RabbitNotesListBloc>()
-                      .add(const RefreshRabbitNotes(null)),
+                      .add(const RefreshList<FindRabbitNotesArgs>(null)),
                 );
 
-              case RabbitNotesListSuccess():
+              case GetListSuccess():
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: NestedScrollView(
@@ -63,7 +64,7 @@ class WeightHistory extends StatelessWidget {
                     body: AppListView<RabbitNote>(
                       emptyMessage: 'Brak danych',
                       hasReachedMax: state.hasReachedMax,
-                      items: state.rabbitNotes,
+                      items: state.data,
                       onRefresh: () {
                         // skip initial state
                         Future bloc = context
@@ -73,13 +74,13 @@ class WeightHistory extends StatelessWidget {
                             .first;
                         context
                             .read<RabbitNotesListBloc>()
-                            .add(const RefreshRabbitNotes(null));
+                            .add(const RefreshList<FindRabbitNotesArgs>(null));
                         return bloc;
                       },
                       onFetch: () {
                         context
                             .read<RabbitNotesListBloc>()
-                            .add(const FetchRabbitNotes());
+                            .add(const FetchList());
                       },
                       itemBuilder: (dynamic note) => ListTile(
                         leading: const Icon(FontAwesomeIcons.weightHanging),

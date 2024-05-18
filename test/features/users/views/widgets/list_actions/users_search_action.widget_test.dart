@@ -27,7 +27,7 @@ void main() {
       return MaterialApp(
         home: Scaffold(
           body: UsersSearchAction(
-            args: const FindUsersArgs(),
+            args: () => const FindUsersArgs(),
             usersSearchBloc: (context) => usersSearchBloc,
           ),
         ),

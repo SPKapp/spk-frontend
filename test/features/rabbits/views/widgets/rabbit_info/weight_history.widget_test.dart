@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/bloc/rabbit_notes_list.bloc.dart';
@@ -10,7 +11,7 @@ import 'package:spk_app_frontend/features/rabbit-notes/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info/weight_history.widget.dart';
 
 class MockRabbitNotesListBloc
-    extends MockBloc<RabbitNotesListEvent, RabbitNotesListState>
+    extends MockBloc<GetListEvent, GetListState<RabbitNote>>
     implements RabbitNotesListBloc {}
 
 void main() {
@@ -40,8 +41,7 @@ void main() {
 
     testWidgets('renders InitialView when state is RabbitNotesListInitial',
         (WidgetTester tester) async {
-      when(() => rabbitNotesListBloc.state)
-          .thenReturn(const RabbitNotesListInitial());
+      when(() => rabbitNotesListBloc.state).thenReturn(GetListInitial());
 
       await tester.pumpWidget(buildWidget());
 
@@ -52,8 +52,7 @@ void main() {
 
     testWidgets('renders FailureView when state is RabbitNotesListFailure',
         (WidgetTester tester) async {
-      when(() => rabbitNotesListBloc.state)
-          .thenReturn(const RabbitNotesListFailure());
+      when(() => rabbitNotesListBloc.state).thenReturn(GetListFailure());
 
       await tester.pumpWidget(
         buildWidget(),
@@ -66,9 +65,8 @@ void main() {
 
     testWidgets('should display "Brak danych." when rabbitNotes is empty',
         (WidgetTester tester) async {
-      when(() => rabbitNotesListBloc.state)
-          .thenReturn(const RabbitNotesListSuccess(
-        rabbitNotes: [],
+      when(() => rabbitNotesListBloc.state).thenReturn(GetListSuccess(
+        data: const [],
         hasReachedMax: true,
         totalCount: 0,
       ));
@@ -85,8 +83,8 @@ void main() {
         'should display CircularProgressIndicator when hasReachedMax is false',
         (WidgetTester tester) async {
       when(() => rabbitNotesListBloc.state).thenReturn(
-        RabbitNotesListSuccess(
-          rabbitNotes: [rabbitNote],
+        GetListSuccess(
+          data: [rabbitNote],
           hasReachedMax: false,
           totalCount: 2,
         ),
@@ -104,8 +102,8 @@ void main() {
         'should call FetchRabbitNotes event when scroll reaches the end',
         (WidgetTester tester) async {
       when(() => rabbitNotesListBloc.state).thenReturn(
-        RabbitNotesListSuccess(
-          rabbitNotes: [rabbitNote, rabbitNote],
+        GetListSuccess(
+          data: [rabbitNote, rabbitNote],
           hasReachedMax: false,
           totalCount: 4,
         ),
@@ -121,7 +119,7 @@ void main() {
         find.byKey(const Key('appListView')),
         const Offset(0, -50),
       );
-      verify(() => rabbitNotesListBloc.add(const FetchRabbitNotes())).called(1);
+      verify(() => rabbitNotesListBloc.add(const FetchList())).called(1);
     });
   });
 }

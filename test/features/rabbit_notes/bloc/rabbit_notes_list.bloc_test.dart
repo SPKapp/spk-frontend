@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/models/dto.dart';
@@ -63,21 +64,21 @@ void main() {
       rabbitNotesListBloc.close();
     });
 
-    test('initial state is RabbitNotesListInitial', () {
-      expect(rabbitNotesListBloc.state, equals(const RabbitNotesListInitial()));
+    test('initial state is GetListInitial<RabbitNote>', () {
+      expect(rabbitNotesListBloc.state, equals(GetListInitial<RabbitNote>()));
     });
 
-    blocTest<RabbitNotesListBloc, RabbitNotesListState>(
-      'emits [RabbitNotesListSuccess] when FetchRabbitNotes event is added',
+    blocTest<RabbitNotesListBloc, GetListState>(
+      'emits [GetListSuccess<RabbitNote>] when FetchRabbitNotes event is added',
       setUp: () {
         when(() => rabbitNoteRepository.findAll(any(), any()))
             .thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => rabbitNotesListBloc,
-      act: (bloc) => bloc.add(const FetchRabbitNotes()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        const RabbitNotesListSuccess(
-          rabbitNotes: rabbitNotes1,
+        GetListSuccess<RabbitNote>(
+          data: rabbitNotes1,
           hasReachedMax: false,
           totalCount: 4,
         ),
@@ -93,16 +94,16 @@ void main() {
       },
     );
 
-    blocTest<RabbitNotesListBloc, RabbitNotesListState>(
-      'emits [RabbitNotesListFailure] when FetchRabbitNotes event is added and repository throws an error',
+    blocTest<RabbitNotesListBloc, GetListState>(
+      'emits [GetListFailure<RabbitNote>] when FetchRabbitNotes event is added and repository throws an error',
       setUp: () {
         when(() => rabbitNoteRepository.findAll(any(), any()))
             .thenThrow(Exception());
       },
       build: () => rabbitNotesListBloc,
-      act: (bloc) => bloc.add(const FetchRabbitNotes()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        const RabbitNotesListFailure(),
+        GetListFailure<RabbitNote>(),
       ],
       verify: (_) {
         verify(() => rabbitNoteRepository.findAll(
@@ -116,22 +117,22 @@ void main() {
       },
     );
 
-    blocTest<RabbitNotesListBloc, RabbitNotesListState>(
-      'emits [RabbitNotesListFailure] when FetchRabbitNotes event is added and repository throws an error after a successful fetch',
+    blocTest<RabbitNotesListBloc, GetListState>(
+      'emits [GetListFailure<RabbitNote>] when FetchRabbitNotes event is added and repository throws an error after a successful fetch',
       setUp: () {
         when(() => rabbitNoteRepository.findAll(any(), any()))
             .thenThrow(Exception());
       },
       build: () => rabbitNotesListBloc,
-      seed: () => const RabbitNotesListSuccess(
-        rabbitNotes: rabbitNotes1,
+      seed: () => GetListSuccess<RabbitNote>(
+        data: rabbitNotes1,
         hasReachedMax: false,
         totalCount: 4,
       ),
-      act: (bloc) => bloc.add(const FetchRabbitNotes()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        const RabbitNotesListFailure(
-          rabbitNotes: rabbitNotes1,
+        GetListFailure<RabbitNote>(
+          data: rabbitNotes1,
           hasReachedMax: false,
           totalCount: 4,
         ),
@@ -148,37 +149,37 @@ void main() {
       },
     );
 
-    blocTest<RabbitNotesListBloc, RabbitNotesListState>(
+    blocTest<RabbitNotesListBloc, GetListState>(
       'no emits when FetchRabbitNotes event is added and hasReachedMax is true',
       build: () => rabbitNotesListBloc,
-      seed: () => RabbitNotesListSuccess(
-        rabbitNotes: rabbitNotes1 + rabbitNotes2,
+      seed: () => GetListSuccess<RabbitNote>(
+        data: rabbitNotes1 + rabbitNotes2,
         hasReachedMax: true,
         totalCount: 4,
       ),
-      act: (bloc) => bloc.add(const FetchRabbitNotes()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [],
       verify: (_) {
         verifyZeroInteractions(rabbitNoteRepository);
       },
     );
 
-    blocTest<RabbitNotesListBloc, RabbitNotesListState>(
-      'emits [RabbitNotesListSuccess] when previous state is [RabbitNotesListFailure] with data',
+    blocTest<RabbitNotesListBloc, GetListState>(
+      'emits [GetListSuccess<RabbitNote>] when previous state is [GetListFailure] with data',
       setUp: () {
         when(() => rabbitNoteRepository.findAll(any(), any()))
             .thenAnswer((_) async => paginatedResult);
       },
       build: () => rabbitNotesListBloc,
-      seed: () => const RabbitNotesListFailure(
-        rabbitNotes: rabbitNotes1,
+      seed: () => GetListFailure<RabbitNote>(
+        data: rabbitNotes1,
         hasReachedMax: false,
         totalCount: 4,
       ),
-      act: (bloc) => bloc.add(const FetchRabbitNotes()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        RabbitNotesListSuccess(
-          rabbitNotes: rabbitNotes1 + rabbitNotes2,
+        GetListSuccess<RabbitNote>(
+          data: rabbitNotes1 + rabbitNotes2,
           hasReachedMax: true,
           totalCount: 4,
         ),
@@ -195,18 +196,18 @@ void main() {
       },
     );
 
-    blocTest<RabbitNotesListBloc, RabbitNotesListState>(
-      'emits [RabbitNotesListInitial] and [RabbitNotesListSuccess] when RefreshRabbitNotes event is added',
+    blocTest<RabbitNotesListBloc, GetListState>(
+      'emits [GetListInitial<RabbitNote>] and [GetListSuccess] when RefreshRabbitNotes event is added',
       setUp: () {
         when(() => rabbitNoteRepository.findAll(any(), any()))
             .thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => rabbitNotesListBloc,
-      act: (bloc) => bloc.add(const RefreshRabbitNotes(null)),
+      act: (bloc) => bloc.add(const RefreshList<FindRabbitNotesArgs>(null)),
       expect: () => [
-        const RabbitNotesListInitial(),
-        const RabbitNotesListSuccess(
-          rabbitNotes: rabbitNotes1,
+        GetListInitial<RabbitNote>(),
+        GetListSuccess<RabbitNote>(
+          data: rabbitNotes1,
           hasReachedMax: false,
           totalCount: 4,
         ),
@@ -222,18 +223,18 @@ void main() {
       },
     );
 
-    blocTest<RabbitNotesListBloc, RabbitNotesListState>(
-      'emits [RabbitNotesListInitial] and [RabbitNotesListSuccess] when RefreshRabbitNotes event is added with new args',
+    blocTest<RabbitNotesListBloc, GetListState>(
+      'emits [GetListInitial<RabbitNote>] and [GetListSuccess] when RefreshRabbitNotes event is added with new args',
       setUp: () {
         when(() => rabbitNoteRepository.findAll(any(), any()))
             .thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => rabbitNotesListBloc,
-      act: (bloc) => bloc.add(const RefreshRabbitNotes(args2)),
+      act: (bloc) => bloc.add(const RefreshList(args2)),
       expect: () => [
-        const RabbitNotesListInitial(),
-        const RabbitNotesListSuccess(
-          rabbitNotes: rabbitNotes1,
+        GetListInitial<RabbitNote>(),
+        GetListSuccess(
+          data: rabbitNotes1,
           hasReachedMax: false,
           totalCount: 4,
         ),

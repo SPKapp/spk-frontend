@@ -65,6 +65,7 @@ class GetListPage<T extends Object, Args extends Object,
         if (state is GetListFailure && state.data.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
+              key: const Key('errorSnackBar'),
               content: Text(
                 errorInfoBuilder != null
                     ? errorInfoBuilder!(context, (state as GetListFailure).code)
