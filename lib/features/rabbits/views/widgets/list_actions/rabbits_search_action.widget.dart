@@ -16,7 +16,7 @@ class RabbitsSearchAction extends StatelessWidget {
     this.rabbitsSearchBloc,
   });
 
-  final FindRabbitsArgs args;
+  final FindRabbitsArgs Function() args;
   final RabbitsSearchBloc Function(BuildContext)? rabbitsSearchBloc;
 
   @override
@@ -25,7 +25,7 @@ class RabbitsSearchAction extends StatelessWidget {
       create: rabbitsSearchBloc ??
           (context) => RabbitsSearchBloc(
                 rabbitsRepository: context.read<IRabbitsRepository>(),
-                args: args,
+                args: args(),
               ),
       child: SearchAction<RabbitGroup, RabbitsSearchBloc>(
           errorInfo: 'Wystąpił błąd podczas wyszukiwania królików.',

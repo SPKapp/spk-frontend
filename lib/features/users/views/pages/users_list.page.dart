@@ -43,7 +43,7 @@ class UsersListPage extends StatelessWidget {
             actions: [
               UsersSearchAction(
                 key: const Key('searchAction'),
-                args: context.read<UsersListBloc>().args,
+                args: () => context.read<UsersListBloc>().args,
               ),
             ],
             filterBuilder: (context, args, callback) => UsersListFilters(

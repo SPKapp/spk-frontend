@@ -54,7 +54,7 @@ class RabbitsListPage extends StatelessWidget {
           actions: [
             RabbitsSearchAction(
               key: const Key('searchAction'),
-              args: context.read<RabbitsListBloc>().args,
+              args: () => context.read<RabbitsListBloc>().args,
             ),
           ],
           filterBuilder: (context, args, callback) => RabbitsListFilters(

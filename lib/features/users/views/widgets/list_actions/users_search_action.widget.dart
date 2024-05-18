@@ -17,7 +17,7 @@ class UsersSearchAction extends StatelessWidget {
     this.usersSearchBloc,
   });
 
-  final FindUsersArgs args;
+  final FindUsersArgs Function() args;
   final UsersSearchBloc Function(BuildContext)? usersSearchBloc;
 
   @override
@@ -26,7 +26,7 @@ class UsersSearchAction extends StatelessWidget {
       create: usersSearchBloc ??
           (context) => UsersSearchBloc(
                 usersRepository: context.read<IUsersRepository>(),
-                args: args,
+                args: args(),
               ),
       child: SearchAction<User, UsersSearchBloc>(
         errorInfo: 'Wystąpił błąd podczas wyszukiwania użytkowników.',

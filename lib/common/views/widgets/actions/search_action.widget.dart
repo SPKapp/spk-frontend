@@ -5,6 +5,10 @@ import 'package:spk_app_frontend/common/bloc/interfaces/search.bloc.interface.da
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/common/views/widgets/actions/simple_search_action.widget.dart';
 
+/// A widget that displays a search action
+///
+/// This widget assumes that the [Bloc] is provided by the parent widget
+///
 class SearchAction<T extends Object, Bloc extends ISearchBloc<T>>
     extends StatelessWidget {
   const SearchAction({
