@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spk_app_frontend/common/views/views.dart';
 
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
+import 'package:spk_app_frontend/common/views/views/get_list.view.dart';
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
 import 'package:spk_app_frontend/features/regions/models/dto.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
@@ -29,23 +30,10 @@ class InjectRegionsList extends StatelessWidget {
                   limit: 0,
                   regionsIds: regionsIds,
                 ),
-              )..add(const FetchRegions()),
-      child: BlocBuilder<RegionsListBloc, RegionsListState>(
-        builder: (context, state) {
-          switch (state) {
-            case RegionsListInitial():
-              return const InitialView();
-            case RegionsListFailure():
-              return FailureView(
-                message: 'Nie udało się pobrać regionów',
-                onPressed: () => context
-                    .read<RegionsListBloc>()
-                    .add(const RefreshRegions(null)),
-              );
-            case RegionsListSuccess():
-              return builder(context, state.regions);
-          }
-        },
+              )..add(const FetchList()),
+      child: GetListView<Region, FindRegionsArgs, RegionsListBloc>(
+        errorInfo: 'Nie udało się pobrać listy regionów.',
+        builder: builder,
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
@@ -19,7 +20,7 @@ import 'package:spk_app_frontend/features/users/views/views/user_modify.view.dar
 class MockUserCreateCubit extends MockCubit<UserCreateState>
     implements UserCreateCubit {}
 
-class MockRegionsListBloc extends MockBloc<RegionsListEvent, RegionsListState>
+class MockRegionsListBloc extends MockBloc<GetListEvent, GetListState<Region>>
     implements RegionsListBloc {}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
@@ -184,8 +185,8 @@ void main() {
       );
 
       when(() => regionsListBloc.state).thenAnswer(
-        (_) => const RegionsListSuccess(
-          regions: [
+        (_) => GetListSuccess(
+          data: const [
             Region(id: '1', name: 'Region 1'),
             Region(id: '2', name: 'Region 2'),
           ],

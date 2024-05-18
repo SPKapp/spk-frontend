@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
 import 'package:spk_app_frontend/features/regions/models/dto.dart';
+import 'package:spk_app_frontend/features/regions/models/models.dart';
 import 'package:spk_app_frontend/features/regions/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 
@@ -38,34 +40,34 @@ class RolesCard extends StatelessWidget {
                 limit: 0,
                 regionsIds: regionsIds,
               ),
-            )..add(const FetchRegions());
+            )..add(const FetchList());
           },
       child: AppCard(
         child: roleInfo.hasAnyRole
-            ? BlocBuilder<RegionsListBloc, RegionsListState>(
+            ? BlocBuilder<RegionsListBloc, GetListState<Region>>(
                 builder: (context, state) {
                   late final Widget managerRegions;
                   late final Widget observerRegions;
 
                   switch (state) {
-                    case RegionsListInitial():
+                    case GetListInitial():
                       managerRegions =
                           const Center(child: CircularProgressIndicator());
                       observerRegions = managerRegions;
                       break;
-                    case RegionsListSuccess():
-                      managerRegions = Text(state.regions
+                    case GetListSuccess():
+                      managerRegions = Text(state.data
                           .where((e) =>
                               roleInfo.managerRegions.contains(e.id.toString()))
                           .map((e) => e.name)
                           .join('\n'));
-                      observerRegions = Text(state.regions
+                      observerRegions = Text(state.data
                           .where((e) => roleInfo.observerRegions
                               .contains(e.id.toString()))
                           .map((e) => e.name)
                           .join('\n'));
                       break;
-                    case RegionsListFailure():
+                    case GetListFailure():
                       managerRegions = const Row(
                         children: [
                           Icon(FontAwesomeIcons.ghost),

@@ -3,12 +3,14 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
+import 'package:spk_app_frontend/features/regions/models/models.dart';
 import 'package:spk_app_frontend/features/regions/views/common/inject_regions_list.widget.dart';
 
-class MockRegionsListBloc extends MockBloc<RegionsListEvent, RegionsListState>
+class MockRegionsListBloc extends MockBloc<GetListEvent, GetListState<Region>>
     implements RegionsListBloc {}
 
 void main() {
@@ -30,7 +32,7 @@ void main() {
 
     testWidgets('renders InitialView when RegionsListInitial state',
         (WidgetTester tester) async {
-      when(() => regionsListBloc.state).thenReturn(const RegionsListInitial());
+      when(() => regionsListBloc.state).thenReturn(GetListInitial());
 
       await tester.pumpWidget(buildWidget());
 
@@ -41,7 +43,7 @@ void main() {
 
     testWidgets('renders FailureView when RegionsListFailure state',
         (WidgetTester tester) async {
-      when(() => regionsListBloc.state).thenReturn(const RegionsListFailure());
+      when(() => regionsListBloc.state).thenReturn(GetListFailure());
 
       await tester.pumpWidget(buildWidget());
 
@@ -52,8 +54,8 @@ void main() {
 
     testWidgets('renders buildChild when RegionsListSuccess state',
         (WidgetTester tester) async {
-      when(() => regionsListBloc.state).thenReturn(const RegionsListSuccess(
-        regions: [],
+      when(() => regionsListBloc.state).thenReturn(GetListSuccess(
+        data: const [],
         hasReachedMax: true,
         totalCount: 0,
       ));

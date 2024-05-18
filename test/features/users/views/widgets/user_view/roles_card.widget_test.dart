@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
@@ -9,7 +10,7 @@ import 'package:spk_app_frontend/features/regions/models/models.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/views/widgets/user_view/roles_card.widget.dart';
 
-class MockRegionsBloc extends MockBloc<RegionsListEvent, RegionsListState>
+class MockRegionsBloc extends MockBloc<GetListEvent, GetListState<Region>>
     implements RegionsListBloc {}
 
 void main() {
@@ -20,8 +21,8 @@ void main() {
       regionsListBloc = MockRegionsBloc();
 
       when(() => regionsListBloc.state).thenReturn(
-        const RegionsListSuccess(
-          regions: [
+        GetListSuccess(
+          data: const [
             Region(id: '1', name: 'Region 1'),
             Region(id: '2', name: 'Region 2'),
           ],

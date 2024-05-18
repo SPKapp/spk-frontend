@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
@@ -20,7 +21,7 @@ import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
 class MockRabbitCreateCubbit extends MockCubit<RabbitCreateState>
     implements RabbitCreateCubit {}
 
-class MockRegionsListBloc extends MockBloc<RegionsListEvent, RegionsListState>
+class MockRegionsListBloc extends MockBloc<GetListEvent, GetListState<Region>>
     implements RegionsListBloc {}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
@@ -98,7 +99,7 @@ void main() {
       testWidgets('should display InitialView when loading',
           (WidgetTester tester) async {
         when(() => regionsListBloc.state).thenAnswer(
-          (_) => const RegionsListInitial(),
+          (_) => GetListInitial(),
         );
 
         await tester.pumpWidget(buildWidget());
@@ -109,7 +110,7 @@ void main() {
       testWidgets('should display FailureView when loading fails',
           (WidgetTester tester) async {
         when(() => regionsListBloc.state).thenAnswer(
-          (_) => const RegionsListFailure(),
+          (_) => GetListFailure(),
         );
 
         await tester.pumpWidget(buildWidget());
@@ -120,21 +121,21 @@ void main() {
       testWidgets('should refresh regions when retry button is pressed',
           (WidgetTester tester) async {
         when(() => regionsListBloc.state).thenAnswer(
-          (_) => const RegionsListFailure(),
+          (_) => GetListFailure(),
         );
 
         await tester.pumpWidget(buildWidget());
 
         await tester.tap(find.text('Spróbuj ponownie'));
 
-        verify(() => regionsListBloc.add(const RefreshRegions(null))).called(1);
+        verify(() => regionsListBloc.add(const FetchList())).called(1);
       });
 
       testWidgets('should render correctly with regions',
           (WidgetTester tester) async {
         when(() => regionsListBloc.state).thenAnswer(
-          (_) => const RegionsListSuccess(
-            regions: [
+          (_) => GetListSuccess(
+            data: const [
               Region(id: '1', name: 'Region 1'),
               Region(id: '2', name: 'Region 2'),
             ],

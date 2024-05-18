@@ -18,7 +18,7 @@ class UsersListBloc extends IGetListBloc<User, FindUsersArgs> {
 
   @override
   @visibleForOverriding
-  Future<Paginated<User>> fetchData(int offset, bool getTotalCount) async {
+  Future<Paginated<User>> fetchData() async {
     return await _usersRepository.findAll(
       args.copyWith(offset: () => state.data.length),
       state.totalCount == 0,

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
@@ -14,7 +15,7 @@ import 'package:spk_app_frontend/features/users/models/models.dart';
 
 import 'package:spk_app_frontend/features/users/views/widgets/user_actions/remove_role_action.widget.dart';
 
-class MockRegionsListBloc extends MockCubit<RegionsListState>
+class MockRegionsListBloc extends MockBloc<GetListEvent, GetListState<Region>>
     implements RegionsListBloc {}
 
 class MockUserPermissionsCubit extends MockCubit<UserPermissionsState>
@@ -42,8 +43,8 @@ void main() {
       );
 
       when(() => regionsListBloc.state).thenReturn(
-        const RegionsListSuccess(
-          regions: [Region(id: '1', name: 'Region 1')],
+        GetListSuccess(
+          data: const [Region(id: '1', name: 'Region 1')],
           hasReachedMax: true,
           totalCount: 1,
         ),

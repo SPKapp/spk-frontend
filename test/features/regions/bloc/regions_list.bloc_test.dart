@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 
@@ -42,22 +43,22 @@ void main() {
       regionsListBloc.close();
     });
 
-    test('initial state is RegionsListInitial', () {
-      expect(regionsListBloc.state, equals(const RegionsListInitial()));
+    test('initial state is GetListInitial<Region>', () {
+      expect(regionsListBloc.state, equals(GetListInitial<Region>()));
     });
 
-    blocTest<RegionsListBloc, RegionsListState>(
-      'emits [RegionsListSuccess] when FetchRegions event is added',
+    blocTest<RegionsListBloc, GetListState>(
+      'emits [GetListSuccess<Region>] when FetchList event is added',
       setUp: () {
         when(
           () => regionsRepository.findAll(any(), any()),
         ).thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => regionsListBloc,
-      act: (bloc) => bloc.add(const FetchRegions()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        RegionsListSuccess(
-          regions: paginatedResultTotalCount.data,
+        GetListSuccess<Region>(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -73,17 +74,17 @@ void main() {
       },
     );
 
-    blocTest<RegionsListBloc, RegionsListState>(
-      'emits [RegionsListFailure] when an error occurs on initial fetch',
+    blocTest<RegionsListBloc, GetListState>(
+      'emits [GetListFailure<Region>] when an error occurs on initial fetch',
       setUp: () {
         when(
           () => regionsRepository.findAll(any(), any()),
         ).thenThrow(Exception());
       },
       build: () => regionsListBloc,
-      act: (bloc) => bloc.add(const FetchRegions()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        const RegionsListFailure(),
+        GetListFailure<Region>(),
       ],
       verify: (_) {
         verify(() => regionsRepository.findAll(
@@ -96,23 +97,23 @@ void main() {
       },
     );
 
-    blocTest<RegionsListBloc, RegionsListState>(
-      'emits [RegionsListFailure] when an error occurs on next fetch',
+    blocTest<RegionsListBloc, GetListState>(
+      'emits [GetListFailure<Region>] when an error occurs on next fetch',
       setUp: () {
         when(
           () => regionsRepository.findAll(any(), any()),
         ).thenThrow(Exception());
       },
       build: () => regionsListBloc,
-      seed: () => RegionsListSuccess(
-        regions: paginatedResultTotalCount.data,
+      seed: () => GetListSuccess<Region>(
+        data: paginatedResultTotalCount.data,
         hasReachedMax: false,
         totalCount: paginatedResultTotalCount.totalCount!,
       ),
-      act: (bloc) => bloc.add(const FetchRegions()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        RegionsListFailure(
-          regions: paginatedResultTotalCount.data,
+        GetListFailure<Region>(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -128,23 +129,23 @@ void main() {
       },
     );
 
-    blocTest<RegionsListBloc, RegionsListState>(
-      'emits [RegionsListSuccess] when FetchRegions event is added and hasReachedMax is false',
+    blocTest<RegionsListBloc, GetListState>(
+      'emits [GetListSuccess<Region>] when FetchList event is added and hasReachedMax is false',
       setUp: () {
         when(
           () => regionsRepository.findAll(any(), any()),
         ).thenAnswer((_) async => paginatedResult);
       },
       build: () => regionsListBloc,
-      seed: () => RegionsListSuccess(
-        regions: paginatedResultTotalCount.data,
+      seed: () => GetListSuccess<Region>(
+        data: paginatedResultTotalCount.data,
         hasReachedMax: false,
         totalCount: paginatedResultTotalCount.totalCount!,
       ),
-      act: (bloc) => bloc.add(const FetchRegions()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        RegionsListSuccess(
-          regions: paginatedResultTotalCount.data + paginatedResult.data,
+        GetListSuccess<Region>(
+          data: paginatedResultTotalCount.data + paginatedResult.data,
           hasReachedMax: true,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -160,34 +161,34 @@ void main() {
       },
     );
 
-    blocTest<RegionsListBloc, RegionsListState>(
-      'emits [RegionsListSuccess] when FetchRegions event is added and hasReachedMax is true',
+    blocTest<RegionsListBloc, GetListState>(
+      'emits [GetListSuccess<Region>] when FetchList event is added and hasReachedMax is true',
       build: () => regionsListBloc,
-      seed: () => RegionsListSuccess(
-        regions: paginatedResultTotalCount.data,
+      seed: () => GetListSuccess<Region>(
+        data: paginatedResultTotalCount.data,
         hasReachedMax: true,
         totalCount: paginatedResultTotalCount.totalCount!,
       ),
-      act: (bloc) => bloc.add(const FetchRegions()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [],
       verify: (_) {
         verifyZeroInteractions(regionsRepository);
       },
     );
 
-    blocTest<RegionsListBloc, RegionsListState>(
-      'eemits [RegionsListSuccess] when RefreshUsers event is added',
+    blocTest<RegionsListBloc, GetListState>(
+      'eemits [GetListSuccess<Region>] when RefreshUsers event is added',
       setUp: () {
         when(
           () => regionsRepository.findAll(any(), any()),
         ).thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => regionsListBloc,
-      act: (bloc) => bloc.add(const RefreshRegions(null)),
+      act: (bloc) => bloc.add(const RefreshList<FindRegionsArgs>(null)),
       expect: () => [
-        const RegionsListInitial(),
-        RegionsListSuccess(
-          regions: paginatedResultTotalCount.data,
+        GetListInitial<Region>(),
+        GetListSuccess<Region>(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -205,20 +206,19 @@ void main() {
       },
     );
 
-    blocTest<RegionsListBloc, RegionsListState>(
-      'emits [RegionsListSuccess] when RefreshUsers event is added with args',
+    blocTest<RegionsListBloc, GetListState>(
+      'emits [GetListSuccess<Region>] when RefreshUsers event is added with args',
       setUp: () {
         when(
           () => regionsRepository.findAll(any(), any()),
         ).thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => regionsListBloc,
-      act: (bloc) =>
-          bloc.add(const RefreshRegions(FindRegionsArgs(name: 'name'))),
+      act: (bloc) => bloc.add(const RefreshList(FindRegionsArgs(name: 'name'))),
       expect: () => [
-        const RegionsListInitial(),
-        RegionsListSuccess(
-          regions: paginatedResultTotalCount.data,
+        GetListInitial<Region>(),
+        GetListSuccess<Region>(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),

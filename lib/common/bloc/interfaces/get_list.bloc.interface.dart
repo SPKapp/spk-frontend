@@ -39,8 +39,7 @@ abstract class IGetListBloc<T extends Object, Args extends Object>
     if (state.hasReachedMax) return;
 
     try {
-      final paginatedResult =
-          await fetchData(state.data.length, state.totalCount == 0);
+      final paginatedResult = await fetchData();
 
       final totalCount = paginatedResult.totalCount ?? state.totalCount;
 
@@ -72,7 +71,7 @@ abstract class IGetListBloc<T extends Object, Args extends Object>
 
   /// Fetches the data from the server.
   @visibleForOverriding
-  Future<Paginated<T>> fetchData(int offset, bool getTotalCount);
+  Future<Paginated<T>> fetchData();
 
   /// Creates an error code from the given error.
   ///
