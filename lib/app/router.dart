@@ -39,7 +39,6 @@ class AppRouter {
                   path: '/myRabbits',
                   builder: (context, state) {
                     return const RabbitsListPage(
-                      drawer: AppDrawer(),
                       volunteerView: true,
                     );
                   }),
@@ -47,7 +46,6 @@ class AppRouter {
                   path: '/rabbits',
                   builder: (context, state) {
                     return const RabbitsListPage(
-                      drawer: AppDrawer(),
                       volunteerView: false,
                     );
                   }),

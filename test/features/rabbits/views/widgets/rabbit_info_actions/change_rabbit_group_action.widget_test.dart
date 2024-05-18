@@ -4,13 +4,15 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbits_list.bloc.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info_actions/change_rabbit_group_action.widget.dart';
 
-class MockRabbitsListBloc extends MockBloc<RabbitsListEvent, RabbitsListState>
+class MockRabbitsListBloc
+    extends MockBloc<GetListEvent, GetListState<RabbitGroup>>
     implements RabbitsListBloc {}
 
 class MockRabbitUpdateCubit extends MockCubit<RabbitUpdateState>
@@ -61,8 +63,8 @@ void main() {
       goRouter = MockGoRouter();
 
       when(() => rabbitsListBloc.state).thenAnswer(
-        (_) => const RabbitsListSuccess(
-          rabbitGroups: [
+        (_) => GetListSuccess(
+          data: const [
             rabbitGroup1,
             rabbitGroup2,
           ],
@@ -120,7 +122,7 @@ void main() {
       testWidgets('should display CircularProgressIndicator when loading',
           (WidgetTester tester) async {
         when(() => rabbitsListBloc.state).thenAnswer(
-          (_) => const RabbitsListInitial(),
+          (_) => GetListInitial(),
         );
 
         await tester.pumpWidget(buildWidget());
@@ -131,7 +133,7 @@ void main() {
       testWidgets('should display error message when loading failed',
           (WidgetTester tester) async {
         when(() => rabbitsListBloc.state).thenAnswer(
-          (_) => const RabbitsListFailure(),
+          (_) => GetListFailure(),
         );
 
         await tester.pumpWidget(buildWidget());
@@ -143,7 +145,7 @@ void main() {
       testWidgets('should refresh button works when loading failed',
           (WidgetTester tester) async {
         when(() => rabbitsListBloc.state).thenAnswer(
-          (_) => const RabbitsListFailure(),
+          (_) => GetListFailure(),
         );
 
         await tester.pumpWidget(buildWidget());
@@ -151,7 +153,7 @@ void main() {
         await tester.tap(find.text('Spróbuj ponownie'));
         await tester.pumpAndSettle();
 
-        verify(() => rabbitsListBloc.add(const FetchRabbits())).called(1);
+        verify(() => rabbitsListBloc.add(const FetchList())).called(1);
       });
 
       testWidgets('should display AlertDialog on save button press',

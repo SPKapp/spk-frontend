@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
 
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
@@ -64,21 +65,21 @@ void main() {
     });
 
     test('initial state', () {
-      expect(rabbitsListBloc.state, equals(const RabbitsListInitial()));
+      expect(rabbitsListBloc.state, equals(GetListInitial<RabbitGroup>()));
     });
 
-    blocTest<RabbitsListBloc, RabbitsListState>(
-      'emits [RabbitsListSuccess] when FeatchRabbits is added',
+    blocTest<RabbitsListBloc, GetListState>(
+      'emits [GetListSuccess<RabbitGroup>] when FeatchRabbits is added',
       setUp: () {
         when(
           () => rabbitRepository.findAll(any(), any()),
         ).thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => rabbitsListBloc,
-      act: (bloc) => bloc.add(const FetchRabbits()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        RabbitsListSuccess(
-          rabbitGroups: paginatedResultTotalCount.data,
+        GetListSuccess<RabbitGroup>(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -93,17 +94,17 @@ void main() {
       },
     );
 
-    blocTest<RabbitsListBloc, RabbitsListState>(
-      'emits [RabbitsListFailure] when an error occurs on initial fetch',
+    blocTest<RabbitsListBloc, GetListState>(
+      'emits [GetListFailure<RabbitGroup>] when an error occurs on initial fetch',
       setUp: () {
         when(
           () => rabbitRepository.findAll(any(), any()),
         ).thenThrow(Exception());
       },
       build: () => rabbitsListBloc,
-      act: (bloc) => bloc.add(const FetchRabbits()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        const RabbitsListFailure(),
+        GetListFailure<RabbitGroup>(),
       ],
       verify: (_) {
         verify(() => rabbitRepository.findAll(
@@ -115,23 +116,23 @@ void main() {
       },
     );
 
-    blocTest<RabbitsListBloc, RabbitsListState>(
-      'emits [RabbitsListFailure] when an error occurs on next fetch',
+    blocTest<RabbitsListBloc, GetListState>(
+      'emits [GetListFailure<RabbitGroup>] when an error occurs on next fetch',
       setUp: () {
         when(
           () => rabbitRepository.findAll(any(), any()),
         ).thenThrow(Exception());
       },
       build: () => rabbitsListBloc,
-      seed: () => RabbitsListSuccess(
-        rabbitGroups: paginatedResultTotalCount.data,
+      seed: () => GetListSuccess<RabbitGroup>(
+        data: paginatedResultTotalCount.data,
         hasReachedMax: false,
         totalCount: paginatedResultTotalCount.totalCount!,
       ),
-      act: (bloc) => bloc.add(const FetchRabbits()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        RabbitsListFailure(
-          rabbitGroups: paginatedResultTotalCount.data,
+        GetListFailure<RabbitGroup>(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -146,23 +147,23 @@ void main() {
       },
     );
 
-    blocTest<RabbitsListBloc, RabbitsListState>(
-      'emits [RabbitsListSuccess] when FeatchRabbits event is added and hasReachedMax is false',
+    blocTest<RabbitsListBloc, GetListState>(
+      'emits [GetListSuccess<RabbitGroup>] when FeatchRabbits event is added and hasReachedMax is false',
       setUp: () {
         when(
           () => rabbitRepository.findAll(any(), any()),
         ).thenAnswer((_) async => paginatedResult);
       },
       build: () => rabbitsListBloc,
-      seed: () => RabbitsListSuccess(
-        rabbitGroups: paginatedResultTotalCount.data,
+      seed: () => GetListSuccess<RabbitGroup>(
+        data: paginatedResultTotalCount.data,
         hasReachedMax: false,
         totalCount: paginatedResultTotalCount.totalCount!,
       ),
-      act: (bloc) => bloc.add(const FetchRabbits()),
+      act: (bloc) => bloc.add(const FetchList()),
       expect: () => [
-        RabbitsListSuccess(
-          rabbitGroups: paginatedResultTotalCount.data + paginatedResult.data,
+        GetListSuccess<RabbitGroup>(
+          data: paginatedResultTotalCount.data + paginatedResult.data,
           hasReachedMax: true,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -177,33 +178,33 @@ void main() {
       },
     );
 
-    blocTest<RabbitsListBloc, RabbitsListState>(
+    blocTest<RabbitsListBloc, GetListState>(
         'does not emit any state when FetchRabbits event is added and hasReachedMax is true',
         build: () => rabbitsListBloc,
-        seed: () => RabbitsListSuccess(
-              rabbitGroups: paginatedResultTotalCount.data,
+        seed: () => GetListSuccess<RabbitGroup>(
+              data: paginatedResultTotalCount.data,
               hasReachedMax: true,
               totalCount: paginatedResultTotalCount.totalCount!,
             ),
-        act: (bloc) => bloc.add(const FetchRabbits()),
+        act: (bloc) => bloc.add(const FetchList()),
         expect: () => [],
         verify: (_) {
           verifyNever(() => rabbitRepository.findAll(any(), any()));
           verifyNoMoreInteractions(rabbitRepository);
         });
 
-    blocTest<RabbitsListBloc, RabbitsListState>(
-      'emits [RabbitsListInitial] and [RabbitsListSuccess] when RefreshUsers event is added',
+    blocTest<RabbitsListBloc, GetListState>(
+      'emits [GetListInitial<RabbitGroup>] and [GetListSuccess<RabbitGroup>] when RefreshUsers event is added',
       setUp: () {
         when(() => rabbitRepository.findAll(any(), any()))
             .thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => rabbitsListBloc,
-      act: (bloc) => bloc.add(const RefreshRabbits(null)),
+      act: (bloc) => bloc.add(const RefreshList<FindRabbitsArgs>(null)),
       expect: () => [
-        const RabbitsListInitial(),
-        RabbitsListSuccess(
-          rabbitGroups: paginatedResultTotalCount.data,
+        GetListInitial<RabbitGroup>(),
+        GetListSuccess<RabbitGroup>(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),
@@ -218,19 +219,18 @@ void main() {
       },
     );
 
-    blocTest<RabbitsListBloc, RabbitsListState>(
-      'emits [RabbitsListInitial] and [RabbitsListSuccess] when RefreshUsers event is added with args',
+    blocTest<RabbitsListBloc, GetListState>(
+      'emits [GetListInitial<RabbitGroup>] and [GetListSuccess<RabbitGroup>] when RefreshUsers event is added with args',
       setUp: () {
         when(() => rabbitRepository.findAll(any(), any()))
             .thenAnswer((_) async => paginatedResultTotalCount);
       },
       build: () => rabbitsListBloc,
-      act: (bloc) =>
-          bloc.add(const RefreshRabbits(FindRabbitsArgs(name: 'name'))),
+      act: (bloc) => bloc.add(const RefreshList(FindRabbitsArgs(name: 'name'))),
       expect: () => [
-        const RabbitsListInitial(),
-        RabbitsListSuccess(
-          rabbitGroups: paginatedResultTotalCount.data,
+        GetListInitial<RabbitGroup>(),
+        GetListSuccess<RabbitGroup>(
+          data: paginatedResultTotalCount.data,
           hasReachedMax: false,
           totalCount: paginatedResultTotalCount.totalCount!,
         ),

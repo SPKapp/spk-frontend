@@ -10,10 +10,11 @@ void main() {
     testWidgets('RabbitsListFilters should render correctly',
         (WidgetTester widgetTester) async {
       await widgetTester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: Scaffold(
             body: RabbitsListFilters(
-              args: FindRabbitsArgs(),
+              args: const FindRabbitsArgs(),
+              onFilter: (args) => args,
             ),
           ),
         ),
