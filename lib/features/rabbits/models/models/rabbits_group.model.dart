@@ -50,6 +50,7 @@ final class RabbitGroup extends Equatable {
         id,
         adoptionDescription,
         adoptionDate,
+        status,
         rabbits,
         team,
         region,

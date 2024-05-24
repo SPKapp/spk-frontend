@@ -25,8 +25,8 @@ class SetAdoptedAction extends StatefulWidget {
 }
 
 class _SetAdoptedActionState extends State<SetAdoptedAction> {
-  DateTime date = DateUtils.dateOnly(DateTime.now());
-  late final controller = TextEditingController(text: date.toDateString());
+  late final controller =
+      TextEditingController(text: DateTime.now().toDateString());
 
   @override
   void dispose() {
@@ -74,12 +74,12 @@ class _SetAdoptedActionState extends State<SetAdoptedAction> {
                 onTap: (DateTime date) async {
                   setState(() {
                     controller.text = date.toDateString();
-                    this.date = date;
                   });
                 },
               ),
               FilledButton(
                 onPressed: () async {
+                  final date = DateTimeExtension.parseFromDate(controller.text);
                   if (date.isAfter(DateTime.now().add(
                     const Duration(days: 1),
                   ))) {

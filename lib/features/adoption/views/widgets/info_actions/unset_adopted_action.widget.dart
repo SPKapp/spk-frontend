@@ -28,6 +28,12 @@ class UnsetAdoptedAction extends StatelessWidget {
         listener: (context, state) {
           switch (state) {
             case UpdateSuccess():
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Zapisano zmiany'),
+                ),
+              );
+
               Navigator.of(context).pop(true);
             case UpdateFailure():
               ScaffoldMessenger.of(context).showSnackBar(
