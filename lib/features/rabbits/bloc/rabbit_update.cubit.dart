@@ -1,5 +1,4 @@
 import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
-import 'package:spk_app_frontend/common/exceptions/repository.exception.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
@@ -28,7 +27,7 @@ class RabbitUpdateCubit extends IUpdateCubit {
         const UpdateSuccess(),
       );
     } catch (e) {
-      _error(e, 'Failed to update rabbit');
+      error(e, 'Failed to update rabbit');
     }
   }
 
@@ -40,7 +39,7 @@ class RabbitUpdateCubit extends IUpdateCubit {
         const UpdateSuccess(),
       );
     } catch (e) {
-      _error(e, 'Failed to change team');
+      error(e, 'Failed to change team');
     }
   }
 
@@ -52,7 +51,7 @@ class RabbitUpdateCubit extends IUpdateCubit {
         const UpdateSuccess(),
       );
     } catch (e) {
-      _error(e, 'Failed to change rabbit group');
+      error(e, 'Failed to change rabbit group');
     }
   }
 
@@ -64,7 +63,7 @@ class RabbitUpdateCubit extends IUpdateCubit {
         const UpdateSuccess(),
       );
     } catch (e) {
-      _error(e, 'Failed to remove rabbit');
+      error(e, 'Failed to remove rabbit');
     }
   }
 
@@ -73,19 +72,7 @@ class RabbitUpdateCubit extends IUpdateCubit {
       await _rabbitsRepository.changeRabbitStatus(rabbitId, status);
       emit(const UpdateSuccess());
     } catch (e) {
-      _error(e, 'Failed to change rabbit status');
+      error(e, 'Failed to change rabbit status');
     }
-  }
-
-  void _error(Object e, String message) {
-    logger.error(message, error: e);
-
-    if (e is RepositoryException) {
-      emit(UpdateFailure(code: e.code));
-    } else {
-      emit(const UpdateFailure());
-    }
-
-    emit(const UpdateInitial());
   }
 }

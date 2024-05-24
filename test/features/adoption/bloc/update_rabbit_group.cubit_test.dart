@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/adoption/bloc/update_rabbit_group.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
@@ -31,10 +32,10 @@ void main() {
     });
 
     test('initial state is UpdateRabbitGroupInitial', () {
-      expect(cubit.state, equals(const UpdateRabbitGroupInitial()));
+      expect(cubit.state, equals(const UpdateInitial()));
     });
 
-    blocTest<UpdateRabbitGroupCubit, UpdateRabbitGroupState>(
+    blocTest<UpdateRabbitGroupCubit, UpdateState>(
       'emits [UpdatedRabbitGroup] when update is successful',
       setUp: () {
         when(() => mockRepository.update(any(), any()))
@@ -44,10 +45,10 @@ void main() {
       act: (cubit) => cubit.update(RabbitGroupUpdateDto(
         id: 'id',
       )),
-      expect: () => [const UpdatedRabbitGroup()],
+      expect: () => [const UpdateSuccess()],
     );
 
-    blocTest<UpdateRabbitGroupCubit, UpdateRabbitGroupState>(
+    blocTest<UpdateRabbitGroupCubit, UpdateState>(
       'emits [UpdateRabbitGroupFailure] when update fails',
       setUp: () {
         when(() => mockRepository.update(any(), any())).thenThrow(Exception());
@@ -56,7 +57,7 @@ void main() {
       act: (cubit) => cubit.update(RabbitGroupUpdateDto(
         id: 'id',
       )),
-      expect: () => [const UpdateRabbitGroupFailure()],
+      expect: () => [const UpdateFailure()],
     );
   });
 }

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:spk_app_frontend/common/exceptions/repository.exception.dart';
 
 import 'package:spk_app_frontend/common/services/logger.service.dart';
 
@@ -22,6 +23,20 @@ abstract class IUpdateCubit extends Cubit<UpdateState> {
   /// Restart state to initial.
   @nonVirtual
   void refresh() {
+    emit(const UpdateInitial());
+  }
+
+  @nonVirtual
+  @protected
+  void error(Object e, String message) {
+    logger.error(message, error: e);
+
+    if (e is RepositoryException) {
+      emit(UpdateFailure(code: e.code));
+    } else {
+      emit(const UpdateFailure());
+    }
+
     emit(const UpdateInitial());
   }
 }

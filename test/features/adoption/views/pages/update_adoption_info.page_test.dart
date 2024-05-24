@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/rabbit_group.cubit.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/update_rabbit_group.cubit.dart';
@@ -12,7 +13,7 @@ import 'package:spk_app_frontend/features/adoption/views/views/update_adoption_i
 import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 
-class MockUpdateRabbitGroupCubit extends MockCubit<UpdateRabbitGroupState>
+class MockUpdateRabbitGroupCubit extends MockCubit<UpdateState>
     implements UpdateRabbitGroupCubit {}
 
 class MockRabbitGroupCubit extends MockCubit<GetOneState<RabbitGroup>>
@@ -40,8 +41,7 @@ void main() {
         data: RabbitGroup(id: '1', rabbits: []),
       ));
 
-      when(() => updateCubit.state)
-          .thenReturn(const UpdateRabbitGroupInitial());
+      when(() => updateCubit.state).thenReturn(const UpdateInitial());
 
       registerFallbackValue(RabbitGroupUpdateDto(
         id: '1',
@@ -104,7 +104,7 @@ void main() {
       whenListen(
         updateCubit,
         Stream.fromIterable([
-          const UpdatedRabbitGroup(),
+          const UpdateSuccess(),
         ]),
       );
 
@@ -122,7 +122,7 @@ void main() {
       whenListen(
         updateCubit,
         Stream.fromIterable([
-          const UpdateRabbitGroupFailure(),
+          const UpdateFailure(),
         ]),
       );
 

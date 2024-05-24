@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/rabbit_group.cubit.dart';
@@ -56,10 +57,10 @@ class _UpdateAdoptionInfoPageState extends State<UpdateAdoptionInfoPage> {
                   )..fetch(),
         ),
       ],
-      child: BlocListener<UpdateRabbitGroupCubit, UpdateRabbitGroupState>(
+      child: BlocListener<UpdateRabbitGroupCubit, UpdateState>(
         listener: (context, state) {
           switch (state) {
-            case UpdatedRabbitGroup():
+            case UpdateSuccess():
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   key: Key('successSnackBar'),
@@ -68,7 +69,7 @@ class _UpdateAdoptionInfoPageState extends State<UpdateAdoptionInfoPage> {
               );
               context.pop(true);
               break;
-            case UpdateRabbitGroupFailure():
+            case UpdateFailure():
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   key: Key('failureSnackBar'),

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import 'package:spk_app_frontend/features/rabbits/models/enums/group_status.enum.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models/rabbit.model.dart';
 
 import 'package:spk_app_frontend/features/regions/models/models.dart';
@@ -10,6 +11,7 @@ final class RabbitGroup extends Equatable {
     required this.id,
     this.adoptionDescription,
     this.adoptionDate,
+    this.status,
     required this.rabbits,
     this.team,
     this.region,
@@ -18,6 +20,7 @@ final class RabbitGroup extends Equatable {
   final String id;
   final String? adoptionDescription;
   final DateTime? adoptionDate;
+  final RabbitGroupStatus? status;
   final List<Rabbit> rabbits;
   final Team? team;
   final Region? region;
@@ -29,6 +32,9 @@ final class RabbitGroup extends Equatable {
       adoptionDate: json['adoptionDate'] != null
           ? DateTime.parse(json['adoptionDate'])
           : null,
+      status: json['status'] != null
+          ? RabbitGroupStatus.fromJson(json['status'])
+          : RabbitGroupStatus.unknown,
       rabbits: (json['rabbits'] as List)
           .map((e) => Rabbit.fromJson(e as Map<String, dynamic>))
           .toList(),
