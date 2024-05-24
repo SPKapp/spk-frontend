@@ -32,9 +32,8 @@ class AdoptionInfoPage extends StatelessWidget {
         defaultTitle: 'Informacje o adopcji',
         errorInfo: 'Nie udało się pobrać grupy królików',
         actionsBuilder: (context, rabbitGroup) {
-          final allAdoptable =
-              rabbitGroup.status == RabbitGroupStatus.adoptable;
-          final allAdopted = rabbitGroup.status == RabbitGroupStatus.adopted;
+          final adoptable = rabbitGroup.status == RabbitGroupStatus.adoptable;
+          final adopted = rabbitGroup.status == RabbitGroupStatus.adopted;
           return [
             IconButton(
               icon: const Icon(Icons.edit),
@@ -46,28 +45,29 @@ class AdoptionInfoPage extends StatelessWidget {
                 }
               },
             ),
-            if (allAdopted || allAdoptable)
+            if (adopted || adoptable)
               PopupMenuButton(
                 key: const Key('rabbit_group_info_menu'),
                 itemBuilder: (context) => [
-                  if (allAdoptable)
-                    PopupMenuItem(
-                      child: const Text('Oznacz jako adoptowane'),
-                      onTap: () async {
-                        await showModalMyBottomSheet<bool>(
-                            context: context,
-                            title: 'Oznacz króliki jako adoptowane',
-                            builder: (_) => SetAdoptedAction(
-                                  rabbitGroupId: rabbitGroupId,
-                                ),
-                            onClosing: (result) {
-                              if (result == true) {
-                                context.read<RabbitGroupCubit>().fetch();
-                              }
-                            });
-                      },
-                    ),
-                  if (allAdopted)
+                  PopupMenuItem(
+                    child: Text(adopted
+                        ? 'Zmień datę adopcji'
+                        : 'Oznacz jako adoptowane'),
+                    onTap: () async {
+                      await showModalMyBottomSheet<bool>(
+                          context: context,
+                          title: 'Oznacz króliki jako adoptowane',
+                          builder: (_) => SetAdoptedAction(
+                                rabbitGroupId: rabbitGroupId,
+                              ),
+                          onClosing: (result) {
+                            if (result == true) {
+                              context.read<RabbitGroupCubit>().fetch();
+                            }
+                          });
+                    },
+                  ),
+                  if (adopted)
                     PopupMenuItem(
                       child: const Text('Cofnij adopcję'),
                       onTap: () async {

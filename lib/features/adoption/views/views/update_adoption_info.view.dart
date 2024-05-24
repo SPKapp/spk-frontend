@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:spk_app_frontend/common/extensions/extensions.dart';
-import 'package:spk_app_frontend/common/views/widgets/form_fields.dart';
 import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
 
 class FieldControlers {
   FieldControlers();
 
   final descriptionControler = TextEditingController();
-  final dateControler = TextEditingController();
 
   void dispose() {
     descriptionControler.dispose();
-    dateControler.dispose();
   }
 }
 
@@ -50,20 +45,6 @@ class _UpdateAdoptionInfoViewState extends State<UpdateAdoptionInfoView> {
                 minLines: 3,
                 maxLines: 12,
               ),
-            ),
-          ),
-          AppCard(
-            child: DateField(
-              controller: widget.editControlers.dateControler,
-              labelText: 'Data adopcji',
-              hintText: 'Wprawdź datę adopcji',
-              icon: FontAwesomeIcons.calendarDay,
-              onTap: (DateTime date) {
-                setState(() {
-                  widget.editControlers.dateControler.text =
-                      date.toDateString();
-                });
-              },
             ),
           ),
         ],

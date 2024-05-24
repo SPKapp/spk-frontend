@@ -57,7 +57,7 @@ void main() {
       act: (cubit) => cubit.update(RabbitGroupUpdateDto(
         id: 'id',
       )),
-      expect: () => [const UpdateFailure()],
+      expect: () => [const UpdateFailure(), const UpdateInitial()],
     );
   });
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
-import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/rabbit_group.cubit.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/update_rabbit_group.cubit.dart';
@@ -104,8 +103,6 @@ class _UpdateAdoptionInfoPageState extends State<UpdateAdoptionInfoPage> {
   void _loadFieldControlers(RabbitGroup rabbitGroup) {
     _editControlers.descriptionControler.text =
         rabbitGroup.adoptionDescription ?? '';
-    _editControlers.dateControler.text =
-        rabbitGroup.adoptionDate?.toDateString() ?? '';
   }
 
   void _onSubmit(BuildContext context, RabbitGroup rabbitGroup) {
@@ -113,11 +110,6 @@ class _UpdateAdoptionInfoPageState extends State<UpdateAdoptionInfoPage> {
           RabbitGroupUpdateDto(
             id: rabbitGroup.id,
             adoptionDescription: _editControlers.descriptionControler.text,
-            adoptionDate: _editControlers.dateControler.text.isNotEmpty
-                ? DateTimeExtension.parseFromDate(
-                    _editControlers.dateControler.text,
-                  )
-                : null,
           ),
         );
   }
