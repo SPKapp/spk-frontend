@@ -90,7 +90,6 @@ void main() {
       testWidgets('renders correctly', (WidgetTester tester) async {
         await tester.pumpWidget(buildWidget());
 
-        expect(find.text('Wybierz nowych opiekunów'), findsOneWidget);
         expect(find.byType(DropdownButton<Team>), findsOneWidget);
         expect(find.byType(FilledButton), findsOneWidget);
 

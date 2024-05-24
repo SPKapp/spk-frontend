@@ -20,7 +20,7 @@ enum RabbitStatus {
   String get displayName {
     switch (this) {
       case RabbitStatus.unknown:
-        return 'Nieznany';
+        return 'Nieznany status';
       case RabbitStatus.incoming:
         return 'Nieodebrany';
       case RabbitStatus.inTreatment:

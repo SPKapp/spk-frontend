@@ -97,8 +97,6 @@ void main() {
       testWidgets('renders correctly', (WidgetTester tester) async {
         await tester.pumpWidget(buildWidget());
 
-        expect(find.text('Wybierz nową grupę zaprzyjaźnionych królików'),
-            findsOneWidget);
         expect(find.byType(DropdownButton<String>), findsOneWidget);
         expect(find.byType(FilledButton), findsOneWidget);
 

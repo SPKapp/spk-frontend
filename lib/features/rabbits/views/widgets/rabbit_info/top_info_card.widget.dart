@@ -99,7 +99,7 @@ class TopInfoCard extends StatelessWidget {
 
   Widget _statusText(BuildContext context) {
     return Text(
-      rabbit.status?.displayName ?? 'Status Nieznany',
+      rabbit.status?.displayName ?? 'Nieznany status',
       style: Theme.of(context).textTheme.titleMedium,
     );
   }
