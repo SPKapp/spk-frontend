@@ -26,6 +26,7 @@ abstract class GetRabbitQuery {
 query $operationName(\$id: ID!) {
   rabbit(id: \$id) {
     id
+    status
     name
     color
     breed
@@ -112,6 +113,20 @@ abstract class RemoveRabbitMutation {
   static String document = '''
 mutation $operationName(\$id: ID!) {
 	removeRabbit(id: \$id) {
+		id
+	}
+}
+''';
+}
+
+abstract class ChangeRabbitStatusMutation {
+  static const String operationName = 'ChangeRabbitStatus';
+  static String document = '''
+mutation $operationName(\$rabbitId: ID!, \$status: RabbitStatus) {
+	updateRabbit(updateRabbitInput: {
+		id: \$rabbitId
+		status: \$status
+	}) {
 		id
 	}
 }

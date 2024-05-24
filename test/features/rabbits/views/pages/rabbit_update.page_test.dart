@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
@@ -21,7 +22,7 @@ import 'package:spk_app_frontend/features/rabbits/views/views/rabbit_modify.view
 class MockRabbitCubit extends MockCubit<GetOneState<Rabbit>>
     implements RabbitCubit {}
 
-class MockRabbitUpdateCubit extends MockCubit<RabbitUpdateState>
+class MockRabbitUpdateCubit extends MockCubit<UpdateState>
     implements RabbitUpdateCubit {}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
@@ -62,7 +63,7 @@ void main() {
           .thenReturn(const GetOneSuccess(data: rabbit));
 
       when(() => rabbitUpdateCubit.state)
-          .thenAnswer((_) => const RabbitUpdateInitial());
+          .thenAnswer((_) => const UpdateInitial());
 
       when(() => authCubit.currentUser).thenAnswer(
         (_) => CurrentUser(
@@ -162,8 +163,8 @@ void main() {
         (WidgetTester tester) async {
       whenListen(
         rabbitUpdateCubit,
-        Stream.fromIterable([const RabbitUpdated()]),
-        initialState: const RabbitUpdateInitial(),
+        Stream.fromIterable([const UpdateSuccess()]),
+        initialState: const UpdateInitial(),
       );
 
       when(() => goRouter.pop(any())).thenAnswer((_) async => Object());
@@ -190,8 +191,8 @@ void main() {
         (WidgetTester tester) async {
       whenListen(
         rabbitUpdateCubit,
-        Stream.fromIterable([const RabbitUpdateFailure()]),
-        initialState: const RabbitUpdateInitial(),
+        Stream.fromIterable([const UpdateFailure()]),
+        initialState: const UpdateInitial(),
       );
 
       await tester.pumpWidget(buildWidget());

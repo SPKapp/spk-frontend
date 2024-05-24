@@ -3,11 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockingjay/mockingjay.dart';
 
 import 'package:flutter/material.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info_actions.dart';
 
-class MockRabbitUpdateCubit extends MockCubit<RabbitUpdateState>
+class MockRabbitUpdateCubit extends MockCubit<UpdateState>
     implements RabbitUpdateCubit {}
 
 void main() {
@@ -20,7 +21,7 @@ void main() {
       navigator = MockNavigator();
 
       when(() => rabbitUpdateCubit.state).thenReturn(
-        const RabbitUpdateInitial(),
+        const UpdateInitial(),
       );
 
       when(() => navigator.canPop()).thenReturn(true);
@@ -56,8 +57,8 @@ void main() {
         (WidgetTester tester) async {
       whenListen(
         rabbitUpdateCubit,
-        Stream.fromIterable([const RabbitUpdated()]),
-        initialState: const RabbitUpdateInitial(),
+        Stream.fromIterable([const UpdateSuccess()]),
+        initialState: const UpdateInitial(),
       );
       when(() => navigator.pop(any())).thenAnswer((_) async => true);
 
@@ -73,8 +74,8 @@ void main() {
     testWidgets('should show snackbar on failure', (WidgetTester tester) async {
       whenListen(
         rabbitUpdateCubit,
-        Stream.fromIterable([const RabbitUpdateFailure()]),
-        initialState: const RabbitUpdateInitial(),
+        Stream.fromIterable([const UpdateFailure()]),
+        initialState: const UpdateInitial(),
       );
       when(() => navigator.pop(any())).thenAnswer((_) async => false);
 

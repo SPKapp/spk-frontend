@@ -24,11 +24,13 @@ class RabbitStatusDropdown extends StatelessWidget {
           width: constraints.maxWidth,
           onSelected: onSelected,
           initialSelection: initialSelection,
-          dropdownMenuEntries: const [
-            DropdownMenuEntry(value: RabbitStatus.unknown, label: 'Nieznany'),
-            DropdownMenuEntry(
-                value: RabbitStatus.forCastration, label: 'Do kastracji'),
-          ],
+          dropdownMenuEntries: RabbitStatus.values
+              .where((status) => status != RabbitStatus.unknown)
+              .map((status) => DropdownMenuEntry(
+                    value: status,
+                    label: status.displayName,
+                  ))
+              .toList(),
         ),
       ),
     );

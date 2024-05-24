@@ -69,7 +69,6 @@ class GetOnePage<T extends Object, Cubit extends IGetOneCubit<T>>
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<Cubit, GetOneState<T>>(
-      // TODO: Add buildWhen
       builder: (context, state) {
         String title = defaultTitle;
         List<Widget>? actions = this.actions;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 
 import 'package:spk_app_frontend/common/extensions/extensions.dart';
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
@@ -60,10 +61,10 @@ class _RabbitUpdatePageState extends State<RabbitUpdatePage> {
                   ),
         ),
       ],
-      child: BlocListener<RabbitUpdateCubit, RabbitUpdateState>(
+      child: BlocListener<RabbitUpdateCubit, UpdateState>(
         listener: (context, state) {
           switch (state) {
-            case RabbitUpdated():
+            case UpdateSuccess():
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Królik został zaktualizowany'),
@@ -71,7 +72,7 @@ class _RabbitUpdatePageState extends State<RabbitUpdatePage> {
               );
               context.pop(true);
               break;
-            case RabbitUpdateFailure():
+            case UpdateFailure():
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Nie udało się zaktualizować królika'),

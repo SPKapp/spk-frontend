@@ -77,8 +77,11 @@ extension on User {
       name: displayName,
       emailVerified: emailVerified,
       teamId: claims['teamId'],
-      roles:
-          (claims['roles'] as List).map((role) => Role.fromJson(role)).toList(),
+      roles: claims['roles'] != null
+          ? (claims['roles'] as List)
+              .map((role) => Role.fromJson(role))
+              .toList()
+          : [],
       managerRegions: claims['managerRegions'] != null
           ? (claims['managerRegions'] as List).map((e) => e as int).toList()
           : null,

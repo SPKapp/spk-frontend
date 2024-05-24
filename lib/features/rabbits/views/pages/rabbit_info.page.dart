@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
+import 'package:spk_app_frontend/common/views/widgets/actions.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
@@ -62,33 +63,61 @@ class RabbitInfoPage extends StatelessWidget {
                     key: const Key('rabbit_info_popup_menu'),
                     itemBuilder: (_) => [
                       PopupMenuItem(
+                        child: const Text('Zmień Status'),
+                        onTap: () async {
+                          await showModalMyBottomSheet<bool>(
+                            context: context,
+                            title: 'Wybierz status królika',
+                            builder: (_) {
+                              return ChangeStatus(
+                                rabbit: rabbit,
+                              );
+                            },
+                            onClosing: (result) {
+                              if (result == true) {
+                                context.read<RabbitCubit>().fetch();
+                              }
+                            },
+                          );
+                        },
+                      ),
+                      PopupMenuItem(
                         child: const Text('Zmień DT'),
                         onTap: () async {
-                          final result = await showModalBottomSheet<bool>(
-                              context: context,
-                              builder: (_) {
-                                return ChangeVolunteerAction(
-                                  rabbit: rabbit,
-                                );
-                              });
-                          if (result != null && result && context.mounted) {
-                            context.read<RabbitCubit>().fetch();
-                          }
+                          await showModalMyBottomSheet<bool>(
+                            context: context,
+                            title: 'Wybierz nowych opiekunów',
+                            builder: (_) {
+                              return ChangeVolunteerAction(
+                                rabbit: rabbit,
+                              );
+                            },
+                            onClosing: (result) {
+                              if (result == true) {
+                                context.read<RabbitCubit>().fetch();
+                              }
+                            },
+                          );
                         },
                       ),
                       PopupMenuItem(
                         child: const Text('Zmień zaprzyjaźnioną grupę'),
                         onTap: () async {
-                          final result = await showModalBottomSheet<bool>(
-                              context: context,
-                              builder: (_) {
-                                return ChangeRabbitGroupAction(
-                                  rabbit: rabbit,
-                                );
-                              });
-                          if (result != null && result && context.mounted) {
-                            context.read<RabbitCubit>().fetch();
-                          }
+                          await showModalMyBottomSheet<bool>(
+                            context: context,
+                            title:
+                                'Wybierz nową grupę zaprzyjaźnionych królików',
+                            builder: (_) {
+                              return ChangeRabbitGroupAction(
+                                rabbit: rabbit,
+                              );
+                            },
+                            onClosing: (result) {
+                              if (result == true) {
+                                context.read<RabbitCubit>().fetch();
+                              }
+                            },
+                          );
                         },
                       ),
                       PopupMenuItem(

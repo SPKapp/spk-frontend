@@ -1,10 +1,8 @@
-import 'package:equatable/equatable.dart';
-import 'package:bloc/bloc.dart';
-
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
+import 'package:spk_app_frontend/common/exceptions/repository.exception.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
+import 'package:spk_app_frontend/features/rabbits/models/models.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
-
-part 'rabbit_update.state.dart';
 
 /// A cubit that handles the state management for updating a rabbit.
 ///
@@ -13,18 +11,12 @@ part 'rabbit_update.state.dart';
 /// - [changeTeam] - changes the team of the rabbit with the given [rabbitGroupId] to the team with the given [teamId]
 /// - [changeRabbitGroup] - changes the rabbit group of the rabbit with the given [rabbitId] to the rabbit group with the given [rabbitGroupId]
 /// - [removeRabbit] - removes the rabbit with the given [rabbitId]
-/// - [resetState] - resets the state to the initial state
+/// - [changeRabbitStatus] - changes the status of the rabbit with the given [rabbitId] to the status with the given [status]
 ///
-/// Available states:
-/// - [RabbitUpdateInitial] - initial state
-/// - [RabbitUpdated] - the rabbit has been updated successfully
-/// - [RabbitUpdateFailure] - an error occurred while updating the rabbit
-///
-class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
+class RabbitUpdateCubit extends IUpdateCubit {
   RabbitUpdateCubit({
     required IRabbitsRepository rabbitsRepository,
-  })  : _rabbitsRepository = rabbitsRepository,
-        super(const RabbitUpdateInitial());
+  }) : _rabbitsRepository = rabbitsRepository;
 
   final IRabbitsRepository _rabbitsRepository;
 
@@ -33,15 +25,10 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
     try {
       await _rabbitsRepository.updateRabbit(rabbit);
       emit(
-        const RabbitUpdated(),
+        const UpdateSuccess(),
       );
     } catch (e) {
-      emit(
-        const RabbitUpdateFailure(),
-      );
-      emit(
-        const RabbitUpdateInitial(),
-      );
+      _error(e, 'Failed to update rabbit');
     }
   }
 
@@ -50,15 +37,10 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
     try {
       await _rabbitsRepository.updateTeam(rabbitGroupId, teamId);
       emit(
-        const RabbitUpdated(),
+        const UpdateSuccess(),
       );
     } catch (e) {
-      emit(
-        const RabbitUpdateFailure(),
-      );
-      emit(
-        const RabbitUpdateInitial(),
-      );
+      _error(e, 'Failed to change team');
     }
   }
 
@@ -67,15 +49,10 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
     try {
       await _rabbitsRepository.updateRabbitGroup(rabbitId, rabbitGroupId);
       emit(
-        const RabbitUpdated(),
+        const UpdateSuccess(),
       );
     } catch (e) {
-      emit(
-        const RabbitUpdateFailure(),
-      );
-      emit(
-        const RabbitUpdateInitial(),
-      );
+      _error(e, 'Failed to change rabbit group');
     }
   }
 
@@ -84,20 +61,31 @@ class RabbitUpdateCubit extends Cubit<RabbitUpdateState> {
     try {
       await _rabbitsRepository.removeRabbit(rabbitId);
       emit(
-        const RabbitUpdated(),
+        const UpdateSuccess(),
       );
     } catch (e) {
-      emit(
-        const RabbitUpdateFailure(),
-      );
-      emit(
-        const RabbitUpdateInitial(),
-      );
+      _error(e, 'Failed to remove rabbit');
     }
   }
 
-  /// Resets the state to the initial state.
-  void resetState() {
-    emit(const RabbitUpdateInitial());
+  void changeRabbitStatus(String rabbitId, RabbitStatus status) async {
+    try {
+      await _rabbitsRepository.changeRabbitStatus(rabbitId, status);
+      emit(const UpdateSuccess());
+    } catch (e) {
+      _error(e, 'Failed to change rabbit status');
+    }
+  }
+
+  void _error(Object e, String message) {
+    logger.error(message, error: e);
+
+    if (e is RepositoryException) {
+      emit(UpdateFailure(code: e.code));
+    } else {
+      emit(const UpdateFailure());
+    }
+
+    emit(const UpdateInitial());
   }
 }

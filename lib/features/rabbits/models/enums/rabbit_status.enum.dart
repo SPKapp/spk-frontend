@@ -1,6 +1,10 @@
 enum RabbitStatus {
   unknown('Unknown'),
-  forCastration('ForCastration');
+  incoming('Incoming'),
+  inTreatment('InTreatment'),
+  adoptable('Adoptable'),
+  adopted('Adopted'),
+  deceased('Deceased');
 
   const RabbitStatus(this.jsonValue);
 
@@ -11,5 +15,24 @@ enum RabbitStatus {
 
   String toJson() {
     return jsonValue;
+  }
+
+  String get displayName {
+    switch (this) {
+      case RabbitStatus.unknown:
+        return 'Nieznany';
+      case RabbitStatus.incoming:
+        return 'Nieodebrany';
+      case RabbitStatus.inTreatment:
+        return 'W\u{00A0}leczeniu';
+      case RabbitStatus.adoptable:
+        return 'Do\u{00A0}adopcji';
+      case RabbitStatus.adopted:
+        return 'Adoptowany';
+      case RabbitStatus.deceased:
+        return 'Zmarły';
+      default:
+        return '';
+    }
   }
 }

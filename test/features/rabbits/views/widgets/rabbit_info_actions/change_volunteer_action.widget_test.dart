@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/models/models.dart';
@@ -15,7 +16,7 @@ import 'package:spk_app_frontend/features/users/models/models.dart';
 class MockTeamsListBloc extends MockBloc<TeamsListEvent, TeamsListState>
     implements TeamsListBloc {}
 
-class MockRabbitUpdateCubit extends MockCubit<RabbitUpdateState>
+class MockRabbitUpdateCubit extends MockCubit<UpdateState>
     implements RabbitUpdateCubit {}
 
 class MockGoRouter extends Mock implements GoRouter {}
@@ -66,7 +67,7 @@ void main() {
         ),
       );
       when(() => rabbitUpdateCubit.state).thenAnswer(
-        (_) => const RabbitUpdateInitial(),
+        (_) => const UpdateInitial(),
       );
     });
 
@@ -164,9 +165,9 @@ void main() {
         whenListen(
           rabbitUpdateCubit,
           Stream.fromIterable([
-            const RabbitUpdated(),
+            const UpdateSuccess(),
           ]),
-          initialState: const RabbitUpdateInitial(),
+          initialState: const UpdateInitial(),
         );
 
         await tester.pumpWidget(buildWidget());
@@ -250,9 +251,9 @@ void main() {
         whenListen(
           rabbitUpdateCubit,
           Stream.fromIterable([
-            const RabbitUpdateFailure(),
+            const UpdateFailure(),
           ]),
-          initialState: const RabbitUpdateInitial(),
+          initialState: const UpdateInitial(),
         );
 
         await tester.pumpWidget(buildWidget());

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit_update.cubit.dart';
 import 'package:spk_app_frontend/features/rabbits/repositories/interfaces.dart';
@@ -21,12 +22,12 @@ class RemoveRabbitAction extends StatelessWidget {
           (context) => RabbitUpdateCubit(
                 rabbitsRepository: context.read<IRabbitsRepository>(),
               ),
-      child: BlocListener<RabbitUpdateCubit, RabbitUpdateState>(
+      child: BlocListener<RabbitUpdateCubit, UpdateState>(
         listener: (context, state) {
           switch (state) {
-            case RabbitUpdated():
+            case UpdateSuccess():
               Navigator.of(context).pop(true);
-            case RabbitUpdateFailure():
+            case UpdateFailure():
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Nie udało się usunąć królika'),

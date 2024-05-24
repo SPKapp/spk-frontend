@@ -1,3 +1,4 @@
+import 'package:spk_app_frontend/common/exceptions/repository.exception.dart';
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/common/services/gql.service.dart';
 import 'package:spk_app_frontend/features/rabbits/models/dto.dart';
@@ -111,6 +112,31 @@ class RabbitsRepository implements IRabbitsRepository {
     );
 
     if (result.hasException) {
+      throw result.exception!;
+    }
+  }
+
+  @override
+  Future<void> changeRabbitStatus(String rabbitId, RabbitStatus status) async {
+    final result = await gqlService.mutate(
+      ChangeRabbitStatusMutation.document,
+      operationName: ChangeRabbitStatusMutation.operationName,
+      variables: {
+        'rabbitId': rabbitId,
+        'status': status.toJson(),
+      },
+    );
+
+    if (result.hasException) {
+      if (result.exception!.graphqlErrors.isNotEmpty) {
+        if (result.exception!.graphqlErrors[0].extensions?['status'] == 409) {
+          throw RepositoryException(
+            code: result.exception!.graphqlErrors[0]
+                .extensions?['originalError']?['error'],
+          );
+        }
+      }
+
       throw result.exception!;
     }
   }

@@ -36,4 +36,13 @@ abstract interface class IRabbitsRepository {
 
   /// Removes a rabbit with the given [id].
   Future<void> removeRabbit(String id);
+
+  /// Changes the status of a rabbit.
+  ///
+  /// Throws an [RepositoryException] with the codes:
+  /// - 'not-all-deceased' - if all rabbits in the group do not have the status 'deceased'
+  /// - 'not-all-adopted' - if all rabbits in the group do not have the status 'adopted'
+  /// - 'unavailable-group-status' - if cannot determine the status of the rabbit group
+  /// In other cases, throws an exception.
+  Future<void> changeRabbitStatus(String rabbitId, RabbitStatus status);
 }

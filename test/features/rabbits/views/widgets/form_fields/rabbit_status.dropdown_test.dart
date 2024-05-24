@@ -40,10 +40,10 @@ void main() {
       await tester.tap(find.byType(DropdownMenu<RabbitStatus>));
       await tester.pump();
 
-      await tester.tap(find.text('Do kastracji').last);
+      await tester.tap(find.text(RabbitStatus.adoptable.displayName).last);
       await tester.pump();
 
-      expect(selectedValue, RabbitStatus.forCastration);
+      expect(selectedValue, RabbitStatus.adoptable);
     });
 
     testWidgets('should render with initialSelection',
@@ -53,13 +53,13 @@ void main() {
           home: Scaffold(
             body: RabbitStatusDropdown(
               onSelected: (value) {},
-              initialSelection: RabbitStatus.forCastration,
+              initialSelection: RabbitStatus.adoptable,
             ),
           ),
         ),
       );
 
-      expect(find.text('Do kastracji'), findsWidgets);
+      expect(find.text(RabbitStatus.adoptable.displayName), findsWidgets);
     });
   });
 }
