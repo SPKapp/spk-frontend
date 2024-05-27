@@ -59,6 +59,7 @@ class AppRouter {
                 path: '/rabbit/:id',
                 builder: (context, state) {
                   return RabbitInfoPage(
+                    key: ValueKey(state.pathParameters['id']),
                     rabbitId: state.pathParameters['id']!,
                   );
                 },
@@ -67,6 +68,7 @@ class AppRouter {
                     path: 'edit',
                     builder: (context, state) {
                       return RabbitUpdatePage(
+                        key: ValueKey(state.pathParameters['id']),
                         rabbitId: state.pathParameters['id']!,
                       );
                     },
@@ -77,6 +79,7 @@ class AppRouter {
                       final extra = state.extra as dynamic;
 
                       return RabbitNotesListPage(
+                          key: ValueKey(state.pathParameters['id']),
                           rabbitId: state.pathParameters['id']!,
                           rabbitName: extra?['rabbitName'],
                           isVetVisit: extra?['isVetVisit']);
@@ -88,6 +91,7 @@ class AppRouter {
                       final extra = state.extra as dynamic;
 
                       return RabbitNoteCreatePage(
+                        key: ValueKey(state.pathParameters['id']),
                         rabbitId: state.pathParameters['id']!,
                         isVetVisitInitial: extra?['isVetVisit'],
                         rabbitName: extra?['rabbitName'],
@@ -100,6 +104,7 @@ class AppRouter {
                 path: '/rabbitGroup/:id',
                 builder: (context, state) {
                   return AdoptionInfoPage(
+                    key: ValueKey(state.pathParameters['id']),
                     rabbitGroupId: state.pathParameters['id']!,
                   );
                 },
@@ -108,6 +113,7 @@ class AppRouter {
                     path: 'edit',
                     builder: (context, state) {
                       return UpdateAdoptionInfoPage(
+                        key: ValueKey(state.pathParameters['id']),
                         rabbitGroupId: state.pathParameters['id']!,
                       );
                     },
@@ -120,6 +126,7 @@ class AppRouter {
                   final extra = state.extra as dynamic;
 
                   return RabbitNotePage(
+                    key: ValueKey(state.pathParameters['id']),
                     id: state.pathParameters['id']!,
                     rabbitName: extra?['rabbitName'],
                   );
@@ -129,6 +136,7 @@ class AppRouter {
                     path: 'edit',
                     builder: (context, state) {
                       return RabbitNoteUpdatePage(
+                        key: ValueKey(state.pathParameters['id']),
                         rabbitNoteId: state.pathParameters['id']!,
                       );
                     },
@@ -151,6 +159,7 @@ class AppRouter {
                 path: '/user/:id',
                 builder: (context, state) {
                   return UserPage(
+                    key: ValueKey(state.pathParameters['id']),
                     userId: state.pathParameters['id']!,
                   );
                 },
@@ -159,6 +168,7 @@ class AppRouter {
                     path: 'edit',
                     builder: (context, state) {
                       return UserUpdatePage(
+                        key: ValueKey(state.pathParameters['id']),
                         userId: state.pathParameters['id']!,
                       );
                     },

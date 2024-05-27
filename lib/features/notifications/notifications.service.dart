@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:spk_app_frontend/app/router.dart';
 import 'package:spk_app_frontend/common/services/logger.service.dart';
 
 import 'package:spk_app_frontend/config/config.dart';
@@ -22,17 +23,28 @@ class NotificationService {
   })  : _fcmTokenCubit = fcmTokenCubit,
         _fcmTokensRepository = fcmTokensRepository,
         _fcm = fcm ?? FirebaseMessaging.instance {
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      FirebaseMessaging.onBackgroundMessage(_onBackgroundMessageHandler);
-    }
-
-    FirebaseMessaging.onMessage.listen(_onFrontendMessageHandler);
+    _init();
   }
 
   final FirebaseMessaging _fcm;
   final FcmTokenCubit _fcmTokenCubit;
   final IFcmTokensRepository _fcmTokensRepository;
   final _logger = LoggerService();
+
+  Future<void> _init() async {
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+      FirebaseMessaging.onBackgroundMessage(_onBackgroundMessageHandler);
+    }
+
+    FirebaseMessaging.onMessage.listen(_onFrontendMessageHandler);
+    FirebaseMessaging.onMessageOpenedApp.listen(_onOpenAppHandler);
+
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      _onOpenAppHandler(initialMessage);
+    }
+  }
 
   Future<void> register() async {
     try {
@@ -95,14 +107,24 @@ class NotificationService {
 
   void _onFrontendMessageHandler(RemoteMessage message) {
     // TODO: Implement this
-    print('Got a message whilst in the foreground!');
-    _logger.debug('Got a message whilst in the foreground!');
-    _logger.debug('Message data: ${message.data}');
+
+    print('Got a message whilst in the foreground!,  ${message.category}');
+    print('Message data: ${message.data}');
+    print('Message type: ${message.messageType}');
 
     if (message.notification != null) {
-      _logger.debug(
-          'Message also contained a notification: ${message.notification?.body}');
+      print(
+          'Message also contained a notification: ${message.notification?.body} ${message.notification}');
     }
+  }
+
+  void _onOpenAppHandler(RemoteMessage message) {
+    if (message.data['category'] == 'groupAssigned') {
+      print('Open page with group ${message.data['groupId']}');
+      AppRouter.router.go('/rabbitGroup/${message.data['groupId']}');
+    }
+
+    print('Opened app from notification: ${message.messageId}');
   }
 }
 
