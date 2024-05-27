@@ -15,4 +15,6 @@ abstract class AppConfig {
   // Google OAuth Client ID
   static const String googleClientId =
       String.fromEnvironment('GOOGLE_CLIENT_ID');
+
+  static const String webVapidKey = String.fromEnvironment('WEB_VAPID_KEY');
 }

@@ -2,20 +2,19 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spk_app_frontend/config/config.dart';
 
 class GqlService {
-  GqlService(String Function() authTokenFn) {
-    final HttpLink httpLink = HttpLink(AppConfig.apiUrl);
+  GqlService();
+
+  late GraphQLClient _client;
+
+  void setAuthToken(String Function() authTokenFn) {
     final AuthLink authLink =
         AuthLink(getToken: () async => 'Bearer ${authTokenFn()}');
 
-    final Link link = authLink.concat(httpLink);
-
     _client = GraphQLClient(
-      link: link,
+      link: authLink.concat(HttpLink(AppConfig.apiUrl)),
       cache: GraphQLCache(),
     );
   }
-
-  late GraphQLClient _client;
 
   Future<QueryResult> query(
     String query, {

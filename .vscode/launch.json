@@ -12,6 +12,16 @@
             "preLaunchTask": "adb reverse localhost",
         },
         {
+            "name": "Start web",
+            "request": "launch",
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define-from-file",
+                ".env/development.env",
+                "--web-browser-flag=--disable-web-security"
+            ],
+        },
+        {
             "name": "spk_app_frontend (profile mode)",
             "request": "launch",
             "type": "dart",

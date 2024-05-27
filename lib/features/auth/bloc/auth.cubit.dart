@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:spk_app_frontend/features/auth/auth.service.dart';
 import 'package:spk_app_frontend/features/auth/current_user.model.dart';
+import 'package:spk_app_frontend/features/notifications/notifications.service.dart';
 
 part 'auth.state.dart';
 
@@ -22,20 +23,24 @@ part 'auth.state.dart';
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit({
     AuthService? authService,
+    required NotificationService notificationService,
   })  : _authService = authService ?? AuthService(),
+        _notificationService = notificationService,
         super(const Unauthenticated()) {
     _userSubscription = _authService.user.listen(_onUserChanged);
   }
 
   final AuthService _authService;
+  final NotificationService _notificationService;
   late final StreamSubscription<CurrentUser> _userSubscription;
 
   void _onUserChanged(CurrentUser currentUser) {
-    emit(
-      currentUser.isNotEmpty
-          ? Authenticated(currentUser)
-          : const Unauthenticated(),
-    );
+    if (currentUser.isNotEmpty) {
+      _notificationService.register();
+      emit(Authenticated(currentUser));
+    } else {
+      emit(const Unauthenticated());
+    }
   }
 
   CurrentUser get currentUser {
@@ -47,7 +52,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  void logout() {
+  void logout() async {
+    await _notificationService.deregister();
     unawaited(_authService.logout());
   }
 

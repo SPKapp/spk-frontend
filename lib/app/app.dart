@@ -4,8 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spk_app_frontend/app/router.dart';
 import 'package:spk_app_frontend/app/view/inject_repositories.widget.dart';
 import 'package:spk_app_frontend/common/bloc/theme.cubit.dart';
+import 'package:spk_app_frontend/common/services/gql.service.dart';
 import 'package:spk_app_frontend/config/config.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
+import 'package:spk_app_frontend/features/auth/auth.service.dart';
+import 'package:spk_app_frontend/features/notifications/notifications.dart';
+import 'package:spk_app_frontend/features/notifications/repositories/interfaces.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -14,34 +18,64 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
+      // Hydrated blocs
       providers: [
-        BlocProvider(
-          create: (_) => AuthCubit(),
+        BlocProvider<NotificationsCubit>(
+          create: (_) => FcmTokenCubit(),
         ),
         BlocProvider(
           create: (_) => ThemeCubit(),
         ),
       ],
-      child: BlocListener<AuthCubit, AuthState>(
-          listener: (BuildContext context, AuthState state) {
-        AppRouter.router.refresh();
-      }, child: InjectRepositories(
-        child: BlocBuilder<ThemeCubit, ThemeMode>(
-          builder: (context, themeMode) {
-            return MaterialApp.router(
-              title: AppConfig.appName,
-              themeMode: themeMode,
-              theme: ThemeData.light(
-                useMaterial3: true,
+      child: InjectRepositories(
+        child: MultiBlocProvider(
+          providers: [
+            RepositoryProvider<NotificationService>(
+              create: (context) => NotificationService(
+                fcmTokenCubit:
+                    context.read<NotificationsCubit>() as FcmTokenCubit,
+                fcmTokensRepository: context.read<IFcmTokensRepository>(),
               ),
-              darkTheme: ThemeData.dark(
-                useMaterial3: true,
+            ),
+            RepositoryProvider<AuthService>(
+              create: (context) => AuthService(),
+            ),
+          ],
+          child: BlocProvider(
+            create: (context) {
+              final cubit = AuthCubit(
+                authService: context.read<AuthService>(),
+                notificationService: context.read<NotificationService>(),
+              );
+
+              context
+                  .read<GqlService>()
+                  .setAuthToken(() => cubit.currentUser.token);
+              return cubit;
+            },
+            child: BlocListener<AuthCubit, AuthState>(
+              listener: (BuildContext context, AuthState state) {
+                AppRouter.router.refresh();
+              },
+              child: BlocBuilder<ThemeCubit, ThemeMode>(
+                builder: (context, themeMode) {
+                  return MaterialApp.router(
+                    title: AppConfig.appName,
+                    themeMode: themeMode,
+                    theme: ThemeData.light(
+                      useMaterial3: true,
+                    ),
+                    darkTheme: ThemeData.dark(
+                      useMaterial3: true,
+                    ),
+                    routerConfig: AppRouter.router,
+                  );
+                },
               ),
-              routerConfig: AppRouter.router,
-            );
-          },
+            ),
+          ),
         ),
-      )),
+      ),
     );
   }
 }
