@@ -31,12 +31,6 @@ void main() {
       firebaseMessaging = MockFirebaseMessaging();
       notificationSettings = MockNotificationSettings();
 
-      notificationService = NotificationService(
-        fcmTokenCubit: fcmTokenCubit,
-        fcmTokensRepository: fcmTokensRepository,
-        fcm: firebaseMessaging,
-      );
-
       when(
         () => firebaseMessaging.requestPermission(
           alert: true,
@@ -53,84 +47,99 @@ void main() {
       when(() => fcmTokensRepository.update(any())).thenAnswer((_) async {});
       when(() => fcmTokensRepository.delete(any())).thenAnswer((_) async {});
       when(() => firebaseMessaging.deleteToken()).thenAnswer((_) async {});
+      when(() => firebaseMessaging.getInitialMessage())
+          .thenAnswer((_) async => null);
+
+      notificationService = NotificationService(
+        fcmTokenCubit: fcmTokenCubit,
+        fcmTokensRepository: fcmTokensRepository,
+        fcm: firebaseMessaging,
+      );
     });
 
-    test('register() should request permission and update token if authorized',
-        () async {
-      when(() => notificationSettings.authorizationStatus)
-          .thenReturn(AuthorizationStatus.authorized);
-      when(() => firebaseMessaging.getToken(vapidKey: any(named: 'vapidKey')))
-          .thenAnswer((_) async => token);
+    group('register', () {
+      test(
+          'register() should request permission and update token if authorized',
+          () async {
+        when(() => notificationSettings.authorizationStatus)
+            .thenReturn(AuthorizationStatus.authorized);
+        when(() => firebaseMessaging.getToken(vapidKey: any(named: 'vapidKey')))
+            .thenAnswer((_) async => token);
 
-      await expectLater(notificationService.register(), completes);
+        await expectLater(notificationService.register(), completes);
 
-      verify(() => fcmTokenCubit.setToken(token)).called(1);
-      verify(() => fcmTokensRepository.update(token)).called(1);
+        verify(() => fcmTokenCubit.setToken(token)).called(1);
+        verify(() => fcmTokensRepository.update(token)).called(1);
+      });
+
+      test('register() should set not allowed if permission denied', () async {
+        when(() => notificationSettings.authorizationStatus)
+            .thenReturn(AuthorizationStatus.denied);
+
+        await expectLater(
+            () => notificationService.register(), returnsNormally);
+
+        verify(() => fcmTokenCubit.setNotAllowed()).called(1);
+      });
+
+      test('register() should set not configured if permission not determined',
+          () async {
+        when(() => notificationSettings.authorizationStatus)
+            .thenReturn(AuthorizationStatus.notDetermined);
+
+        await expectLater(
+            () => notificationService.register(), returnsNormally);
+
+        verify(() => fcmTokenCubit.setNotConfigured()).called(1);
+      });
+
+      test('register() should handle error when getting FCM token', () async {
+        when(() => notificationSettings.authorizationStatus)
+            .thenReturn(AuthorizationStatus.authorized);
+        when(() => firebaseMessaging.getToken(vapidKey: any(named: 'vapidKey')))
+            .thenThrow(Exception('Test error'));
+
+        await expectLater(notificationService.register(), completes);
+
+        verifyNever(() => fcmTokenCubit.setToken(token));
+        verifyNever(() => fcmTokensRepository.update(token));
+      });
     });
 
-    test('register() should set not allowed if permission denied', () async {
-      when(() => notificationSettings.authorizationStatus)
-          .thenReturn(AuthorizationStatus.denied);
+    group('deregister', () {
+      test('deregister() should delete token if allowed', () async {
+        when(() => fcmTokenCubit.state).thenReturn(NotificationsAllowed(token));
 
-      await expectLater(() => notificationService.register(), returnsNormally);
+        await expectLater(notificationService.deregister(), completes);
 
-      verify(() => fcmTokenCubit.setNotAllowed()).called(1);
-    });
+        verify(() => fcmTokenCubit.setNotConfigured()).called(1);
+        verify(() => fcmTokensRepository.delete(token)).called(1);
+        verify(() => firebaseMessaging.deleteToken()).called(1);
+      });
 
-    test('register() should set not configured if permission not determined',
-        () async {
-      when(() => notificationSettings.authorizationStatus)
-          .thenReturn(AuthorizationStatus.notDetermined);
+      test('deregister() should handle warning when token not determined',
+          () async {
+        when(() => fcmTokenCubit.state)
+            .thenReturn(const NotificationsNotConfigured());
 
-      await expectLater(() => notificationService.register(), returnsNormally);
+        await expectLater(notificationService.deregister(), completes);
 
-      verify(() => fcmTokenCubit.setNotConfigured()).called(1);
-    });
+        verifyNever(() => fcmTokenCubit.setNotConfigured());
+        verifyNever(() => fcmTokensRepository.delete(token));
+        verifyNever(() => firebaseMessaging.deleteToken());
+      });
 
-    test('register() should handle error when getting FCM token', () async {
-      when(() => notificationSettings.authorizationStatus)
-          .thenReturn(AuthorizationStatus.authorized);
-      when(() => firebaseMessaging.getToken(vapidKey: any(named: 'vapidKey')))
-          .thenThrow(Exception('Test error'));
+      test('deregister() should handle warning when notifications not allowed',
+          () async {
+        when(() => fcmTokenCubit.state)
+            .thenReturn(const NotificationsNotAllowed());
 
-      await expectLater(notificationService.register(), completes);
+        await expectLater(notificationService.deregister(), completes);
 
-      verifyNever(() => fcmTokenCubit.setToken(token));
-      verifyNever(() => fcmTokensRepository.update(token));
-    });
-
-    test('deregister() should delete token if allowed', () async {
-      when(() => fcmTokenCubit.state).thenReturn(NotificationsAllowed(token));
-
-      await expectLater(notificationService.deregister(), completes);
-
-      verify(() => fcmTokenCubit.setNotConfigured()).called(1);
-      verify(() => fcmTokensRepository.delete(token)).called(1);
-      verify(() => firebaseMessaging.deleteToken()).called(1);
-    });
-
-    test('deregister() should handle warning when token not determined',
-        () async {
-      when(() => fcmTokenCubit.state)
-          .thenReturn(const NotificationsNotConfigured());
-
-      await expectLater(notificationService.deregister(), completes);
-
-      verifyNever(() => fcmTokenCubit.setNotConfigured());
-      verifyNever(() => fcmTokensRepository.delete(token));
-      verifyNever(() => firebaseMessaging.deleteToken());
-    });
-
-    test('deregister() should handle warning when notifications not allowed',
-        () async {
-      when(() => fcmTokenCubit.state)
-          .thenReturn(const NotificationsNotAllowed());
-
-      await expectLater(notificationService.deregister(), completes);
-
-      verifyNever(() => fcmTokenCubit.setNotConfigured());
-      verifyNever(() => fcmTokensRepository.delete(token));
-      verifyNever(() => firebaseMessaging.deleteToken());
+        verifyNever(() => fcmTokenCubit.setNotConfigured());
+        verifyNever(() => fcmTokensRepository.delete(token));
+        verifyNever(() => firebaseMessaging.deleteToken());
+      });
     });
   });
 }

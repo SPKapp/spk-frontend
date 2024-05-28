@@ -39,8 +39,7 @@ class NotificationService {
     FirebaseMessaging.onMessage.listen(_onFrontendMessageHandler);
     FirebaseMessaging.onMessageOpenedApp.listen(_onOpenAppHandler);
 
-    RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    RemoteMessage? initialMessage = await _fcm.getInitialMessage();
     if (initialMessage != null) {
       _onOpenAppHandler(initialMessage);
     }
@@ -119,12 +118,28 @@ class NotificationService {
   }
 
   void _onOpenAppHandler(RemoteMessage message) {
-    if (message.data['category'] == 'groupAssigned') {
-      print('Open page with group ${message.data['groupId']}');
-      AppRouter.router.go('/rabbitGroup/${message.data['groupId']}');
-    }
+    print('Handling a message from the background or terminated state!');
 
-    print('Opened app from notification: ${message.messageId}');
+    if (message.data['category'] == 'groupAssigned') {
+      AppRouter.router.go('/rabbitGroup/${message.data['groupId']}');
+    } else if (message.data['category'] == 'rabbitAssigned') {
+      AppRouter.router.go('/rabbit/${message.data['rabbitId']}');
+    } else if (message.data['category'] == 'rabbitMoved') {
+      AppRouter.router.go('/rabbit/${message.data['rabbitId']}');
+    } else if (message.data['category'] == 'rabbitPickup') {
+      // TODO
+    } else if (message.data['category'] == 'adoptionToConfirm') {
+      AppRouter.router.go(
+        '/rabbitGroup/${message.data['groupId']}',
+        extra: {'launchSetAdoptedAction': true},
+      );
+    } else if (message.data['category'] == 'nearVetVisit') {
+      // TODO
+    } else if (message.data['category'] == 'vetVisitEnd') {
+      // TODO
+    } else {
+      AppRouter.router.go('/');
+    }
   }
 }
 

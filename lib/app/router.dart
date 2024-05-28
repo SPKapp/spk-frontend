@@ -103,9 +103,13 @@ class AppRouter {
               GoRoute(
                 path: '/rabbitGroup/:id',
                 builder: (context, state) {
+                  final extra = state.extra as dynamic;
+
                   return AdoptionInfoPage(
                     key: ValueKey(state.pathParameters['id']),
                     rabbitGroupId: state.pathParameters['id']!,
+                    launchSetAdoptedAction:
+                        extra?['launchSetAdoptedAction'] ?? false,
                   );
                 },
                 routes: [

@@ -14,10 +14,12 @@ class SetAdoptedAction extends StatefulWidget {
   const SetAdoptedAction({
     super.key,
     required this.rabbitGroupId,
+    this.date,
     this.rabbitGroupUpdateCubit,
   });
 
   final String rabbitGroupId;
+  final DateTime? date;
   final UpdateRabbitGroupCubit Function(BuildContext)? rabbitGroupUpdateCubit;
 
   @override
@@ -25,8 +27,8 @@ class SetAdoptedAction extends StatefulWidget {
 }
 
 class _SetAdoptedActionState extends State<SetAdoptedAction> {
-  late final controller =
-      TextEditingController(text: DateTime.now().toDateString());
+  late final controller = TextEditingController(
+      text: (widget.date ?? DateTime.now()).toDateString());
 
   @override
   void dispose() {

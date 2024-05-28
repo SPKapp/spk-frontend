@@ -64,6 +64,29 @@ class AdoptionInfoView extends StatelessWidget {
             ),
           ),
         ),
+        AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Status:',
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  rabbitGroup.status?.displayName ?? 'Błąd pobierania statusu',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
         if (rabbitGroup.adoptionDate != null)
           AppCard(
             child: Padding(
