@@ -104,12 +104,16 @@ class AppRouter {
                 path: '/rabbitGroup/:id',
                 builder: (context, state) {
                   final extra = state.extra as dynamic;
+                  final query = state.uri.queryParameters;
+
+                  final launchSetAdoptedAction =
+                      query['launchSetAdoptedAction'] == 'true' ||
+                          extra?['launchSetAdoptedAction'] == true;
 
                   return AdoptionInfoPage(
                     key: ValueKey(state.pathParameters['id']),
                     rabbitGroupId: state.pathParameters['id']!,
-                    launchSetAdoptedAction:
-                        extra?['launchSetAdoptedAction'] ?? false,
+                    launchSetAdoptedAction: launchSetAdoptedAction,
                   );
                 },
                 routes: [

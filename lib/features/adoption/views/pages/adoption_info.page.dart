@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
 
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/common/views/widgets/actions/show_my_modal_bottom_sheet.function.dart';
@@ -28,7 +27,7 @@ class AdoptionInfoPage extends StatefulWidget {
 }
 
 class _AdoptionInfoPageState extends State<AdoptionInfoPage> {
-  late bool launchSetAdoptedAction = widget.launchSetAdoptedAction;
+  late bool _launchSetAdoptedAction = widget.launchSetAdoptedAction;
 
   @override
   Widget build(BuildContext context) {
@@ -38,70 +37,63 @@ class _AdoptionInfoPageState extends State<AdoptionInfoPage> {
                 rabbitGroupId: widget.rabbitGroupId,
                 rabbitGroupsRepository: context.read<IRabbitGroupsRepository>(),
               )..fetch(),
-      child: BlocListener<RabbitGroupCubit, GetOneState>(
-        listener: (context, state) {
-          if (state is GetOneSuccess<RabbitGroup> && launchSetAdoptedAction) {
-            launchSetAdoptedAction = false;
-            final adoptable = state.data.status == RabbitGroupStatus.adoptable;
-            final adopted = state.data.status == RabbitGroupStatus.adopted;
+      child: GetOnePage<RabbitGroup, RabbitGroupCubit>(
+        defaultTitle: 'Informacje o adopcji',
+        errorInfo: 'Nie udało się pobrać grupy królików',
+        actionsBuilder: (context, rabbitGroup) {
+          final adoptable = rabbitGroup.status == RabbitGroupStatus.adoptable;
+          final adopted = rabbitGroup.status == RabbitGroupStatus.adopted;
 
-            if (adopted || adoptable) {
-              _onAdoptedClicked(context, state.data);
-            }
-          }
-        },
-        child: GetOnePage<RabbitGroup, RabbitGroupCubit>(
-          defaultTitle: 'Informacje o adopcji',
-          errorInfo: 'Nie udało się pobrać grupy królików',
-          actionsBuilder: (context, rabbitGroup) {
-            final adoptable = rabbitGroup.status == RabbitGroupStatus.adoptable;
-            final adopted = rabbitGroup.status == RabbitGroupStatus.adopted;
-
-            return [
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () async {
-                  final result = await context
-                      .push('/rabbitGroup/${widget.rabbitGroupId}/edit');
-                  if (result == true && context.mounted) {
-                    context.read<RabbitGroupCubit>().fetch();
-                  }
-                },
-              ),
-              if (adopted || adoptable)
-                PopupMenuButton(
-                  key: const Key('rabbit_group_info_menu'),
-                  itemBuilder: (context) => [
+          return [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () async {
+                final result = await context
+                    .push('/rabbitGroup/${widget.rabbitGroupId}/edit');
+                if (result == true && context.mounted) {
+                  context.read<RabbitGroupCubit>().fetch();
+                }
+              },
+            ),
+            if (adopted || adoptable)
+              PopupMenuButton(
+                key: const Key('rabbit_group_info_menu'),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: Text(adopted
+                        ? 'Zmień datę adopcji'
+                        : 'Oznacz jako adoptowane'),
+                    onTap: () => _onAdoptedClicked(context, rabbitGroup),
+                  ),
+                  if (adopted || rabbitGroup.adoptionDate != null)
                     PopupMenuItem(
-                      child: Text(adopted
-                          ? 'Zmień datę adopcji'
-                          : 'Oznacz jako adoptowane'),
-                      onTap: () => _onAdoptedClicked(context, rabbitGroup),
-                    ),
-                    if (adopted || rabbitGroup.adoptionDate != null)
-                      PopupMenuItem(
-                        child: const Text('Cofnij adopcję'),
-                        onTap: () async {
-                          final result = await showDialog<bool>(
-                              context: context,
-                              builder: (context) {
-                                return UnsetAdoptedAction(
-                                  rabbitGroupId: widget.rabbitGroupId,
-                                );
-                              });
+                      child: const Text('Cofnij adopcję'),
+                      onTap: () async {
+                        final result = await showDialog<bool>(
+                            context: context,
+                            builder: (context) {
+                              return UnsetAdoptedAction(
+                                rabbitGroupId: widget.rabbitGroupId,
+                              );
+                            });
 
-                          if (context.mounted && result == true) {
-                            context.read<RabbitGroupCubit>().fetch();
-                          }
-                        },
-                      ),
-                  ],
-                ),
-            ];
-          },
-          builder: (context, rabbitGroup) =>
-              AdoptionInfoView(rabbitGroup: rabbitGroup),
-        ),
+                        if (context.mounted && result == true) {
+                          context.read<RabbitGroupCubit>().fetch();
+                        }
+                      },
+                    ),
+                ],
+              ),
+          ];
+        },
+        builder: (context, rabbitGroup) => _OnLoad(
+            onLoad: (context) {
+              if (_launchSetAdoptedAction) {
+                _launchSetAdoptedAction = false;
+                _onAdoptedClicked(context, rabbitGroup);
+              }
+            },
+            child: AdoptionInfoView(rabbitGroup: rabbitGroup)),
       ),
     );
   }
@@ -119,5 +111,34 @@ class _AdoptionInfoPageState extends State<AdoptionInfoPage> {
             context.read<RabbitGroupCubit>().fetch();
           }
         });
+  }
+}
+
+class _OnLoad extends StatefulWidget {
+  const _OnLoad({
+    required this.child,
+    required this.onLoad,
+  });
+
+  final Widget child;
+  final void Function(BuildContext) onLoad;
+
+  @override
+  State<_OnLoad> createState() => __OnLoadState();
+}
+
+class __OnLoadState extends State<_OnLoad> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onLoad(context);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
