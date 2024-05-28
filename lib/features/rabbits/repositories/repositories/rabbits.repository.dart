@@ -72,7 +72,7 @@ class RabbitsRepository implements IRabbitsRepository {
   }
 
   @override
-  Future<void> updateTeam(String rabbitGroupId, String teamId) async {
+  Future<void> updateTeam(String rabbitGroupId, String? teamId) async {
     final result = await gqlService.mutate(
       UpdateTeamMutation.document,
       operationName: UpdateTeamMutation.operationName,

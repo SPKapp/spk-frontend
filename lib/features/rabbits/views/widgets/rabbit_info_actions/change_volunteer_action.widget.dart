@@ -89,14 +89,18 @@ class _ChangeVolunteerActionState extends State<ChangeVolunteerAction> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     DropdownButton<Team>(
-                      items: state.teams
-                          .map(
-                            (team) => DropdownMenuItem(
-                              value: team,
-                              child: Text(team.name),
-                            ),
-                          )
-                          .toList(),
+                      items: [
+                        ...state.teams.map(
+                          (team) => DropdownMenuItem(
+                            value: team,
+                            child: Text(team.name),
+                          ),
+                        ),
+                        const DropdownMenuItem(
+                          value: null,
+                          child: Text('Brak opiekuna'),
+                        ),
+                      ],
                       onChanged: (value) {
                         setState(() {
                           _selectedTeam = value;
@@ -106,19 +110,38 @@ class _ChangeVolunteerActionState extends State<ChangeVolunteerAction> {
                     ),
                     const SizedBox(height: 20),
                     FilledButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_selectedTeam == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Nie wybrano nowego opiekuna'),
-                            ),
-                          );
-                          context.pop();
-                        } else if (_selectedTeam !=
-                            widget.rabbit.rabbitGroup!.team) {
+                          final result = await showDialog<bool>(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) => AlertDialog(
+                                    title: const Text(
+                                        'Czy na pewno chcesz usunąć opiekuna?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: const Text('Anuluj'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(true),
+                                        child: const Text('Zmień'),
+                                      ),
+                                    ],
+                                  ));
+                          if (result != true) {
+                            return;
+                          }
+                          if (!context.mounted) {
+                            return;
+                          }
+                        }
+                        if (_selectedTeam != widget.rabbit.rabbitGroup!.team) {
                           context.read<RabbitUpdateCubit>().changeTeam(
                                 widget.rabbit.rabbitGroup!.id.toString(),
-                                _selectedTeam!.id,
+                                _selectedTeam?.id,
                               );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(

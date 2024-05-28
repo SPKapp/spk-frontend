@@ -24,7 +24,7 @@ abstract interface class IRabbitsRepository {
   /// The [teamId] parameter specifies the ID of the new team for the rabbit group.
   ///
   /// Throws an exception if the update fails.
-  Future<void> updateTeam(String rabbitGroupId, String teamId);
+  Future<void> updateTeam(String rabbitGroupId, String? teamId);
 
   /// Updates the rabbit group for a specific rabbit.
   ///

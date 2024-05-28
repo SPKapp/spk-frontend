@@ -89,7 +89,7 @@ mutation $operationName(\$updateRabbitInput: UpdateRabbitInput!) {
 abstract class UpdateTeamMutation {
   static const String operationName = 'UpdateTeam';
   static String document = '''
-mutation $operationName(\$rabbitGroupId: ID!, \$teamId: ID!) {
+mutation $operationName(\$rabbitGroupId: ID!, \$teamId: ID) {
 	updateRabbitGroupTeam(rabbitGroupId: \$rabbitGroupId, teamId: \$teamId) {
 		id
 	}
