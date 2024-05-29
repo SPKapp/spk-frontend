@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/common/views/widgets/actions/show_my_modal_bottom_sheet.function.dart';
+import 'package:spk_app_frontend/common/views/widgets/on_load.widget.dart';
 import 'package:spk_app_frontend/features/adoption/bloc/rabbit_group.cubit.dart';
 import 'package:spk_app_frontend/features/adoption/views/views/adoption_info.view.dart';
 import 'package:spk_app_frontend/features/adoption/views/widgets/info_actions.dart';
@@ -86,7 +87,7 @@ class _AdoptionInfoPageState extends State<AdoptionInfoPage> {
               ),
           ];
         },
-        builder: (context, rabbitGroup) => _OnLoad(
+        builder: (context, rabbitGroup) => OnLoad(
             onLoad: (context) {
               if (_launchSetAdoptedAction) {
                 _launchSetAdoptedAction = false;
@@ -111,34 +112,5 @@ class _AdoptionInfoPageState extends State<AdoptionInfoPage> {
             context.read<RabbitGroupCubit>().fetch();
           }
         });
-  }
-}
-
-class _OnLoad extends StatefulWidget {
-  const _OnLoad({
-    required this.child,
-    required this.onLoad,
-  });
-
-  final Widget child;
-  final void Function(BuildContext) onLoad;
-
-  @override
-  State<_OnLoad> createState() => __OnLoadState();
-}
-
-class __OnLoadState extends State<_OnLoad> {
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.onLoad(context);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.child;
   }
 }

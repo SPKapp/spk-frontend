@@ -58,9 +58,17 @@ class AppRouter {
               GoRoute(
                 path: '/rabbit/:id',
                 builder: (context, state) {
+                  final extra = state.extra as dynamic;
+                  final query = state.uri.queryParameters;
+
+                  final launchSetStatusAction =
+                      query['launchSetStatusAction'] == 'true' ||
+                          extra?['launchSetStatusAction'] == true;
+
                   return RabbitInfoPage(
                     key: ValueKey(state.pathParameters['id']),
                     rabbitId: state.pathParameters['id']!,
+                    launchSetStatusAction: launchSetStatusAction,
                   );
                 },
                 routes: [

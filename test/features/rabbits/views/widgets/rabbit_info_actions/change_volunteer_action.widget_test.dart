@@ -218,7 +218,7 @@ void main() {
         verify(() => goRouter.pop()).called(1);
       });
 
-      testWidgets('shows snackbar when no team selected',
+      testWidgets('shows warning when no team is selected',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           buildWidget(
@@ -242,7 +242,7 @@ void main() {
         await tester.tap(saveButton);
         await tester.pump();
 
-        expect(find.text('Nie wybrano nowego opiekuna'), findsOneWidget);
+        expect(find.byType(AlertDialog), findsOneWidget);
       });
 
       testWidgets('shows snackbar when RabbitUpdateCubit fails',

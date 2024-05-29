@@ -83,6 +83,13 @@ class _ChangeStatusState extends State<ChangeStatus> {
                 },
                 initialSelection: _selectedStatus ?? RabbitStatus.unknown,
               ),
+              if (_selectedStatus == RabbitStatus.inTreatment)
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                      'Jeśli data przyjęcia nie została ustawiona, zostanie ustawiona na dziś.\nJeśli chcesz ją zmienić, przejdź do edycji królika.',
+                      textAlign: TextAlign.center),
+                ),
               const SizedBox(height: 15),
               FilledButton(
                 onPressed: () {

@@ -126,8 +126,11 @@ class NotificationService {
       AppRouter.router.go('/rabbit/${message.data['rabbitId']}');
     } else if (message.data['category'] == 'rabbitMoved') {
       AppRouter.router.go('/rabbit/${message.data['rabbitId']}');
-    } else if (message.data['category'] == 'rabbitPickup') {
-      // TODO
+    } else if (message.data['category'] == 'admissionToConfirm') {
+      AppRouter.router.go(
+        '/rabbit/${message.data['rabbitId']}',
+        extra: {'launchSetStatusAction': true},
+      );
     } else if (message.data['category'] == 'adoptionToConfirm') {
       AppRouter.router.go(
         '/rabbitGroup/${message.data['groupId']}',

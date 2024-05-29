@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/common/views/widgets/actions.dart';
+import 'package:spk_app_frontend/common/views/widgets/on_load.widget.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
 import 'package:spk_app_frontend/features/rabbits/bloc/rabbit.cubit.dart';
@@ -15,15 +16,24 @@ import 'package:spk_app_frontend/features/rabbits/views/widgets/rabbit_info_acti
 /// A page that displays information about a rabbit.
 ///
 /// This widget assumes that the [IRabbitsRepository] is provided above by [RepositoryProvider].
-class RabbitInfoPage extends StatelessWidget {
+class RabbitInfoPage extends StatefulWidget {
   const RabbitInfoPage({
     super.key,
     required this.rabbitId,
+    this.launchSetStatusAction = false,
     this.rabbitCubit,
   });
 
   final String rabbitId;
+  final bool launchSetStatusAction;
   final RabbitCubit Function(BuildContext)? rabbitCubit;
+
+  @override
+  State<RabbitInfoPage> createState() => _RabbitInfoPageState();
+}
+
+class _RabbitInfoPageState extends State<RabbitInfoPage> {
+  late bool _launchSetStatusAction = widget.launchSetStatusAction;
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +42,10 @@ class RabbitInfoPage extends StatelessWidget {
         user.checkRole([Role.regionManager, Role.admin]);
 
     return BlocProvider(
-      create: rabbitCubit ??
+      create: widget.rabbitCubit ??
           (context) => RabbitCubit(
                 rabbitsRepository: context.read<IRabbitsRepository>(),
-                rabbitId: rabbitId,
+                rabbitId: widget.rabbitId,
               )..fetch(),
       child: GetOnePage<Rabbit, RabbitCubit>(
           defaultTitle: 'Królik',
@@ -51,8 +61,8 @@ class RabbitInfoPage extends StatelessWidget {
                   key: const Key('rabbit_info_edit_button'),
                   icon: const Icon(Icons.edit),
                   onPressed: () async {
-                    final result =
-                        await context.push<bool>('/rabbit/$rabbitId/edit');
+                    final result = await context
+                        .push<bool>('/rabbit/${widget.rabbitId}/edit');
                     if (result == true && context.mounted) {
                       context.read<RabbitCubit>().fetch();
                     }
@@ -64,22 +74,7 @@ class RabbitInfoPage extends StatelessWidget {
                     itemBuilder: (_) => [
                       PopupMenuItem(
                         child: const Text('Zmień Status'),
-                        onTap: () async {
-                          await showModalMyBottomSheet<bool>(
-                            context: context,
-                            title: 'Wybierz status królika',
-                            builder: (_) {
-                              return ChangeStatus(
-                                rabbit: rabbit,
-                              );
-                            },
-                            onClosing: (result) {
-                              if (result == true) {
-                                context.read<RabbitCubit>().fetch();
-                              }
-                            },
-                          );
-                        },
+                        onTap: () => _onSetStateClicked(context, rabbit),
                       ),
                       PopupMenuItem(
                         child: const Text('Zmień DT'),
@@ -195,10 +190,35 @@ class RabbitInfoPage extends StatelessWidget {
               ),
             ];
           },
-          builder: (context, rabbit) => RabbitInfoView(
-                rabbit: rabbit,
-                admin: isAtLeastRegionManager,
+          builder: (context, rabbit) => OnLoad(
+                onLoad: (context) {
+                  if (_launchSetStatusAction) {
+                    _launchSetStatusAction = false;
+                    _onSetStateClicked(context, rabbit);
+                  }
+                },
+                child: RabbitInfoView(
+                  rabbit: rabbit,
+                  admin: isAtLeastRegionManager,
+                ),
               )),
+    );
+  }
+
+  void _onSetStateClicked(BuildContext context, Rabbit rabbit) async {
+    await showModalMyBottomSheet<bool>(
+      context: context,
+      title: 'Wybierz status królika',
+      builder: (_) {
+        return ChangeStatus(
+          rabbit: rabbit,
+        );
+      },
+      onClosing: (result) {
+        if (result == true) {
+          context.read<RabbitCubit>().fetch();
+        }
+      },
     );
   }
 }
