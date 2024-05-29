@@ -35,4 +35,30 @@ enum RabbitStatus {
         return '';
     }
   }
+
+  static List<RabbitStatus> get statuses => [
+        RabbitStatus.incoming,
+        RabbitStatus.inTreatment,
+        RabbitStatus.adoptable,
+        RabbitStatus.adopted,
+        RabbitStatus.deceased,
+      ];
+
+  static List<RabbitStatus> get notArived => [RabbitStatus.incoming];
+
+  static List<RabbitStatus> get underCare => [
+        RabbitStatus.inTreatment,
+        RabbitStatus.adoptable,
+      ];
+
+  static List<RabbitStatus> get active => [
+        RabbitStatus.incoming,
+        RabbitStatus.inTreatment,
+        RabbitStatus.adoptable,
+      ];
+
+  static List<RabbitStatus> get archival => [
+        RabbitStatus.adopted,
+        RabbitStatus.deceased,
+      ];
 }

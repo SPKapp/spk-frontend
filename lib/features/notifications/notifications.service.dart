@@ -138,8 +138,14 @@ class NotificationService {
       );
     } else if (message.data['category'] == 'nearVetVisit') {
       AppRouter.router.go('/rabbit/${message.data['rabbitId']}');
+      AppRouter.router.push('/note/${message.data['noteId']}', extra: {
+        'rabbitName': message.data['rabbitName'],
+      });
     } else if (message.data['category'] == 'vetVisitEnd') {
-      AppRouter.router.go('/note/${message.data['noteId']}');
+      AppRouter.router.go('/rabbit/${message.data['rabbitId']}');
+      AppRouter.router.push('/note/${message.data['noteId']}', extra: {
+        'rabbitName': message.data['rabbitName'],
+      });
     } else {
       AppRouter.router.go('/');
     }

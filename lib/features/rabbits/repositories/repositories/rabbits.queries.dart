@@ -3,8 +3,22 @@ part of 'rabbits.repository.dart';
 abstract class GetRabbitsListQuery {
   static const String operationName = 'GetRabbitGroups';
   static String document(bool total) => '''
-query $operationName(\$offset: Int, \$limit: Int, \$regionsIds: [ID!], \$teamsIds: [ID!], \$name: String) {
-  rabbitGroups(offset: \$offset, limit: \$limit, regionsIds: \$regionsIds, teamIds: \$teamsIds, name: \$name) {
+query $operationName(
+	\$offset: Int
+	\$limit: Int
+	\$regionsIds: [ID!]
+	\$teamsIds: [ID!]
+	\$name: String
+	\$rabbitStatus: [RabbitStatus!]
+) {
+	rabbitGroups(
+		offset: \$offset
+		limit: \$limit
+		regionsIds: \$regionsIds
+		teamIds: \$teamsIds
+		name: \$name
+		rabbitStatus: \$rabbitStatus
+	) {
     data {
       id
       rabbits {

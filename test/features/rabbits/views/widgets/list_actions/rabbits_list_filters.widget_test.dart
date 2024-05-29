@@ -21,7 +21,7 @@ void main() {
       );
 
       expect(find.text('Filtruj króliki'), findsOneWidget);
-      expect(find.byType(Placeholder), findsOneWidget);
+      expect(find.byType(Wrap), findsOneWidget);
       expect(find.text('Filtruj'), findsOneWidget);
     });
   });

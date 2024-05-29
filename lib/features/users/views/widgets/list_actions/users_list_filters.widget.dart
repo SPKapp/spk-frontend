@@ -67,11 +67,6 @@ class _UsersListFiltersState extends State<UsersListFilters> {
               ),
             ],
           ),
-          const Padding(
-            // TODO: Implement filters
-            padding: EdgeInsets.all(8.0),
-            child: Text('Jakie filtry są potrzebne?'),
-          ),
           FilledButton.tonal(
             onPressed: () {
               widget.onFilter(args);
