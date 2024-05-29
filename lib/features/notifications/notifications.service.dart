@@ -137,9 +137,9 @@ class NotificationService {
         extra: {'launchSetAdoptedAction': true},
       );
     } else if (message.data['category'] == 'nearVetVisit') {
-      // TODO
+      AppRouter.router.go('/rabbit/${message.data['rabbitId']}');
     } else if (message.data['category'] == 'vetVisitEnd') {
-      // TODO
+      AppRouter.router.go('/note/${message.data['noteId']}');
     } else {
       AppRouter.router.go('/');
     }

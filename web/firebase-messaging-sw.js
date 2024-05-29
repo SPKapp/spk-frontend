@@ -3,13 +3,13 @@ importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js")
 
 firebase.initializeApp({
     /* WARNING: Replace the following config with your own Firebase config. From /lib/config/firebase_options.dart -> web */
-    apiKey: 'AIzaSyADkB4EuFUJQq1R6kx6djLyxVXr712qzO4',
-    appId: '1:534351148362:web:b339b1c697cfeeb31ffdb3',
-    messagingSenderId: '534351148362',
-    projectId: 'spkdev-alfa',
-    authDomain: 'spkdev-alfa.firebaseapp.com',
-    storageBucket: 'spkdev-alfa.appspot.com',
-
+    /* WARNING: Replace the following config with your own Firebase config. From /lib/config/firebase_options.dart -> web */
+    // apiKey: "...",
+    // appId: "...",
+    // messagingSenderId: "...",
+    // projectId: "...",
+    // authDomain: "...",
+    // storageBucket: "...",
 });
 
 self.addEventListener('notificationclick', function (event) {
@@ -32,9 +32,9 @@ self.addEventListener('notificationclick', function (event) {
         path =
             `/#/rabbitGroup/${notification.data['groupId']}?launchSetAdoptedAction=true`;
     } else if (notification.data['category'] == 'nearVetVisit') {
-        // TODO
+        path = `/#/rabbit/${notification.data['rabbitId']}`;
     } else if (notification.data['category'] == 'vetVisitEnd') {
-        // TODO
+        path = `/#/note/${notification.data['noteId']}`;
     }
     clickedNotification.close();
 
