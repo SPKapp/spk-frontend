@@ -1,11 +1,10 @@
 {
-    "name": "spk_app_frontend",
-    "short_name": "spk_app_frontend",
+    "name": "HopManager",
+    "short_name": "HopManager",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
