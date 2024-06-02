@@ -9,7 +9,7 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Stream<CurrentUser> get user {
-    return _auth.authStateChanges().asyncMap((firebaseUser) async {
+    return _auth.idTokenChanges().asyncMap((firebaseUser) async {
       return firebaseUser == null
           ? CurrentUser.empty
           : await firebaseUser.toCurrentUser;

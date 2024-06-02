@@ -109,3 +109,14 @@ mutation $operationName(\$updateUserInput: UpdateProfileInput!) {
 }
 ''';
 }
+
+abstract class _RemoveUserMutation {
+  static String operationName = 'RemoveUser';
+  static String document = '''
+mutation $operationName(\$id: ID!) {
+	removeUser(id: \$id) {
+		id
+	}
+}
+''';
+}

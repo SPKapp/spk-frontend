@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/user_update.cubit.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
@@ -23,57 +24,113 @@ void main() {
       userUpdateCubit.close();
     });
 
-    group('myProfile', () {
-      setUp(() {
-        userUpdateCubit = UserUpdateCubit(usersRepository: mockUsersRepository);
+    group('updateUser', () {
+      group('myProfile', () {
+        setUp(() {
+          userUpdateCubit =
+              UserUpdateCubit(usersRepository: mockUsersRepository);
+        });
+
+        test('initial state is UpdateInitial', () {
+          expect(userUpdateCubit.state, equals(const UpdateInitial()));
+        });
+
+        blocTest<UserUpdateCubit, UpdateState>(
+          'emits [UpdateSuccess] when updateUser is successful',
+          setUp: () {
+            when(() => mockUsersRepository.updateMyProfile(any()))
+                .thenAnswer((_) async {});
+          },
+          build: () => userUpdateCubit,
+          act: (cubit) =>
+              cubit.updateUser(const UserUpdateDto(firstName: 'John')),
+          expect: () => const <UpdateState>[
+            UpdateSuccess(),
+          ],
+          verify: (_) {
+            verify(
+                () => mockUsersRepository.updateMyProfile(const UserUpdateDto(
+                      firstName: 'John',
+                    ))).called(1);
+          },
+        );
+
+        blocTest<UserUpdateCubit, UpdateState>(
+          'emits [UpdateFailure, UpdateInitial] when updateUser is unsuccessful',
+          setUp: () {
+            when(() => mockUsersRepository.updateMyProfile(any()))
+                .thenThrow(Exception('oops'));
+          },
+          build: () => userUpdateCubit,
+          act: (cubit) =>
+              cubit.updateUser(const UserUpdateDto(firstName: 'John')),
+          expect: () => const <UpdateState>[
+            UpdateFailure(),
+            UpdateInitial(),
+          ],
+          verify: (_) {
+            verify(
+                () => mockUsersRepository.updateMyProfile(const UserUpdateDto(
+                      firstName: 'John',
+                    ))).called(1);
+          },
+        );
       });
 
-      test('initial state is UserUpdateInitial', () {
-        expect(userUpdateCubit.state, equals(const UserUpdateInitial()));
+      group('user', () {
+        setUp(() {
+          userUpdateCubit = UserUpdateCubit(
+            userId: '1',
+            usersRepository: mockUsersRepository,
+          );
+        });
+
+        blocTest<UserUpdateCubit, UpdateState>(
+          'emits [UpdateSuccess] when updateUser is successful',
+          setUp: () {
+            when(() => mockUsersRepository.updateUser(any(), any()))
+                .thenAnswer((_) async {});
+          },
+          build: () => userUpdateCubit,
+          act: (cubit) =>
+              cubit.updateUser(const UserUpdateDto(firstName: 'John')),
+          expect: () => const <UpdateState>[
+            UpdateSuccess(),
+          ],
+          verify: (_) {
+            verify(() => mockUsersRepository.updateUser(
+                '1',
+                const UserUpdateDto(
+                  firstName: 'John',
+                ))).called(1);
+          },
+        );
+
+        blocTest<UserUpdateCubit, UpdateState>(
+          'emits [UpdateFailure, UpdateInitial] when updateUser is unsuccessful',
+          setUp: () {
+            when(() => mockUsersRepository.updateUser(any(), any()))
+                .thenThrow(Exception('oops'));
+          },
+          build: () => userUpdateCubit,
+          act: (cubit) =>
+              cubit.updateUser(const UserUpdateDto(firstName: 'John')),
+          expect: () => const <UpdateState>[
+            UpdateFailure(),
+            UpdateInitial(),
+          ],
+          verify: (_) {
+            verify(() => mockUsersRepository.updateUser(
+                '1',
+                const UserUpdateDto(
+                  firstName: 'John',
+                ))).called(1);
+          },
+        );
       });
-
-      blocTest<UserUpdateCubit, UserUpdateState>(
-        'emits [UserUpdateInitial, UserUpdated] when updateUser is successful',
-        setUp: () {
-          when(() => mockUsersRepository.updateMyProfile(any()))
-              .thenAnswer((_) async {});
-        },
-        build: () => userUpdateCubit,
-        act: (cubit) =>
-            cubit.updateUser(const UserUpdateDto(firstName: 'John')),
-        expect: () => const <UserUpdateState>[
-          UserUpdateInitial(),
-          UserUpdated(),
-        ],
-        verify: (_) {
-          verify(() => mockUsersRepository.updateMyProfile(const UserUpdateDto(
-                firstName: 'John',
-              ))).called(1);
-        },
-      );
-
-      blocTest<UserUpdateCubit, UserUpdateState>(
-        'emits [UserUpdateInitial, UserUpdateError] when updateUser is unsuccessful',
-        setUp: () {
-          when(() => mockUsersRepository.updateMyProfile(any()))
-              .thenThrow(Exception('oops'));
-        },
-        build: () => userUpdateCubit,
-        act: (cubit) =>
-            cubit.updateUser(const UserUpdateDto(firstName: 'John')),
-        expect: () => const <UserUpdateState>[
-          UserUpdateInitial(),
-          UserUpdateFailure(),
-        ],
-        verify: (_) {
-          verify(() => mockUsersRepository.updateMyProfile(const UserUpdateDto(
-                firstName: 'John',
-              ))).called(1);
-        },
-      );
     });
 
-    group('user', () {
+    group('removeUser', () {
       setUp(() {
         userUpdateCubit = UserUpdateCubit(
           userId: '1',
@@ -81,47 +138,36 @@ void main() {
         );
       });
 
-      blocTest<UserUpdateCubit, UserUpdateState>(
-        'emits [UserUpdateInitial, UserUpdated] when updateUser is successful',
+      blocTest<UserUpdateCubit, UpdateState>(
+        'emits [UpdateSuccess] when removeUser is successful',
         setUp: () {
-          when(() => mockUsersRepository.updateUser(any(), any()))
+          when(() => mockUsersRepository.removeUser(any()))
               .thenAnswer((_) async {});
         },
         build: () => userUpdateCubit,
-        act: (cubit) =>
-            cubit.updateUser(const UserUpdateDto(firstName: 'John')),
-        expect: () => const <UserUpdateState>[
-          UserUpdateInitial(),
-          UserUpdated(),
+        act: (cubit) => cubit.removeUser(),
+        expect: () => const <UpdateState>[
+          UpdateSuccess(),
         ],
         verify: (_) {
-          verify(() => mockUsersRepository.updateUser(
-              '1',
-              const UserUpdateDto(
-                firstName: 'John',
-              ))).called(1);
+          verify(() => mockUsersRepository.removeUser('1')).called(1);
         },
       );
 
-      blocTest<UserUpdateCubit, UserUpdateState>(
-        'emits [UserUpdateInitial, UserUpdateError] when updateUser is unsuccessful',
+      blocTest<UserUpdateCubit, UpdateState>(
+        'emits [UpdateFailure, UpdateInitial] when removeUser is unsuccessful',
         setUp: () {
-          when(() => mockUsersRepository.updateUser(any(), any()))
+          when(() => mockUsersRepository.removeUser(any()))
               .thenThrow(Exception('oops'));
         },
         build: () => userUpdateCubit,
-        act: (cubit) =>
-            cubit.updateUser(const UserUpdateDto(firstName: 'John')),
-        expect: () => const <UserUpdateState>[
-          UserUpdateInitial(),
-          UserUpdateFailure(),
+        act: (cubit) => cubit.removeUser(),
+        expect: () => const <UpdateState>[
+          UpdateFailure(),
+          UpdateInitial(),
         ],
         verify: (_) {
-          verify(() => mockUsersRepository.updateUser(
-              '1',
-              const UserUpdateDto(
-                firstName: 'John',
-              ))).called(1);
+          verify(() => mockUsersRepository.removeUser('1')).called(1);
         },
       );
     });

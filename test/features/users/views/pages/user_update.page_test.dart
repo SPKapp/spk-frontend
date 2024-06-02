@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:spk_app_frontend/common/bloc/interfaces/get_one.cubit.interface.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/users/bloc/user.cubit.dart';
 import 'package:spk_app_frontend/features/users/bloc/user_update.cubit.dart';
@@ -13,7 +14,7 @@ import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/views/pages/user_update.page.dart';
 import 'package:spk_app_frontend/features/users/views/views/user_modify.view.dart';
 
-class MockUserUpdateCubit extends MockCubit<UserUpdateState>
+class MockUserUpdateCubit extends MockCubit<UpdateState>
     implements UserUpdateCubit {}
 
 class MockUserCubit extends MockCubit<GetOneState<User>> implements UserCubit {}
@@ -36,7 +37,7 @@ void main() {
       userCubit = MockUserCubit();
       goRouter = MockGoRouter();
 
-      when(() => userUpdateCubit.state).thenReturn(const UserUpdateInitial());
+      when(() => userUpdateCubit.state).thenReturn(const UpdateInitial());
       when(() => userCubit.state).thenReturn(
         const GetOneSuccess(
           data: User(
@@ -96,10 +97,10 @@ void main() {
       whenListen(
         userUpdateCubit,
         Stream.fromIterable([
-          const UserUpdateInitial(),
-          const UserUpdated(),
+          const UpdateInitial(),
+          const UpdateSuccess(),
         ]),
-        initialState: const UserUpdateInitial(),
+        initialState: const UpdateInitial(),
       );
 
       await tester.pumpWidget(buildWidget());
@@ -121,10 +122,10 @@ void main() {
       whenListen(
         userUpdateCubit,
         Stream.fromIterable([
-          const UserUpdateInitial(),
-          const UserUpdateFailure(),
+          const UpdateInitial(),
+          const UpdateFailure(),
         ]),
-        initialState: const UserUpdateInitial(),
+        initialState: const UpdateInitial(),
       );
 
       await tester.pumpWidget(buildWidget());

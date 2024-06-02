@@ -1,3 +1,4 @@
+import 'package:spk_app_frontend/common/exceptions/repository.exception.dart';
 import 'package:spk_app_frontend/common/models/paginated.dto.dart';
 import 'package:spk_app_frontend/common/services/gql.service.dart';
 
@@ -101,6 +102,32 @@ final class UsersRepository implements IUsersRepository {
 
     if (result.hasException) {
       throw Exception(result.exception);
+    }
+  }
+
+  @override
+  Future<void> removeUser(String id) async {
+    final result = await _gqlService.mutate(
+      _RemoveUserMutation.document,
+      operationName: _RemoveUserMutation.operationName,
+      variables: {'id': id},
+    );
+
+    if (result.hasException) {
+      if (result.exception!.graphqlErrors[0].extensions?['originalError'] !=
+          null) {
+        switch (result.exception!.graphqlErrors[0].extensions?['originalError']
+            ['error']) {
+          case 'user-active':
+            throw const RepositoryException(code: 'user-active');
+          case 'user-not-found':
+            throw const RepositoryException(code: 'user-not-found');
+          default:
+            throw const RepositoryException();
+        }
+      }
+
+      throw result.exception!;
     }
   }
 }

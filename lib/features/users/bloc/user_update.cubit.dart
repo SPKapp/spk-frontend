@@ -1,35 +1,52 @@
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:spk_app_frontend/common/services/logger.service.dart';
-
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 import 'package:spk_app_frontend/features/users/models/dto.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
 
-part 'user_update.state.dart';
-
-class UserUpdateCubit extends Cubit<UserUpdateState> {
+/// Cubit for updating user
+///
+/// This cubit is used to update user data.
+///
+/// When [userId] is not provided, it updates current user profile.
+/// Otherwise, it updates user with provided [userId].
+///
+/// Available methods:
+/// - `updateUser` - updates user data
+/// - `removeUser` - removes user, cannot remove current user
+///
+class UserUpdateCubit extends IUpdateCubit {
   UserUpdateCubit({
     this.userId,
-    required IUsersRepository usersRepository,
-  })  : _usersRepository = usersRepository,
-        super(const UserUpdateInitial());
+    required this.usersRepository,
+  });
 
   final String? userId;
-  final IUsersRepository _usersRepository;
-  final logger = LoggerService();
+  final IUsersRepository usersRepository;
 
+  /// Updates user data
   void updateUser(UserUpdateDto userUpdateDto) async {
     try {
-      emit(const UserUpdateInitial());
       if (userId != null) {
-        await _usersRepository.updateUser(userId!, userUpdateDto);
+        await usersRepository.updateUser(userId!, userUpdateDto);
       } else {
-        await _usersRepository.updateMyProfile(userUpdateDto);
+        await usersRepository.updateMyProfile(userUpdateDto);
       }
-      emit(const UserUpdated());
+      emit(const UpdateSuccess());
     } catch (e) {
-      logger.error('Failed to update user', error: e);
-      emit(const UserUpdateFailure());
+      error(e, 'Failed to update user');
+    }
+  }
+
+  /// Removes user
+  void removeUser() async {
+    try {
+      if (userId != null) {
+        await usersRepository.removeUser(userId!);
+      } else {
+        throw Exception('Cannot remove current user');
+      }
+      emit(const UpdateSuccess());
+    } catch (e) {
+      error(e, 'Failed to remove user');
     }
   }
 }

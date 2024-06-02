@@ -23,4 +23,7 @@ abstract interface class IUsersRepository {
 
   /// Updates the current [User].
   Future<void> updateMyProfile(UserUpdateDto user);
+
+  /// Removes an existing [User].
+  Future<void> removeUser(String id);
 }

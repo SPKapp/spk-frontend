@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/features/users/bloc/user.cubit.dart';
@@ -55,10 +56,10 @@ class _UserUpdatePageState extends State<UserUpdatePage> {
                   )..fetch(),
         ),
       ],
-      child: BlocListener<UserUpdateCubit, UserUpdateState>(
+      child: BlocListener<UserUpdateCubit, UpdateState>(
         listener: (context, state) {
           switch (state) {
-            case UserUpdated():
+            case UpdateSuccess():
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Użytkownik został zaktualizowany'),
@@ -66,7 +67,7 @@ class _UserUpdatePageState extends State<UserUpdatePage> {
               );
               context.pop(true);
               break;
-            case UserUpdateFailure():
+            case UpdateFailure():
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Nie udało się zaktualizować użytkownika'),

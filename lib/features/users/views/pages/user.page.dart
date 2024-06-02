@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
+import 'package:spk_app_frontend/common/views/widgets/actions.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/users/bloc/user.cubit.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
@@ -123,17 +124,28 @@ class UserPage extends StatelessWidget {
                   },
                   child: Text(user.active == true ? 'Dezaktywuj' : 'Aktywuj'),
                 ),
-                PopupMenuItem(
-                  key: const Key('deleteUser'),
-                  onTap: () async {
-                    await showModalBottomSheet<bool>(
-                        context: context,
-                        builder: (_) {
-                          return const Text('Not implemented yet');
-                        });
-                  },
-                  child: const Text('Usuń'),
-                ),
+                if (user.active == false)
+                  PopupMenuItem(
+                    key: const Key('deleteUser'),
+                    onTap: () async {
+                      await showModalMyBottomSheet<bool>(
+                          context: context,
+                          title: 'Usuń użytkownika',
+                          builder: (_) => RemoveUserAction(
+                                userId: user.id,
+                              ),
+                          onClosing: (result) {
+                            if (context.canPop()) {
+                              context.pop({
+                                'deleted': true,
+                              });
+                            } else {
+                              context.read<UserCubit>().fetch();
+                            }
+                          });
+                    },
+                    child: const Text('Usuń'),
+                  ),
               ],
             ),
           ];

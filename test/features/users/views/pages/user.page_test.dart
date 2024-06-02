@@ -111,7 +111,7 @@ void main() {
       expect(find.byKey(const Key('changeRegion')), findsOneWidget);
       expect(find.byKey(const Key('deactivateUser')), findsOneWidget);
       expect(find.text('Dezaktywuj'), findsOneWidget);
-      expect(find.byKey(const Key('deleteUser')), findsOneWidget);
+      expect(find.byKey(const Key('deleteUser')), findsNothing);
     });
 
     testWidgets('should display inactive user actions when user is inactive',
@@ -162,7 +162,7 @@ void main() {
       expect(find.byKey(const Key('changeRegion')), findsNothing);
       expect(find.byKey(const Key('deactivateUser')), findsOneWidget);
       expect(find.text('Dezaktywuj'), findsOneWidget);
-      expect(find.byKey(const Key('deleteUser')), findsOneWidget);
+      expect(find.byKey(const Key('deleteUser')), findsNothing);
     });
   });
 }

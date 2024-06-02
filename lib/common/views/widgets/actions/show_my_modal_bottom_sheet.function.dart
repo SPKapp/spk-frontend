@@ -25,8 +25,10 @@ Future<void> showModalMyBottomSheet<T>({
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
-              SingleChildScrollView(
-                child: builder(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: builder(context),
+                ),
               ),
             ],
           ),

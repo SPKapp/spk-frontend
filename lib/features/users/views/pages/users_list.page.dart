@@ -54,7 +54,18 @@ class UsersListPage extends StatelessWidget {
             itemBuilder: (context, user) => AppCard(
               child: ListTile(
                 leading: const Icon(Icons.person),
-                onTap: () => context.push('/user/${user.id}'),
+                onTap: () async {
+                  final result =
+                      await context.push<dynamic>('/user/${user.id}');
+
+                  if (context.mounted &&
+                      result != null &&
+                      result['deleted'] == true) {
+                    context
+                        .read<UsersListBloc>()
+                        .add(const RefreshList<FindUsersArgs>(null));
+                  }
+                },
                 title: Text(
                   '${user.firstName} ${user.lastName}',
                 ),
