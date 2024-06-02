@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
@@ -45,10 +46,10 @@ class _AddRoleActionState extends State<AddRoleAction> {
                 context.read<IPermissionsRepository>(),
                 widget.userId,
               ),
-      child: BlocListener<UserPermissionsCubit, UserPermissionsState>(
+      child: BlocListener<UserPermissionsCubit, UpdateState>(
         listener: (context, state) {
           switch (state) {
-            case UserPermissionsSuccess():
+            case UpdateSuccess():
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Rola dodana'),
@@ -56,96 +57,110 @@ class _AddRoleActionState extends State<AddRoleAction> {
               );
               context.pop(true);
               break;
-            case UserPermissionsFailure():
+            case UpdateFailure():
+              late final String message;
+              switch (state.code) {
+                case 'region-id-required':
+                  message = 'Wybierz region';
+                  break;
+                case 'user-not-found':
+                  message = 'Użytkownik nie istnieje';
+                  break;
+                case 'active-groups':
+                  message =
+                      'Nie można usunąć użytkownika ze starego zespołu. Posiada on przypisane aktywne króliki.';
+                  break;
+                case 'region-not-found':
+                  message = 'Region nie istnieje';
+                  break;
+                case 'team-not-found':
+                  message = 'Zespół nie istnieje';
+                  break;
+                case 'user-not-active':
+                  message = 'Użytkownik nie jest aktywny';
+                  break;
+                default:
+                  message = 'Nie udało się dodać roli';
+              }
+
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Nie udało się dodać roli'),
+                SnackBar(
+                  content: Text(
+                    message,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               );
               break;
             default:
           }
         },
-        child: FractionallySizedBox(
-          widthFactor: 1.0,
-          heightFactor: 0.6,
-          child: _InjectRegionsAndTeams(
-            regionsAndTeamsCubit: widget.regionsAndTeamsCubit,
-            regionsIds: currentUser.checkRole([Role.admin])
-                ? null
-                : currentUser.managerRegions!.map((e) => e.toString()),
-            builder: (context, regions, teams) {
-              final managerRegions = regions.where((e) =>
-                  !widget.roleInfo.managerRegions.contains(e.id.toString()));
-              final observerRegions = regions.where((e) =>
-                  !widget.roleInfo.observerRegions.contains(e.id.toString()));
+        child: _InjectRegionsAndTeams(
+          regionsAndTeamsCubit: widget.regionsAndTeamsCubit,
+          regionsIds: currentUser.checkRole([Role.admin])
+              ? null
+              : currentUser.managerRegions!.map((e) => e.toString()),
+          builder: (context, regions, teams) {
+            final managerRegions = regions.where((e) =>
+                !widget.roleInfo.managerRegions.contains(e.id.toString()));
+            final observerRegions = regions.where((e) =>
+                !widget.roleInfo.observerRegions.contains(e.id.toString()));
 
-              return LayoutBuilder(builder: (context, constraints) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Dodaj rolę',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
+            return LayoutBuilder(builder: (context, constraints) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DropdownMenu<Role>(
+                      key: const Key('roleDropdown'),
+                      label: const Text('Rola'),
+                      width: constraints.maxWidth * 0.8,
+                      onSelected: (Role? role) {
+                        setState(() {
+                          _selectedRole = role;
+                          _selectedRegion = null;
+                          regionControler.clear();
+                        });
+                      },
+                      dropdownMenuEntries: [
+                        if (asAdmin && !widget.roleInfo.isAdmin)
+                          DropdownMenuEntry(
+                            value: Role.admin,
+                            label: Role.admin.displayName,
+                          ),
+                        DropdownMenuEntry(
+                          value: Role.volunteer,
+                          label: Role.volunteer.displayName,
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: DropdownMenu<Role>(
-                          key: const Key('roleDropdown'),
-                          label: const Text('Rola'),
-                          width: constraints.maxWidth * 0.8,
-                          onSelected: (Role? role) {
-                            setState(() {
-                              _selectedRole = role;
-                              _selectedRegion = null;
-                              regionControler.clear();
-                            });
-                          },
-                          dropdownMenuEntries: [
-                            if (asAdmin && !widget.roleInfo.isAdmin)
-                              DropdownMenuEntry(
-                                value: Role.admin,
-                                label: Role.admin.displayName,
-                              ),
-                            DropdownMenuEntry(
-                              value: Role.volunteer,
-                              label: Role.volunteer.displayName,
-                            ),
-                            if (managerRegions.isNotEmpty)
-                              DropdownMenuEntry(
-                                value: Role.regionManager,
-                                label: Role.regionManager.displayName,
-                              ),
-                            if (observerRegions.isNotEmpty)
-                              DropdownMenuEntry(
-                                value: Role.regionRabbitObserver,
-                                label: Role.regionRabbitObserver.displayName,
-                              ),
-                          ],
-                        ),
-                      ),
-                      if (_selectedRole == Role.regionManager ||
-                          _selectedRole == Role.regionRabbitObserver ||
-                          _selectedRole == Role.volunteer)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: DropdownMenu<Region>(
-                            key: const Key('regionDropdown'),
-                            label: const Text('Region'),
-                            width: constraints.maxWidth * 0.8,
-                            controller: regionControler,
-                            onSelected: (Region? region) {
-                              setState(() {
-                                _selectedRegion = region;
-                              });
-                            },
-                            dropdownMenuEntries: (_selectedRole ==
-                                        Role.regionManager
+                        if (managerRegions.isNotEmpty)
+                          DropdownMenuEntry(
+                            value: Role.regionManager,
+                            label: Role.regionManager.displayName,
+                          ),
+                        if (observerRegions.isNotEmpty)
+                          DropdownMenuEntry(
+                            value: Role.regionRabbitObserver,
+                            label: Role.regionRabbitObserver.displayName,
+                          ),
+                      ],
+                    ),
+                  ),
+                  if (_selectedRole == Role.regionManager ||
+                      _selectedRole == Role.regionRabbitObserver)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DropdownMenu<Region>(
+                        key: const Key('regionDropdown'),
+                        label: const Text('Region'),
+                        width: constraints.maxWidth * 0.8,
+                        controller: regionControler,
+                        onSelected: (Region? region) {
+                          setState(() {
+                            _selectedRegion = region;
+                          });
+                        },
+                        dropdownMenuEntries:
+                            (_selectedRole == Role.regionManager
                                     ? managerRegions
                                     : observerRegions)
                                 .map(
@@ -155,73 +170,68 @@ class _AddRoleActionState extends State<AddRoleAction> {
                                   ),
                                 )
                                 .toList(),
-                          ),
-                        ),
-                      if (_selectedRole == Role.volunteer)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: DropdownMenu<Team?>(
-                            key: const Key('teamDropdown'),
-                            label: const Text('Zespół'),
-                            width: constraints.maxWidth * 0.8,
-                            controller: teamControler,
-                            menuHeight: constraints.maxHeight,
-                            requestFocusOnTap: true,
-                            enableFilter: true,
-                            enableSearch: true,
-                            onSelected: (Team? team) {
-                              setState(() {
-                                _selectedTeam = null;
-                              });
-                            },
-                            dropdownMenuEntries: [
-                              const DropdownMenuEntry(
-                                  value: null, label: 'Nowy zespół'),
-                              ...teams.map(
-                                (team) => DropdownMenuEntry(
-                                  value: team,
-                                  label: team.name,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      FilledButton(
-                        onPressed: () {
-                          if (_selectedRole == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Wybierz rolę'),
-                              ),
-                            );
-                            return;
-                          }
-                          if (_selectedRole == Role.regionManager ||
-                              _selectedRole == Role.regionRabbitObserver) {
-                            if (_selectedRegion == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Wybierz region'),
-                                ),
-                              );
-                              return;
-                            }
-                          }
-
-                          context.read<UserPermissionsCubit>().addRoleToUser(
-                                _selectedRole!,
-                                regionId: _selectedRegion?.id.toString(),
-                                teamId: _selectedTeam?.id.toString(),
-                              );
-                        },
-                        child: const Text('Dodaj'),
                       ),
-                    ],
+                    ),
+                  if (_selectedRole == Role.volunteer)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DropdownMenu<Team?>(
+                        key: const Key('teamDropdown'),
+                        label: const Text('Zespół'),
+                        width: constraints.maxWidth * 0.8,
+                        controller: teamControler,
+                        menuHeight: constraints.maxHeight,
+                        onSelected: (Team? team) {
+                          setState(() {
+                            _selectedTeam = team;
+                          });
+                        },
+                        dropdownMenuEntries: [
+                          const DropdownMenuEntry(
+                              value: null, label: 'Nowy zespół'),
+                          ...teams.map(
+                            (team) => DropdownMenuEntry(
+                              value: team,
+                              label: team.name,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  FilledButton(
+                    onPressed: () {
+                      if (_selectedRole == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Wybierz rolę'),
+                          ),
+                        );
+                        return;
+                      }
+                      if (_selectedRole == Role.regionManager ||
+                          _selectedRole == Role.regionRabbitObserver) {
+                        if (_selectedRegion == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Wybierz region'),
+                            ),
+                          );
+                          return;
+                        }
+                      }
+
+                      context.read<UserPermissionsCubit>().addRoleToUser(
+                            _selectedRole!,
+                            regionId: _selectedRegion?.id,
+                            teamId: _selectedTeam?.id,
+                          );
+                    },
+                    child: const Text('Dodaj'),
                   ),
-                );
-              });
-            },
-          ),
+                ],
+              );
+            });
+          },
         ),
       ),
     );

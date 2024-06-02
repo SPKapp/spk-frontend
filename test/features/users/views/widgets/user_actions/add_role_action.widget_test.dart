@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 import 'package:spk_app_frontend/common/views/views.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
@@ -20,7 +21,7 @@ import 'package:spk_app_frontend/features/users/views/widgets/user_actions/add_r
 class MockRegionsAndTeamsCubit extends MockCubit<RegionsAndTeamsState>
     implements RegionsAndTeamsCubit {}
 
-class MockUserPermissionsCubit extends MockCubit<UserPermissionsState>
+class MockUserPermissionsCubit extends MockCubit<UpdateState>
     implements UserPermissionsCubit {}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
@@ -55,8 +56,7 @@ void main() {
         ),
       );
 
-      when(() => userPermissionsCubit.state)
-          .thenReturn(const UserPermissionsInitial());
+      when(() => userPermissionsCubit.state).thenReturn(const UpdateInitial());
     });
 
     Widget buildwidget({required RoleInfo roleInfo}) {
@@ -86,7 +86,6 @@ void main() {
           ),
         );
 
-        expect(find.text('Dodaj rolę'), findsOneWidget);
         expect(find.byKey(const Key('roleDropdown')), findsOneWidget);
         expect(find.byKey(const Key('regionDropdown')), findsNothing);
         expect(find.byKey(const Key('teamDropdown')), findsNothing);
@@ -133,7 +132,7 @@ void main() {
         await tester.tap(find.text(Role.volunteer.displayName).last);
         await tester.pumpAndSettle();
 
-        expect(find.byKey(const Key('regionDropdown')), findsOneWidget);
+        expect(find.byKey(const Key('regionDropdown')), findsNothing);
         expect(find.byKey(const Key('teamDropdown')), findsOneWidget);
 
         await tester.tap(find.byKey(const Key('teamDropdown')));
@@ -260,9 +259,9 @@ void main() {
         whenListen(
           userPermissionsCubit,
           Stream.fromIterable([
-            const UserPermissionsSuccess(),
+            const UpdateSuccess(),
           ]),
-          initialState: const UserPermissionsInitial(),
+          initialState: const UpdateInitial(),
         );
 
         await tester.pumpWidget(
@@ -283,9 +282,9 @@ void main() {
         whenListen(
           userPermissionsCubit,
           Stream.fromIterable([
-            const UserPermissionsFailure(),
+            const UpdateFailure(),
           ]),
-          initialState: const UserPermissionsInitial(),
+          initialState: const UpdateInitial(),
         );
 
         await tester.pumpWidget(

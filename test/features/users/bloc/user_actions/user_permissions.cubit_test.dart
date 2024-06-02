@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/user_actions/user_permissions.cubit.dart';
@@ -27,12 +28,12 @@ void main() {
     });
 
     test('initial state is UserPermissionsInitial', () {
-      expect(userPermissionsCubit.state, const UserPermissionsInitial());
+      expect(userPermissionsCubit.state, const UpdateInitial());
     });
 
     group('addRoleToUser', () {
-      blocTest<UserPermissionsCubit, UserPermissionsState>(
-        'emits [UserPermissionsSuccess] when addRoleToUser is successful',
+      blocTest<UserPermissionsCubit, UpdateState>(
+        'emits [UpdateSuccess] when addRoleToUser is successful',
         setUp: () {
           when(() => mockPermissionsRepository.addRoleToUser(
                 '1',
@@ -44,7 +45,7 @@ void main() {
         build: () => userPermissionsCubit,
         act: (cubit) => cubit.addRoleToUser(Role.admin),
         expect: () => [
-          const UserPermissionsSuccess(),
+          const UpdateSuccess(),
         ],
         verify: (_) {
           verify(() => mockPermissionsRepository.addRoleToUser(
@@ -57,8 +58,8 @@ void main() {
         },
       );
 
-      blocTest<UserPermissionsCubit, UserPermissionsState>(
-        'emits [UserPermissionsFailure] when addRoleToUser is unsuccessful',
+      blocTest<UserPermissionsCubit, UpdateState>(
+        'emits [UpdateFailure] when addRoleToUser is unsuccessful',
         setUp: () {
           when(() => mockPermissionsRepository.addRoleToUser(
                 '1',
@@ -71,7 +72,8 @@ void main() {
         act: (cubit) =>
             cubit.addRoleToUser(Role.admin, teamId: '2', regionId: '3'),
         expect: () => [
-          const UserPermissionsFailure(),
+          const UpdateFailure(),
+          const UpdateInitial(),
         ],
         verify: (_) {
           verify(() => mockPermissionsRepository.addRoleToUser(
@@ -86,8 +88,8 @@ void main() {
     });
 
     group('removeRoleFromUser', () {
-      blocTest<UserPermissionsCubit, UserPermissionsState>(
-        'emits [UserPermissionsSuccess] when removeRoleFromUser is successful',
+      blocTest<UserPermissionsCubit, UpdateState>(
+        'emits [UpdateSuccess] when removeRoleFromUser is successful',
         setUp: () {
           when(() => mockPermissionsRepository.removeRoleFromUser(
                 '1',
@@ -98,7 +100,7 @@ void main() {
         build: () => userPermissionsCubit,
         act: (cubit) => cubit.removeRoleFromUser(Role.admin),
         expect: () => [
-          const UserPermissionsSuccess(),
+          const UpdateSuccess(),
         ],
         verify: (_) {
           verify(() => mockPermissionsRepository.removeRoleFromUser(
@@ -110,8 +112,8 @@ void main() {
         },
       );
 
-      blocTest<UserPermissionsCubit, UserPermissionsState>(
-        'emits [UserPermissionsFailure] when removeRoleFromUser is unsuccessful',
+      blocTest<UserPermissionsCubit, UpdateState>(
+        'emits [UpdateFailure] when removeRoleFromUser is unsuccessful',
         setUp: () {
           when(() => mockPermissionsRepository.removeRoleFromUser(
                 '1',
@@ -122,7 +124,8 @@ void main() {
         build: () => userPermissionsCubit,
         act: (cubit) => cubit.removeRoleFromUser(Role.admin, regionId: '3'),
         expect: () => [
-          const UserPermissionsFailure(),
+          const UpdateFailure(),
+          const UpdateInitial(),
         ],
         verify: (_) {
           verify(() => mockPermissionsRepository.removeRoleFromUser(
@@ -136,8 +139,8 @@ void main() {
     });
 
     group('deactivateUser', () {
-      blocTest<UserPermissionsCubit, UserPermissionsState>(
-        'emits [UserPermissionsSuccess] when deactivateUser is successful',
+      blocTest<UserPermissionsCubit, UpdateState>(
+        'emits [UpdateSuccess] when deactivateUser is successful',
         setUp: () {
           when(() => mockPermissionsRepository.deactivateUser('1'))
               .thenAnswer((_) async {});
@@ -145,7 +148,7 @@ void main() {
         build: () => userPermissionsCubit,
         act: (cubit) => cubit.deactivateUser(),
         expect: () => [
-          const UserPermissionsSuccess(),
+          const UpdateSuccess(),
         ],
         verify: (_) {
           verify(() => mockPermissionsRepository.deactivateUser('1')).called(1);
@@ -153,8 +156,8 @@ void main() {
         },
       );
 
-      blocTest<UserPermissionsCubit, UserPermissionsState>(
-        'emits [UserPermissionsFailure] when deactivateUser is unsuccessful',
+      blocTest<UserPermissionsCubit, UpdateState>(
+        'emits [UpdateFailure] when deactivateUser is unsuccessful',
         setUp: () {
           when(() => mockPermissionsRepository.deactivateUser('1'))
               .thenThrow(Exception());
@@ -162,7 +165,8 @@ void main() {
         build: () => userPermissionsCubit,
         act: (cubit) => cubit.deactivateUser(),
         expect: () => [
-          const UserPermissionsFailure(),
+          const UpdateFailure(),
+          const UpdateInitial(),
         ],
         verify: (_) {
           verify(() => mockPermissionsRepository.deactivateUser('1')).called(1);
@@ -172,8 +176,8 @@ void main() {
     });
 
     group('activateUser', () {
-      blocTest<UserPermissionsCubit, UserPermissionsState>(
-        'emits [UserPermissionsSuccess] when activateUser is successful',
+      blocTest<UserPermissionsCubit, UpdateState>(
+        'emits [UpdateSuccess] when activateUser is successful',
         setUp: () {
           when(() => mockPermissionsRepository.activateUser('1'))
               .thenAnswer((_) async {});
@@ -181,7 +185,7 @@ void main() {
         build: () => userPermissionsCubit,
         act: (cubit) => cubit.activateUser(),
         expect: () => [
-          const UserPermissionsSuccess(),
+          const UpdateSuccess(),
         ],
         verify: (_) {
           verify(() => mockPermissionsRepository.activateUser('1')).called(1);
@@ -189,8 +193,8 @@ void main() {
         },
       );
 
-      blocTest<UserPermissionsCubit, UserPermissionsState>(
-        'emits [UserPermissionsFailure] when activateUser is unsuccessful',
+      blocTest<UserPermissionsCubit, UpdateState>(
+        'emits [UpdateFailure] when activateUser is unsuccessful',
         setUp: () {
           when(() => mockPermissionsRepository.activateUser('1'))
               .thenThrow(Exception());
@@ -198,7 +202,8 @@ void main() {
         build: () => userPermissionsCubit,
         act: (cubit) => cubit.activateUser(),
         expect: () => [
-          const UserPermissionsFailure(),
+          const UpdateFailure(),
+          const UpdateInitial(),
         ],
         verify: (_) {
           verify(() => mockPermissionsRepository.activateUser('1')).called(1);

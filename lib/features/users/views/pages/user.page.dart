@@ -56,36 +56,38 @@ class UserPage extends StatelessWidget {
                   PopupMenuItem(
                     key: const Key('addRole'),
                     onTap: () async {
-                      final result = await showModalBottomSheet<bool>(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (_) {
-                            return AddRoleAction(
-                              roleInfo: roleInfo,
-                              userId: user.id.toString(),
-                            );
-                          });
-                      if (result == true && context.mounted) {
-                        context.read<UserCubit>().fetch();
-                      }
+                      await showModalMyBottomSheet<bool>(
+                        context: context,
+                        title: 'Dodaj rolę',
+                        builder: (_) => AddRoleAction(
+                          roleInfo: roleInfo,
+                          userId: user.id,
+                        ),
+                        onClosing: (result) {
+                          if (result == true) {
+                            context.read<UserCubit>().fetch();
+                          }
+                        },
+                      );
                     },
                     child: const Text('Dodaj rolę'),
                   ),
                 PopupMenuItem(
                   key: const Key('removeRole'),
                   onTap: () async {
-                    final result = await showModalBottomSheet<bool>(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (_) {
-                          return RemoveRoleAction(
-                            roleInfo: roleInfo,
-                            userId: user.id.toString(),
-                          );
-                        });
-                    if (result == true && context.mounted) {
-                      context.read<UserCubit>().fetch();
-                    }
+                    await showModalMyBottomSheet<bool>(
+                      context: context,
+                      title: 'Usuń rolę',
+                      builder: (_) => RemoveRoleAction(
+                        roleInfo: roleInfo,
+                        userId: user.id,
+                      ),
+                      onClosing: (result) {
+                        if (result == true) {
+                          context.read<UserCubit>().fetch();
+                        }
+                      },
+                    );
                   },
                   child: const Text('Usuń rolę'),
                 ),
@@ -129,20 +131,21 @@ class UserPage extends StatelessWidget {
                     key: const Key('deleteUser'),
                     onTap: () async {
                       await showModalMyBottomSheet<bool>(
-                          context: context,
-                          title: 'Usuń użytkownika',
-                          builder: (_) => RemoveUserAction(
-                                userId: user.id,
-                              ),
-                          onClosing: (result) {
-                            if (context.canPop()) {
-                              context.pop({
-                                'deleted': true,
-                              });
-                            } else {
-                              context.read<UserCubit>().fetch();
-                            }
-                          });
+                        context: context,
+                        title: 'Usuń użytkownika',
+                        builder: (_) => RemoveUserAction(
+                          userId: user.id,
+                        ),
+                        onClosing: (result) {
+                          if (context.canPop()) {
+                            context.pop({
+                              'deleted': true,
+                            });
+                          } else {
+                            context.read<UserCubit>().fetch();
+                          }
+                        },
+                      );
                     },
                     child: const Text('Usuń'),
                   ),

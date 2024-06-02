@@ -13,8 +13,6 @@ class UserCreateDto {
   final String email;
   final String phone;
 
-  // TODO: Add Address fields
-
   final String? teamId;
   final String? regionId;
 

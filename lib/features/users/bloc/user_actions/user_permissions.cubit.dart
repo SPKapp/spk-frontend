@@ -1,11 +1,6 @@
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-
-import 'package:spk_app_frontend/common/services/logger.service.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
-
-part 'user_permissions.state.dart';
 
 /// Cubit responsible for user permissions.
 ///
@@ -15,20 +10,14 @@ part 'user_permissions.state.dart';
 /// - [deactivateUser] - deactivates a user
 /// - [activateUser] - activates a user
 ///
-/// Available states:
-/// - [UserPermissionsInitial] - initial state
-/// - [UserPermissionsSuccess] - emitted when the action is successful
-/// - [UserPermissionsFailure] - emitted when the action is unsuccessful
-///
-class UserPermissionsCubit extends Cubit<UserPermissionsState> {
+class UserPermissionsCubit extends IUpdateCubit {
   UserPermissionsCubit(
     this._permissionsRepository,
     this.userId,
-  ) : super(const UserPermissionsInitial());
+  );
 
   final IPermissionsRepository _permissionsRepository;
   final String userId;
-  final logger = LoggerService();
 
   /// Adds a role to a user.
   void addRoleToUser(
@@ -43,10 +32,9 @@ class UserPermissionsCubit extends Cubit<UserPermissionsState> {
         teamId: teamId,
         regionId: regionId,
       );
-      emit(const UserPermissionsSuccess());
+      emit(const UpdateSuccess());
     } catch (e) {
-      logger.error(e);
-      emit(const UserPermissionsFailure());
+      error(e, 'Failed to add role to user');
     }
   }
 
@@ -62,10 +50,9 @@ class UserPermissionsCubit extends Cubit<UserPermissionsState> {
         role,
         regionId: regionId,
       );
-      emit(const UserPermissionsSuccess());
+      emit(const UpdateSuccess());
     } catch (e) {
-      logger.error(e);
-      emit(const UserPermissionsFailure());
+      error(e, 'Failed to remove role from user');
     }
   }
 
@@ -73,10 +60,9 @@ class UserPermissionsCubit extends Cubit<UserPermissionsState> {
   void deactivateUser() async {
     try {
       await _permissionsRepository.deactivateUser(userId);
-      emit(const UserPermissionsSuccess());
+      emit(const UpdateSuccess());
     } catch (e) {
-      logger.error(e);
-      emit(const UserPermissionsFailure());
+      error(e, 'Failed to deactivate user');
     }
   }
 
@@ -84,10 +70,9 @@ class UserPermissionsCubit extends Cubit<UserPermissionsState> {
   void activateUser() async {
     try {
       await _permissionsRepository.activateUser(userId);
-      emit(const UserPermissionsSuccess());
+      emit(const UpdateSuccess());
     } catch (e) {
-      logger.error(e);
-      emit(const UserPermissionsFailure());
+      error(e, 'Failed to activate user');
     }
   }
 }

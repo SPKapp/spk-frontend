@@ -3,11 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockingjay/mockingjay.dart';
 
 import 'package:flutter/material.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/user_actions/user_permissions.cubit.dart';
 import 'package:spk_app_frontend/features/users/views/widgets/user_actions/deactivate_user_action.widget.dart';
 
-class MockUserPermissionsCubit extends MockCubit<UserPermissionsState>
+class MockUserPermissionsCubit extends MockCubit<UpdateState>
     implements UserPermissionsCubit {}
 
 void main() {
@@ -20,7 +21,7 @@ void main() {
       navigator = MockNavigator();
 
       when(() => mockUserPermissionsCubit.state).thenReturn(
-        const UserPermissionsInitial(),
+        const UpdateInitial(),
       );
 
       when(() => navigator.canPop()).thenReturn(true);
@@ -92,8 +93,8 @@ void main() {
     testWidgets('should show snackbar on success', (WidgetTester tester) async {
       whenListen(
         mockUserPermissionsCubit,
-        Stream.fromIterable([const UserPermissionsSuccess()]),
-        initialState: const UserPermissionsInitial(),
+        Stream.fromIterable([const UpdateSuccess()]),
+        initialState: const UpdateInitial(),
       );
       when(() => navigator.pop(any())).thenAnswer((_) async => true);
 
@@ -111,8 +112,8 @@ void main() {
         (WidgetTester tester) async {
       whenListen(
         mockUserPermissionsCubit,
-        Stream.fromIterable([const UserPermissionsSuccess()]),
-        initialState: const UserPermissionsInitial(),
+        Stream.fromIterable([const UpdateSuccess()]),
+        initialState: const UpdateInitial(),
       );
       when(() => navigator.pop(any())).thenAnswer((_) async => true);
 
@@ -129,8 +130,8 @@ void main() {
     testWidgets('should show snackbar on failure', (WidgetTester tester) async {
       whenListen(
         mockUserPermissionsCubit,
-        Stream.fromIterable([const UserPermissionsFailure()]),
-        initialState: const UserPermissionsInitial(),
+        Stream.fromIterable([const UpdateFailure()]),
+        initialState: const UpdateInitial(),
       );
       when(() => navigator.pop(any())).thenAnswer((_) async => false);
 
@@ -148,8 +149,8 @@ void main() {
         (WidgetTester tester) async {
       whenListen(
         mockUserPermissionsCubit,
-        Stream.fromIterable([const UserPermissionsFailure()]),
-        initialState: const UserPermissionsInitial(),
+        Stream.fromIterable([const UpdateFailure()]),
+        initialState: const UpdateSuccess(),
       );
       when(() => navigator.pop(any())).thenAnswer((_) async => false);
 

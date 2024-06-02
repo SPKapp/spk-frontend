@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/bloc/interfaces/get_list.bloc.interface.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/regions/bloc/regions_list.bloc.dart';
 import 'package:spk_app_frontend/features/regions/models/models.dart';
@@ -18,7 +19,7 @@ import 'package:spk_app_frontend/features/users/views/widgets/user_actions/remov
 class MockRegionsListBloc extends MockBloc<GetListEvent, GetListState<Region>>
     implements RegionsListBloc {}
 
-class MockUserPermissionsCubit extends MockCubit<UserPermissionsState>
+class MockUserPermissionsCubit extends MockCubit<UpdateState>
     implements UserPermissionsCubit {}
 
 class MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
@@ -50,8 +51,7 @@ void main() {
         ),
       );
 
-      when(() => userPermissionsCubit.state)
-          .thenReturn(const UserPermissionsInitial());
+      when(() => userPermissionsCubit.state).thenReturn(const UpdateInitial());
     });
 
     Widget buildwidget({required RoleInfo roleInfo}) {
@@ -94,8 +94,6 @@ void main() {
         roleInfo: RoleInfo([const RoleEntity(role: Role.admin)]),
       ));
 
-      expect(find.text('Usuń rolę'), findsOneWidget);
-
       await tester.tap(find.byKey(const Key('roleDropdown')));
       await tester.pumpAndSettle();
 
@@ -106,8 +104,6 @@ void main() {
       await tester.pumpWidget(buildwidget(
         roleInfo: RoleInfo([const RoleEntity(role: Role.admin)]),
       ));
-
-      expect(find.text('Usuń rolę'), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('roleDropdown')));
       await tester.pumpAndSettle();
@@ -200,9 +196,9 @@ void main() {
       whenListen(
         userPermissionsCubit,
         Stream.fromIterable([
-          const UserPermissionsSuccess(),
+          const UpdateSuccess(),
         ]),
-        initialState: const UserPermissionsInitial(),
+        initialState: const UpdateInitial(),
       );
 
       await tester.pumpWidget(buildwidget(
@@ -220,9 +216,9 @@ void main() {
       whenListen(
         userPermissionsCubit,
         Stream.fromIterable([
-          const UserPermissionsFailure(),
+          const UpdateFailure(),
         ]),
-        initialState: const UserPermissionsInitial(),
+        initialState: const UpdateSuccess(),
       );
       await tester.pumpWidget(buildwidget(
         roleInfo: RoleInfo([const RoleEntity(role: Role.admin)]),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spk_app_frontend/common/bloc/interfaces/update.cubit.interface.dart';
 
 import 'package:spk_app_frontend/features/users/bloc/user_actions/user_permissions.cubit.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
@@ -24,10 +25,10 @@ class DeactivateUserAction extends StatelessWidget {
                 context.read<IPermissionsRepository>(),
                 userId,
               ),
-      child: BlocListener<UserPermissionsCubit, UserPermissionsState>(
+      child: BlocListener<UserPermissionsCubit, UpdateState>(
         listener: (context, state) {
           switch (state) {
-            case UserPermissionsSuccess():
+            case UpdateSuccess():
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -38,14 +39,31 @@ class DeactivateUserAction extends StatelessWidget {
                 ),
               );
               Navigator.of(context).pop(true);
-            case UserPermissionsFailure():
-              // TODO: Add reason of failure
+            case UpdateFailure():
+              late final String message;
+              switch (state.code) {
+                case 'active-groups':
+                  message =
+                      'Nie można dezaktywować użytkownika, jest on ostatnim członkiem zespołu posiadającego przypisane aktywne króliki.';
+                  break;
+                case 'user-not-found':
+                  message = 'Nie znaleziono użytkownika';
+                  break;
+                case 'user-can-not-deactivate-himself':
+                  message = 'Nie można dezaktywować samego siebie';
+                  break;
+                default:
+                  message = isActive
+                      ? 'Nie udało się dezaktywować użytkownika'
+                      : 'Nie udało się aktywować użytkownika';
+              }
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
+                  duration: const Duration(seconds: 5),
                   content: Text(
-                    isActive
-                        ? 'Nie udało się dezaktywować użytkownika'
-                        : 'Nie udało się aktywować użytkownika',
+                    message,
+                    textAlign: TextAlign.center,
                   ),
                 ),
               );

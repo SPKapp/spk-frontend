@@ -1,3 +1,4 @@
+import 'package:spk_app_frontend/common/exceptions/repository.exception.dart';
 import 'package:spk_app_frontend/common/services/gql.service.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces/permissions.repo.interface.dart';
@@ -28,7 +29,38 @@ final class PermissionsRepository implements IPermissionsRepository {
     );
 
     if (result.hasException) {
-      throw Exception(result.exception);
+      if (result.exception!.graphqlErrors[0].extensions?['originalError'] !=
+          null) {
+        switch (result.exception!.graphqlErrors[0].extensions?['originalError']
+            ['error']) {
+          case 'region-id-required':
+            throw const RepositoryException(
+              code: 'region-id-required',
+            );
+          case 'user-not-found':
+            throw const RepositoryException(
+              code: 'user-not-found',
+            );
+          case 'active-groups':
+            throw const RepositoryException(
+              code: 'active-groups',
+            );
+          case 'region-not-found':
+            throw const RepositoryException(
+              code: 'region-not-found',
+            );
+          case 'team-not-found':
+            throw const RepositoryException(
+              code: 'team-not-found',
+            );
+          case 'user-not-active':
+            throw const RepositoryException(
+              code: 'user-not-active',
+            );
+        }
+      }
+
+      throw result.exception!;
     }
   }
 
@@ -49,7 +81,26 @@ final class PermissionsRepository implements IPermissionsRepository {
     );
 
     if (result.hasException) {
-      throw Exception(result.exception);
+      if (result.exception!.graphqlErrors[0].extensions?['originalError'] !=
+          null) {
+        switch (result.exception!.graphqlErrors[0].extensions?['originalError']
+            ['error']) {
+          case 'region-id-required':
+            throw const RepositoryException(
+              code: 'region-id-required',
+            );
+          case 'user-not-found':
+            throw const RepositoryException(
+              code: 'user-not-found',
+            );
+          case 'active-groups':
+            throw const RepositoryException(
+              code: 'active-groups',
+            );
+        }
+      }
+
+      throw result.exception!;
     }
   }
 
@@ -64,7 +115,26 @@ final class PermissionsRepository implements IPermissionsRepository {
     );
 
     if (result.hasException) {
-      throw Exception(result.exception);
+      if (result.exception!.graphqlErrors[0].extensions?['originalError'] !=
+          null) {
+        switch (result.exception!.graphqlErrors[0].extensions?['originalError']
+            ['error']) {
+          case 'user-can-not-deactivate-himself':
+            throw const RepositoryException(
+              code: 'user-can-not-deactivate-himself',
+            );
+          case 'user-not-found':
+            throw const RepositoryException(
+              code: 'user-not-found',
+            );
+          case 'active-groups':
+            throw const RepositoryException(
+              code: 'active-groups',
+            );
+        }
+      }
+
+      throw result.exception!;
     }
   }
 
@@ -79,7 +149,17 @@ final class PermissionsRepository implements IPermissionsRepository {
     );
 
     if (result.hasException) {
-      throw Exception(result.exception);
+      if (result.exception!.graphqlErrors[0].extensions?['originalError'] !=
+          null) {
+        switch (result.exception!.graphqlErrors[0].extensions?['originalError']
+            ['error']) {
+          case 'user-not-found':
+            throw const RepositoryException(
+              code: 'user-not-found',
+            );
+        }
+      }
+      throw result.exception!;
     }
   }
 }
