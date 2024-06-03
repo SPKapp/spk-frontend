@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spk_app_frontend/config/config.dart';
 
@@ -20,24 +21,62 @@ class GqlService {
     String query, {
     Map<String, dynamic> variables = const {},
     String? operationName,
-  }) {
-    return _client.query(QueryOptions(
+    bool refreshAuthToken = true,
+  }) async {
+    final result = await _client.query(QueryOptions(
       operationName: operationName,
       fetchPolicy: FetchPolicy.noCache,
       document: gql(query),
       variables: variables,
     ));
+
+    if (refreshAuthToken && result.hasException) {
+      // Handle unauthorized error and try to refresh the token
+      if (result.exception!.graphqlErrors.isNotEmpty) {
+        if (result.exception!.graphqlErrors[0].message == 'Unauthorized') {
+          await FirebaseAuth.instance.currentUser?.reload();
+
+          return this.query(
+            query,
+            variables: variables,
+            operationName: operationName,
+            refreshAuthToken: false,
+          );
+        }
+      }
+    }
+
+    return result;
   }
 
   Future<QueryResult> mutate(
     String mutation, {
     Map<String, dynamic> variables = const {},
     String? operationName,
-  }) {
-    return _client.mutate(MutationOptions(
+    bool refreshAuthToken = true,
+  }) async {
+    final result = await _client.mutate(MutationOptions(
       operationName: operationName,
       document: gql(mutation),
       variables: variables,
     ));
+
+    if (refreshAuthToken && result.hasException) {
+      // Handle unauthorized error and try to refresh the token
+      if (result.exception!.graphqlErrors.isNotEmpty) {
+        if (result.exception!.graphqlErrors[0].message == 'Unauthorized') {
+          await FirebaseAuth.instance.currentUser?.reload();
+
+          return mutate(
+            mutation,
+            variables: variables,
+            operationName: operationName,
+            refreshAuthToken: false,
+          );
+        }
+      }
+    }
+
+    return result;
   }
 }

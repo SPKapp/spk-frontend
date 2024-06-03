@@ -53,25 +53,21 @@ class MyApp extends StatelessWidget {
                   .setAuthToken(() => cubit.currentUser.token);
               return cubit;
             },
-            child: BlocListener<AuthCubit, AuthState>(
-              listener: (BuildContext context, AuthState state) {
-                AppRouter.router.refresh();
+            child: BlocBuilder<ThemeCubit, ThemeMode>(
+              builder: (context, themeMode) {
+                AppRouter(context.read<AuthCubit>());
+                return MaterialApp.router(
+                  title: AppConfig.appName,
+                  themeMode: themeMode,
+                  theme: ThemeData.light(
+                    useMaterial3: true,
+                  ),
+                  darkTheme: ThemeData.dark(
+                    useMaterial3: true,
+                  ),
+                  routerConfig: AppRouter.router,
+                );
               },
-              child: BlocBuilder<ThemeCubit, ThemeMode>(
-                builder: (context, themeMode) {
-                  return MaterialApp.router(
-                    title: AppConfig.appName,
-                    themeMode: themeMode,
-                    theme: ThemeData.light(
-                      useMaterial3: true,
-                    ),
-                    darkTheme: ThemeData.dark(
-                      useMaterial3: true,
-                    ),
-                    routerConfig: AppRouter.router,
-                  );
-                },
-              ),
             ),
           ),
         ),
