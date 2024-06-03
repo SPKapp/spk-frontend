@@ -30,9 +30,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   firebase_core: ^2.27.1
   firebase_messaging: ^14.9.3
   firebase_auth: ^4.17.9
+  firebase_ui_localizations: ^1.11.0
   firebase_ui_auth: ^1.13.1
   # Due to firebase_ui_auth
   cupertino_icons: ^1.0.8
@@ -53,6 +56,7 @@ dependencies:
   mobile_scanner: ^5.1.0
   logger: ^2.2.0
   meta: ^1.12.0
+  
 
 dev_dependencies:
   flutter_test:

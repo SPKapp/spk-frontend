@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:spk_app_frontend/config/auth.config.dart';
 
 import 'package:spk_app_frontend/features/auth/current_user.model.dart';
 import 'package:spk_app_frontend/features/auth/roles.enum.dart';
@@ -49,8 +50,9 @@ class AuthService {
       throw Exception('User is null');
     }
 
-    // TODO: Add actonCodeSettings
-    await user.sendEmailVerification();
+    await user.sendEmailVerification(
+      AuthConfig.actionCodeSettings,
+    );
   }
 }
 

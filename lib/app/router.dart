@@ -7,6 +7,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 import 'package:spk_app_frontend/app/view/view.dart';
 import 'package:spk_app_frontend/common/views/pages.dart';
+import 'package:spk_app_frontend/config/auth.config.dart';
 
 import 'package:spk_app_frontend/example2.dart';
 import 'package:spk_app_frontend/features/adoption/views/pages.dart';
@@ -37,9 +38,28 @@ class AppRouter {
     GoRoute(
       path: '/signIn',
       redirect: _signInRedirect,
-      builder: (context, state) => const SignInScreen(
+      builder: (context, state) => SignInScreen(
         showAuthActionSwitch: false,
+        actions: [
+          ForgotPasswordAction((context, email) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ForgotPasswordScreen(
+                  email: email,
+                  // WARNING: Normally ForgotPasswordScreen don't have this prop
+                  // I will create a new PR in firebase_ui_auth to add this prop
+                  actionCodeSettings: AuthConfig.actionCodeSettings,
+                ),
+              ),
+            );
+          }),
+        ],
       ),
+    ),
+    GoRoute(
+      path: '/verify-email',
+      redirect: _signInRedirect,
+      builder: (context, state) => const EmailVerificationScreen(),
     ),
     GoRoute(
       path: '/',
