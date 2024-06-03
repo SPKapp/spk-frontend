@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:spk_app_frontend/app/router.dart';
 import 'package:spk_app_frontend/common/services/logger.service.dart';
 
@@ -32,10 +29,6 @@ class NotificationService {
   final _logger = LoggerService();
 
   Future<void> _init() async {
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      FirebaseMessaging.onBackgroundMessage(_onBackgroundMessageHandler);
-    }
-
     FirebaseMessaging.onMessage.listen(_onFrontendMessageHandler);
     FirebaseMessaging.onMessageOpenedApp.listen(_onOpenAppHandler);
 
@@ -66,10 +59,10 @@ class NotificationService {
             _logger.error('Failed to get new FCM token');
             await deregister();
           } else {
+            _logger.debug('FCM token: $token');
             _fcmTokenCubit.setToken(token);
 
             await _fcmTokensRepository.update(token);
-            _logger.debug('FCM token: $token');
           }
           break;
         case AuthorizationStatus.denied:
@@ -118,8 +111,6 @@ class NotificationService {
   }
 
   void _onOpenAppHandler(RemoteMessage message) {
-    print('Handling a message from the background or terminated state!');
-
     if (message.data['category'] == 'groupAssigned') {
       AppRouter.router.go('/rabbitGroup/${message.data['groupId']}');
     } else if (message.data['category'] == 'rabbitAssigned') {
@@ -149,22 +140,5 @@ class NotificationService {
     } else {
       AppRouter.router.go('/');
     }
-  }
-}
-
-@pragma('vm:entry-point')
-Future<void> _onBackgroundMessageHandler(RemoteMessage message) async {
-  // TODO: Implement this
-
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  // await Firebase.initializeApp();
-
-  print('Handling a background message: ${message.messageId}');
-  print('Message data: ${message.data}');
-
-  if (message.notification != null) {
-    print(
-        'Message also contained a notification: ${message.notification?.body}');
   }
 }

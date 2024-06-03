@@ -76,7 +76,6 @@ class GetListPage<T extends Object, Args extends Object,
         }
       },
       buildWhen: (previous, current) =>
-          // TODO: Check if this is correct
           previous is! GetListSuccess || current is GetListSuccess,
       builder: (context, state) {
         late final Widget body;
