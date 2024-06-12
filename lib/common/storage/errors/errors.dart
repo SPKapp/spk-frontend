@@ -11,17 +11,26 @@ sealed class StorageExeption extends RepositoryException {
   }
 }
 
+/// Abstract class for the storage file repository errors.
+abstract class StorageFileExeption extends StorageExeption {
+  const StorageFileExeption({
+    required super.code,
+    this.fileId,
+  });
+
+  final String? fileId;
+}
+
 /// The token is expired, add new token and try again.
 final class StorageTokenExpiredExeption extends StorageExeption {
   const StorageTokenExpiredExeption() : super(code: 'expired');
 }
 
 /// The user is not authorized to access the resource.
-final class StorageUnauthorizedExeption extends StorageExeption {
-  const StorageUnauthorizedExeption({this.fileId})
-      : super(code: 'unauthorized');
-
-  final String? fileId;
+final class StorageUnauthorizedExeption extends StorageFileExeption {
+  const StorageUnauthorizedExeption({
+    super.fileId,
+  }) : super(code: 'unauthorized');
 }
 
 /// The token is not set, the [IStorageRepository.setToken] should be called.
@@ -35,18 +44,15 @@ final class StorageNotInitializedExeption extends StorageExeption {
 }
 
 /// The file is not found in the storage.
-final class StorageFileNotFoundExeption extends StorageExeption {
-  const StorageFileNotFoundExeption(this.fileId)
-      : super(code: 'file_not_found');
-
-  final String fileId;
+final class StorageFileNotFoundExeption extends StorageFileExeption {
+  const StorageFileNotFoundExeption({
+    required super.fileId,
+  }) : super(code: 'file_not_found');
 }
 
 /// The error is unknown.
-final class StorageUnknownExeption extends StorageExeption {
+final class StorageUnknownExeption extends StorageFileExeption {
   const StorageUnknownExeption({
-    this.fileId,
+    super.fileId,
   }) : super(code: 'unknown');
-
-  final String? fileId;
 }

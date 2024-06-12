@@ -18,7 +18,7 @@ abstract class IStorageRepository {
   ///
   /// This method should be called when the repository is no longer needed.
   /// {@endtemplate}
-  Future<void> dispose();
+  Future<void> close();
 
   /// {@template storage_repository.setToken}
   /// Set the token for the storage.

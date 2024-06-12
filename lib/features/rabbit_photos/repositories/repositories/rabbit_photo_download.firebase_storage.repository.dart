@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
-import 'package:spk_app_frontend/common/services/logger.service.dart';
 
+import 'package:spk_app_frontend/common/services/logger.service.dart';
 import 'package:spk_app_frontend/common/storage/storage.dart';
 import 'package:spk_app_frontend/features/rabbit_photos/models/models.dart';
 import 'package:spk_app_frontend/features/rabbit_photos/repositories/interfaces/rabbit_photo_download.repo.interface.dart';
@@ -29,14 +29,14 @@ final class RabbitPhotosFirebaseStorageRepositroy
   }
 
   @override
-  Future<void> dispose() async {
+  Future<void> close() async {
     // Clear the queues and wait for them to finish
     _cacheActualCheckQueue.clear();
     _downloadQueue.clear();
     await Future.doWhile(() => _isCacheActualCheckRunning);
     await Future.doWhile(() => _isDownloadLoopRunning);
 
-    await super.dispose();
+    await super.close();
   }
 
   @override
@@ -60,7 +60,7 @@ final class RabbitPhotosFirebaseStorageRepositroy
   ///
   /// This implementation also deletes old photos of this rabbit from the cache.
   @override
-  Future<List<String>> listPhotos(String rabbitId) async {
+  Future<List<String>> listPhotos() async {
     late final ListResult listResult;
     try {
       listResult = await _storageRef.listAll();

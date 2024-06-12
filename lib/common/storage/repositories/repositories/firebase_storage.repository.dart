@@ -71,7 +71,7 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
   /// {@macro storage_repository.dispose}
   @override
   @mustCallSuper
-  Future<void> dispose() async {
+  Future<void> close() async {
     await _app.delete();
   }
 

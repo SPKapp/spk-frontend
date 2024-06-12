@@ -34,7 +34,7 @@ final class Photo extends Equatable {
   Photo.error()
       : this(
           data: Uint8List(0),
-          updatedAt: DateTime.now(),
+          updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
           isDefault: false,
         );
 }

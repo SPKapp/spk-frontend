@@ -5,7 +5,7 @@ abstract class IRabbitPhotoDownloadRepository extends IStorageRepository {
   /// {@template rabbit_photos_repository.list_photos}
   /// This method returns the list of photo names for the rabbit.
   /// {@endtemplate}
-  Future<List<String>> listPhotos(String rabbitId);
+  Future<List<String>> listPhotos();
 
   /// {@template rabbit_photos_repository.get_photos}
   /// This method enqueues the download of the photos with the given [photoIds] for the rabbit.

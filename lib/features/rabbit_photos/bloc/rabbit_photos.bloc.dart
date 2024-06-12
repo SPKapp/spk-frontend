@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import 'package:spk_app_frontend/common/bloc/debounce.transformer.dart';
 import 'package:spk_app_frontend/common/services/logger.service.dart';
 import 'package:spk_app_frontend/common/storage/storage.dart';
 import 'package:spk_app_frontend/features/rabbit_photos/models/models.dart';
@@ -18,6 +19,12 @@ part 'rabbit_photos.state.dart';
 /// Available events:
 /// - [RabbitPhotosLoadPhotos] - initiates the loading of photos from the storage.
 /// - [RabbitPhotosGetDefaultPhoto] - initiates the loading of the default photo from the storage.
+///
+/// Available states:
+/// - [RabbitPhotosInitial] - the initial state.
+/// - [RabbitPhotosList] - the state with the list of photos.
+/// - [RabbitPhotosFailure] - the state with the error.
+///
 class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
   RabbitPhotosBloc({
     required this.rabbitId,
@@ -30,8 +37,9 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
     on<RabbitPhotosLoadPhotos>(_onLoadPhotos);
     on<_RabbitPhotosEmmitPhotos>(
       _onEmmitPhotos,
-      // Dodaj dławika, żeby nie emitować zbyt często
+      transformer: debounceTransformer(const Duration(milliseconds: 500)),
     );
+    on<_RabbitPhotosEmmitPhotosError>(_onEmmitPhotosError);
   }
 
   final String rabbitId;
@@ -55,7 +63,7 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
   @override
   Future<void> close() async {
     await _photosSubscription.cancel();
-    await _photosRepositroy.dispose();
+    await _photosRepositroy.close();
     return await super.close();
   }
 
@@ -71,7 +79,8 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
   /// It should be called before starting operations on the storage.
   /// If the [force] parameter is set to true, the token will be refreshed,
   /// even if it is already set.
-  Future<void> _authenticate({
+  @visibleForTesting
+  Future<void> authenticate({
     bool force = false,
   }) async {
     if (_token != null && !force) {
@@ -87,19 +96,32 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
   Future<void> _onLoadPhotos(
       RabbitPhotosLoadPhotos event, Emitter<RabbitPhotosState> emit) async {
     await _ensureInitialized;
-    await _authenticate();
+    await authenticate();
 
     try {
-      _names = await _photosRepositroy.listPhotos(rabbitId);
+      _names = await _photosRepositroy.listPhotos();
     } on StorageExeption catch (e) {
       if (e is StorageTokenExpiredExeption || e is StorageTokenNotSetExeption) {
-        await _authenticate(force: true);
+        await authenticate(force: true);
         // Retry
-        add(event);
+        if (event is _RabbitPhotosLoadPhotosAfterSetToken) {
+          // Avoid infinite loop
+          _logger.error('Token expired after refresh', error: e);
+          emit(RabbitPhotosFailure(code: e));
+          return;
+        }
+        add(const _RabbitPhotosLoadPhotosAfterSetToken());
         return;
       } else {
-        // TODO: Emit error
+        _logger.error('Error when listing photos', error: e);
+        emit(RabbitPhotosFailure(code: e));
+        return;
       }
+    } catch (e) {
+      // This should not happen
+      _logger.error('Unknown error when listing photos', error: e);
+      emit(const RabbitPhotosFailure(code: StorageUnknownExeption()));
+      return;
     }
 
     emit(RabbitPhotosList(names: _names, photos: _photos));
@@ -124,6 +146,13 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
     emit(RabbitPhotosList(names: _names, photos: _photos));
   }
 
+  /// The event handler for the [_RabbitPhotosEmmitPhotosError] event.
+  /// It emits the current state with the error, is called after the error is received.
+  Future<void> _onEmmitPhotosError(_RabbitPhotosEmmitPhotosError event,
+      Emitter<RabbitPhotosState> emit) async {
+    emit(RabbitPhotosFailure(code: event.error));
+  }
+
   /// The method to handle the received photo.
   void _onRecivePhoto((String, Photo) data) async {
     final (name, photo) = data;
@@ -143,27 +172,26 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
       if (error is StorageTokenExpiredExeption ||
           error is StorageTokenNotSetExeption) {
         // This also continues the loading of the photos
-        await _authenticate(force: true);
-      } else if (error is StorageUnauthorizedExeption) {
-        _logger.error('Unauthorized', error: error);
+        await authenticate(force: true);
+        return;
+      } else if (error is StorageFileExeption) {
+        _logger.error('Error when receiving photo', error: error);
         if (error.fileId != null) {
           _photos[error.fileId!] = Photo.error();
+          add(const _RabbitPhotosEmmitPhotos());
         }
+        return;
       } else if (error is StorageNotInitializedExeption) {
         _logger.error('Storage not initialized', error: error);
         // Thats a bug, should not happen
         throw error;
-      } else if (error is StorageFileNotFoundExeption) {
-        _logger.error('File not found', error: error);
-        _photos[error.fileId] = Photo.error();
-      } else if (error is StorageUnknownExeption) {
-        _logger.error('Unknown storage error', error: error);
-        if (error.fileId != null) {
-          _photos[error.fileId!] = Photo.error();
-        }
       }
+    }
+    _logger.error('Unknown error when receiving photo', error: error);
+    if (error is StorageExeption) {
+      add(_RabbitPhotosEmmitPhotosError(error));
     } else {
-      _logger.error('Unknown error when receiving photo', error: error);
+      add(const _RabbitPhotosEmmitPhotosError(StorageUnknownExeption()));
     }
   }
 }
