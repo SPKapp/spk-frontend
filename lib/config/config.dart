@@ -11,6 +11,12 @@ abstract class AppConfig {
       String.fromEnvironment('FIREBASE_AUTH_EMULATOR_HOST');
   static const int firebaseAuthEmulatorPort =
       int.fromEnvironment('FIREBASE_AUTH_EMULATOR_PORT');
+  static const String firebaseStorageEmulatorHost =
+      String.fromEnvironment('FIREBASE_STORAGE_EMULATOR_HOST');
+  static const int firebaseStorageEmulatorPort =
+      int.fromEnvironment('FIREBASE_STORAGE_EMULATOR_PORT');
+  static const String firebaseStorageBucketEmulator =
+      String.fromEnvironment('FIREBASE_STORAGE_BUCKET_EMULATOR');
 
   // Google OAuth Client ID
   static const String googleClientId =

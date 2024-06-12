@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/config/config.dart';
 
@@ -24,20 +25,27 @@ class TopPhotoCard extends StatelessWidget {
       ),
       child: AspectRatio(
         aspectRatio: 1.0,
-        child: Container(
-          margin: const EdgeInsets.only(
-            top: 2.0,
-            bottom: 2.0,
-            left: 8.0,
-            right: 2.0,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            image: const DecorationImage(
-              image: NetworkImage(
-                AppConfig.photoUrl,
+        child: GestureDetector(
+          onTap: () {
+            context.push('/rabbit/${rabbit.id}/photos', extra: {
+              'rabbitName': rabbit.name,
+            });
+          },
+          child: Container(
+            margin: const EdgeInsets.only(
+              top: 2.0,
+              bottom: 2.0,
+              left: 8.0,
+              right: 2.0,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              image: const DecorationImage(
+                image: NetworkImage(
+                  AppConfig.photoUrl,
+                ),
+                fit: BoxFit.cover,
               ),
-              fit: BoxFit.cover,
             ),
           ),
         ),

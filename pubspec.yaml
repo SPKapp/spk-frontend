@@ -56,6 +56,11 @@ dependencies:
   mobile_scanner: ^5.1.0
   logger: ^2.2.0
   meta: ^1.12.0
+  photo_view: ^0.15.0
+  firebase_storage: ^11.7.7
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  uuid: ^4.4.0
   
 
 dev_dependencies:
@@ -66,6 +71,8 @@ dev_dependencies:
   mocktail: ^1.0.3
   mocktail_image_network: ^1.1.0
   mockingjay: ^0.5.0
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.10
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

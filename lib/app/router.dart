@@ -13,12 +13,13 @@ import 'package:spk_app_frontend/example2.dart';
 import 'package:spk_app_frontend/features/adoption/views/pages.dart';
 import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/views/pages.dart';
+import 'package:spk_app_frontend/features/rabbit_photos/views/pages.dart';
 import 'package:spk_app_frontend/features/rabbits/views/pages.dart';
 import 'package:spk_app_frontend/features/users/views/pages.dart';
 
 class AppRouter {
   AppRouter(AuthCubit authCubit) {
-    _router = GoRouter(
+    _router ??= GoRouter(
       routes: _routes,
       redirect: _authGuard,
       refreshListenable: _GoRouterRefreshStream(authCubit.stream),
@@ -55,11 +56,6 @@ class AppRouter {
           }),
         ],
       ),
-    ),
-    GoRoute(
-      path: '/verify-email',
-      redirect: _signInRedirect,
-      builder: (context, state) => const EmailVerificationScreen(),
     ),
     GoRoute(
       path: '/',
@@ -109,6 +105,17 @@ class AppRouter {
                 );
               },
               routes: [
+                GoRoute(
+                  path: 'photos',
+                  builder: (context, state) {
+                    final extra = state.extra as dynamic;
+
+                    return RabbitPhotosListPage(
+                        key: ValueKey(state.pathParameters['id']),
+                        rabbitId: state.pathParameters['id']!,
+                        rabbitName: extra?['rabbitName']);
+                  },
+                ),
                 GoRoute(
                   path: 'edit',
                   builder: (context, state) {

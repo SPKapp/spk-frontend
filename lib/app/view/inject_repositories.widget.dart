@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:spk_app_frontend/common/services/gql.service.dart';
+import 'package:spk_app_frontend/common/storage/storage.dart';
 import 'package:spk_app_frontend/features/notifications/repositories/interfaces.dart';
 import 'package:spk_app_frontend/features/notifications/repositories/repositories.dart';
 import 'package:spk_app_frontend/features/rabbit-notes/repositories/interfaces.dart';
@@ -27,6 +28,9 @@ class InjectRepositories extends StatelessWidget {
 
         return MultiRepositoryProvider(
           providers: [
+            RepositoryProvider<IStorageAuthRepository>(
+              create: (context) => GqlStorageAuthRepository(gqlService),
+            ),
             RepositoryProvider<IRabbitsRepository>(
               create: (context) => RabbitsRepository(gqlService),
             ),
@@ -49,7 +53,8 @@ class InjectRepositories extends StatelessWidget {
               create: (context) => GqlRabbitNotesRepository(gqlService),
             ),
             RepositoryProvider<IFcmTokensRepository>(
-                create: (context) => FcmTokensRepository(gqlService)),
+              create: (context) => FcmTokensRepository(gqlService),
+            ),
           ],
           child: child,
         );

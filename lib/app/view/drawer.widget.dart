@@ -45,41 +45,47 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Iterable<Widget> defaultDrawer(
       BuildContext context, CurrentUser currentUser) {
-    final List<Widget> regionManagerList = [
-      const Center(child: Text('RegionManager')),
+    final List<Widget> regionObserverList = [
       ListTile(
         title: const Text('Króliki'),
         onTap: () => context.go('/rabbits'),
       ),
+    ];
+
+    final List<Widget> regionManagerList = [
+      ...regionObserverList,
       ListTile(
         title: const Text('Użytkownicy'),
         onTap: () => context.go('/users'),
-      ),
-      const Divider(),
-      ListTile(
-        title: const Text('Ustawienia'),
-        onTap: () => context.go('/settings'),
       ),
     ];
 
     final List<Widget> adminList = regionManagerList;
 
-    final List<Widget> volunteerList = [
-      const Center(child: Text('Wolontariusz')),
-      ListTile(
-        title: const Text('Moje Króliki'),
-        onTap: () => context.go('/myRabbits'),
-      ),
-      const Divider()
-    ];
-
     return [
-      if (currentUser.checkRole([Role.volunteer])) ...volunteerList,
-      if (currentUser.checkRole([Role.admin]))
+      if (currentUser.checkRole([Role.volunteer])) ...[
+        const Center(child: Text('Wolontariusz')),
+        ListTile(
+          title: const Text('Moje Króliki'),
+          onTap: () => context.go('/myRabbits'),
+        ),
+        const Divider()
+      ],
+      if (currentUser.checkRole([Role.admin])) ...[
+        const Center(child: Text('Admin')),
         ...adminList
-      else if (currentUser.checkRole([Role.regionManager]))
+      ] else if (currentUser.checkRole([Role.regionManager])) ...[
+        const Center(child: Text('Manager Regionu')),
         ...regionManagerList,
-      // const AboutListTile(),
+      ] else if (currentUser.checkRole([Role.regionRabbitObserver])) ...[
+        const Center(child: Text('Obserwator Regionu')),
+        ...regionObserverList,
+      ],
+      const Divider(),
+      ListTile(
+        title: const Text('Ustawienia'),
+        onTap: () => context.go('/settings'),
+      ),
     ];
   }
 
