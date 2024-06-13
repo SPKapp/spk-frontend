@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -43,8 +44,8 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
   @override
   @mustCallSuper
   Future<void> init() async {
-    final name = const Uuid().v4();
-    if (_app != null) {
+    if (_app == null) {
+      final name = const Uuid().v4();
       if (kDebugMode) {
         _app = await Firebase.initializeApp(
           name: name,
@@ -66,10 +67,9 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
           options: DefaultFirebaseOptions.currentPlatform,
         );
       }
+      _firebaseStorage = FirebaseStorage.instanceFor(app: _app);
+      _firebaseAuth = FirebaseAuth.instanceFor(app: _app!);
     }
-
-    _firebaseStorage = FirebaseStorage.instanceFor(app: _app);
-    _firebaseAuth = FirebaseAuth.instanceFor(app: _app!);
   }
 
   /// {@macro storage_repository.dispose}
@@ -88,6 +88,10 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
     } on FirebaseAuthException catch (e) {
       logger.error('Cannot set token', error: e);
       throw const StorageTokenNotSetExeption();
+    } catch (e) {
+      // This should not happen
+      logger.error('Cannot set token', error: e);
+      throw const StorageUnknownExeption();
     }
   }
 
@@ -106,7 +110,7 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
           final expiresAtDateTime = DateTime.fromMillisecondsSinceEpoch(
             expiresAt as int,
           );
-          if (DateTime.now().isAfter(expiresAtDateTime)) {
+          if (clock.now().isAfter(expiresAtDateTime)) {
             return const StorageTokenExpiredExeption();
           } else {
             return const StorageUnauthorizedExeption();

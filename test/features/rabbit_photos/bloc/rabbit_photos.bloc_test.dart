@@ -183,7 +183,7 @@ void main() {
       blocTest<RabbitPhotosBloc, RabbitPhotosState>(
         'emits RabbitPhotosList when a photo is received',
         setUp: () async {
-          rabbitPhotosBloc.authenticate();
+          await rabbitPhotosBloc.authenticate();
           rabbitPhotosBloc.add(const RabbitPhotosLoadPhotos());
           when(() => photosRepositroy.listPhotos())
               .thenAnswer((_) async => ['1', '2']);
@@ -207,7 +207,7 @@ void main() {
       blocTest<RabbitPhotosBloc, RabbitPhotosState>(
         'emits RabbitPhotosList when a error occurs',
         setUp: () async {
-          rabbitPhotosBloc.authenticate();
+          await rabbitPhotosBloc.authenticate();
           rabbitPhotosBloc.add(const RabbitPhotosLoadPhotos());
           when(() => photosRepositroy.listPhotos())
               .thenAnswer((_) async => ['1', '2']);
@@ -235,7 +235,7 @@ void main() {
       blocTest<RabbitPhotosBloc, RabbitPhotosState>(
         'emits RabbitPhotosList when a photo is not found',
         setUp: () async {
-          rabbitPhotosBloc.authenticate();
+          await rabbitPhotosBloc.authenticate();
           rabbitPhotosBloc.add(const RabbitPhotosLoadPhotos());
           when(() => photosRepositroy.listPhotos())
               .thenAnswer((_) async => ['1', '2']);
@@ -263,7 +263,7 @@ void main() {
       blocTest<RabbitPhotosBloc, RabbitPhotosState>(
         'emits RabbitPhotosList when a token is expired',
         setUp: () async {
-          rabbitPhotosBloc.authenticate();
+          await rabbitPhotosBloc.authenticate();
           rabbitPhotosBloc.add(const RabbitPhotosLoadPhotos());
           when(() => photosRepositroy.listPhotos())
               .thenAnswer((_) async => ['1', '2']);

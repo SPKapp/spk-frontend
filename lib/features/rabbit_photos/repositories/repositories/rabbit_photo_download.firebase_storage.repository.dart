@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:collection';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:meta/meta.dart';
 
 import 'package:spk_app_frontend/common/services/logger.service.dart';
@@ -16,15 +16,21 @@ final class RabbitPhotosFirebaseStorageRepositroy
     implements IRabbitPhotoDownloadRepository {
   RabbitPhotosFirebaseStorageRepositroy({
     required this.rabbitId,
+    @visibleForTesting Box<Photo>? box,
     @visibleForTesting super.firebaseAuth,
     @visibleForTesting super.firebaseStorage,
-  }) : _path = 'rabbits/$rabbitId/photos/';
+  }) : _path = 'rabbits/$rabbitId/photos/' {
+    if (box != null) {
+      _box = box;
+    }
+  }
 
   @override
   Future<void> init() async {
     await super.init();
 
-    _box = await Hive.openBox<Photo>('rabbitPhotos');
+    _box ??= await Hive.openBox<Photo>('rabbitPhotos');
+
     _storageRef = firebaseStorage.ref(_path);
   }
 
@@ -44,12 +50,12 @@ final class RabbitPhotosFirebaseStorageRepositroy
     await super.setToken(token);
 
     // Restart loops with the new token
-    _cacheActualCheckLoop();
-    _downloadLoop();
+    unawaited(_cacheActualCheckLoop());
+    unawaited(_downloadLoop());
   }
 
   final _logger = LoggerService();
-  late final Box<Photo> _box;
+  Box<Photo>? _box;
   late final Reference _storageRef;
   final String _path;
   final String rabbitId;
@@ -75,10 +81,9 @@ final class RabbitPhotosFirebaseStorageRepositroy
     }
 
     // Don't await this, it's can be done in the background
-    SchedulerBinding.instance.scheduleTask(
-      () => _deleteOldPhotosFromCache(
+    unawaited(
+      _deleteOldPhotosFromCache(
           listResult.items.map((photoRef) => photoRef.fullPath).toList()),
-      Priority.animation,
     );
 
     return listResult.items.map((photoRef) => photoRef.name).toList();
@@ -88,10 +93,13 @@ final class RabbitPhotosFirebaseStorageRepositroy
   /// [newPhotos] is the list of new photos that should be in the cache,
   /// in the format of the full path of the photo.
   Future<void> _deleteOldPhotosFromCache(List<String> newPhotos) async {
-    for (final oldPhoto in _box.keys.where((key) => key.startsWith(_path))) {
+    if (_box == null) {
+      return;
+    }
+    for (final oldPhoto in _box!.keys.where((key) => key.startsWith(_path))) {
       if (!newPhotos.contains(oldPhoto)) {
         _logger.debug('Deleting old photo $oldPhoto from the cache');
-        _box.delete(oldPhoto);
+        await _box!.delete(oldPhoto);
       }
     }
   }
@@ -109,7 +117,7 @@ final class RabbitPhotosFirebaseStorageRepositroy
   /// This implementation gets the photo from the cache if it's there and checks if it's actual.
   @override
   void getPhoto(String photoId) {
-    final cachedPhoto = _box.get(_filePath(photoId));
+    final cachedPhoto = _box?.get(_filePath(photoId));
     if (cachedPhoto != null) {
       _logger.debug('Photo $photoId is in the cache');
       _checkActualStateOfPhoto(photoId, cachedPhoto);
@@ -122,7 +130,7 @@ final class RabbitPhotosFirebaseStorageRepositroy
   /// {@macro rabbit_photos_repository.photosStream}
   @override
   Stream<(String, Photo)> get photosStream => _photosController.stream;
-  final _photosController = StreamController<(String, Photo)>();
+  final _photosController = StreamController<(String, Photo)>.broadcast();
 
   final Queue<(String, Photo)> _cacheActualCheckQueue = Queue();
   bool _isCacheActualCheckRunning = false;
@@ -134,7 +142,7 @@ final class RabbitPhotosFirebaseStorageRepositroy
   void _checkActualStateOfPhoto(String photoId, Photo photo) {
     if (!_cacheActualCheckQueue.any((element) => element.$1 == photoId)) {
       _cacheActualCheckQueue.addFirst((photoId, photo));
-      _cacheActualCheckLoop();
+      unawaited(_cacheActualCheckLoop());
     }
   }
 
@@ -149,7 +157,7 @@ final class RabbitPhotosFirebaseStorageRepositroy
   void _downloadPhoto(String photoId) {
     if (!_downloadQueue.contains(photoId)) {
       _downloadQueue.addFirst(photoId);
-      _downloadLoop();
+      unawaited(_downloadLoop());
     }
   }
 
@@ -171,7 +179,7 @@ final class RabbitPhotosFirebaseStorageRepositroy
         if (photo.updatedAt != metadata.updated) {
           logger.debug(
               'Photo $photoId is not actual ${photo.updatedAt} != ${metadata.updated} (cache != storage)');
-          await _box.delete(_filePath(photoId));
+          await _box?.delete(_filePath(photoId));
           _downloadPhoto(photoId);
         } else {
           _photosController.add((photoId, photo));
@@ -203,12 +211,13 @@ final class RabbitPhotosFirebaseStorageRepositroy
 
     while (_downloadQueue.isNotEmpty) {
       final photoId = _downloadQueue.removeFirst();
+      final photoRef = _storageRef.child(photoId);
 
       _logger.debug('Downloading photo $photoId');
 
       try {
-        final metadata = await _storageRef.child(photoId).getMetadata();
-        final data = await _storageRef.child(photoId).getData();
+        final metadata = await photoRef.getMetadata();
+        final data = await photoRef.getData();
 
         if (data == null) {
           _photosController.addError(StorageUnknownExeption(
@@ -223,7 +232,7 @@ final class RabbitPhotosFirebaseStorageRepositroy
           isDefault: false,
         );
 
-        await _box.put(_filePath(photoId), photo);
+        await _box?.put(_filePath(photoId), photo);
         _photosController.add((photoId, photo));
       } on FirebaseException catch (e) {
         // Stop the loop if the token is expired, not set or the storage is not initialized
