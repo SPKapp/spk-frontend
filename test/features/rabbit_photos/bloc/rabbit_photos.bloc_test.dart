@@ -148,7 +148,7 @@ void main() {
         build: () => rabbitPhotosBloc,
         act: (bloc) => bloc.add(const RabbitPhotosLoadPhotos()),
         expect: () => [
-          const RabbitPhotosFailure(code: const StorageUnauthorizedExeption()),
+          const RabbitPhotosFailure(code: StorageUnauthorizedExeption()),
         ],
         verify: (_) {
           verify(() => photosRepositroy.listPhotos()).called(1);

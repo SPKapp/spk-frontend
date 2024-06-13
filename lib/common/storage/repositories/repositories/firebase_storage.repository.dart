@@ -23,16 +23,18 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
                     firebaseAuth.app == firebaseStorage.app),
             'firebaseStorage and firebaseAuth must be both null or both not null.') {
     if (firebaseStorage != null) {
-      this.firebaseStorage = firebaseStorage;
+      _firebaseStorage = firebaseStorage;
       _firebaseAuth = firebaseAuth!;
       _app = firebaseStorage.app;
     }
   }
 
   @protected
-  late final FirebaseStorage firebaseStorage;
-  late final FirebaseAuth _firebaseAuth;
-  late final FirebaseApp _app;
+  FirebaseStorage get firebaseStorage => _firebaseStorage!;
+
+  FirebaseStorage? _firebaseStorage;
+  FirebaseAuth? _firebaseAuth;
+  FirebaseApp? _app;
 
   @protected
   final logger = LoggerService();
@@ -42,37 +44,39 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
   @mustCallSuper
   Future<void> init() async {
     final name = const Uuid().v4();
-    if (kDebugMode) {
-      _app = await Firebase.initializeApp(
-        name: name,
-        options: const FirebaseOptions(
-          apiKey: 'fake',
-          appId: 'fake',
-          messagingSenderId: 'fake',
-          storageBucket: AppConfig.firebaseStorageBucketEmulator,
-          projectId: AppConfig.firebaseEmulatorsProjectId,
-        ),
-      );
-      await FirebaseStorage.instanceFor(app: _app).useStorageEmulator(
-        AppConfig.firebaseStorageEmulatorHost,
-        AppConfig.firebaseStorageEmulatorPort,
-      );
-    } else {
-      _app = await Firebase.initializeApp(
-        name: name,
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+    if (_app != null) {
+      if (kDebugMode) {
+        _app = await Firebase.initializeApp(
+          name: name,
+          options: const FirebaseOptions(
+            apiKey: 'fake',
+            appId: 'fake',
+            messagingSenderId: 'fake',
+            storageBucket: AppConfig.firebaseStorageBucketEmulator,
+            projectId: AppConfig.firebaseEmulatorsProjectId,
+          ),
+        );
+        await FirebaseStorage.instanceFor(app: _app).useStorageEmulator(
+          AppConfig.firebaseStorageEmulatorHost,
+          AppConfig.firebaseStorageEmulatorPort,
+        );
+      } else {
+        _app = await Firebase.initializeApp(
+          name: name,
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      }
     }
 
-    firebaseStorage = FirebaseStorage.instanceFor(app: _app);
-    _firebaseAuth = FirebaseAuth.instanceFor(app: _app);
+    _firebaseStorage = FirebaseStorage.instanceFor(app: _app);
+    _firebaseAuth = FirebaseAuth.instanceFor(app: _app!);
   }
 
   /// {@macro storage_repository.dispose}
   @override
   @mustCallSuper
   Future<void> close() async {
-    await _app.delete();
+    await _app!.delete();
   }
 
   /// {@macro storage_repository.setToken}
@@ -80,7 +84,7 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
   @mustCallSuper
   Future<void> setToken(String token) async {
     try {
-      await _firebaseAuth.signInWithCustomToken(token);
+      await _firebaseAuth!.signInWithCustomToken(token);
     } on FirebaseAuthException catch (e) {
       logger.error('Cannot set token', error: e);
       throw const StorageTokenNotSetExeption();
@@ -95,7 +99,7 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
       return const StorageTokenNotSetExeption();
     } else if (e.code == 'storage/unauthorized') {
       // Check reason - token expired or user unauthorized
-      final token = await _firebaseAuth.currentUser?.getIdTokenResult();
+      final token = await _firebaseAuth!.currentUser?.getIdTokenResult();
       if (token != null) {
         final expiresAt = token.claims?['expiresAt'];
         if (expiresAt != null) {
