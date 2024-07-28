@@ -37,3 +37,13 @@ final class _RabbitPhotosEmmitPhotosError extends RabbitPhotosEvent {
 final class RabbitPhotosGetDefaultPhoto extends RabbitPhotosEvent {
   const RabbitPhotosGetDefaultPhoto();
 }
+
+/// This event sets the photo with the given [photoId] as the default photo for the rabbit.
+final class RabbitPhotosSetDefaultPhoto extends RabbitPhotosEvent {
+  const RabbitPhotosSetDefaultPhoto(this.photoId);
+
+  final String photoId;
+
+  @override
+  List<Object> get props => [photoId];
+}

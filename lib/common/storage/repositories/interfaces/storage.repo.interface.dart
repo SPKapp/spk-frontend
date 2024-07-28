@@ -25,4 +25,9 @@ abstract class IStorageRepository {
   /// If the error occurs, the [StorageTokenNotSetExeption] will be thrown.
   /// {@endtemplate}
   Future<void> setToken(String token);
+
+  /// {@template storage_repository.getUserId}
+  /// Get the user ID for the storage.
+  /// {@endtemplate}
+  String getUserId();
 }

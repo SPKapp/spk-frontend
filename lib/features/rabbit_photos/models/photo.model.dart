@@ -37,4 +37,16 @@ final class Photo extends Equatable {
           updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
           isDefault: false,
         );
+
+  Photo copyWith({
+    Uint8List? data,
+    DateTime? updatedAt,
+    bool? isDefault,
+  }) {
+    return Photo(
+      data: data ?? this.data,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isDefault: isDefault ?? this.isDefault,
+    );
+  }
 }

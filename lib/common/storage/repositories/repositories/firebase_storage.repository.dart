@@ -95,6 +95,17 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
     }
   }
 
+  /// {@macro storage_repository.getUserId}
+  @override
+  @nonVirtual
+  String getUserId() {
+    final user = _firebaseAuth!.currentUser;
+    if (user == null) {
+      throw const StorageTokenNotSetExeption();
+    }
+    return user.uid;
+  }
+
   /// This method parses the Firebase exception to the [StorageExeption].
   @nonVirtual
   @protected

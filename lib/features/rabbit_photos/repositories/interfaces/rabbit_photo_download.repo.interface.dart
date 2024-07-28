@@ -30,6 +30,16 @@ abstract class IRabbitPhotoDownloadRepository extends IStorageRepository {
   /// {@endtemplate}
   void getPhoto(String photoId);
 
+  /// {@template rabbit_photos_repository.get_default_photo_name}
+  /// This method returns photoId of the default photo for the rabbit.
+  /// {@endtemplate}
+  Future<String?> getDefaultPhotoName();
+
+  /// {@template rabbit_photos_repository.set_default_photo_name}
+  /// This method sets the photo with the given [photoId] as the default photo for the rabbit.
+  /// {@endtemplate}
+  Future<void> setDefaultPhotoName(String photoId);
+
   /// {@template rabbit_photos_repository.photosStream}
   /// This stream is used to return the photos, requested by the [getPhotos] and [getPhoto] methods.
   /// {@endtemplate}

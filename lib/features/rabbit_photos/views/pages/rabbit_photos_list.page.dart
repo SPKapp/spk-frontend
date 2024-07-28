@@ -23,7 +23,6 @@ class RabbitPhotosListPage extends StatefulWidget {
 
 class _RabbitPhotosListPageState extends State<RabbitPhotosListPage> {
   int _currentIndex = 0;
-  Uint8List? _photo;
 
   @override
   Widget build(BuildContext context) {
@@ -31,61 +30,80 @@ class _RabbitPhotosListPageState extends State<RabbitPhotosListPage> {
       create: (context) => RabbitPhotosBloc(
         rabbitId: widget.rabbitId,
         storageAuthRepository: context.read<IStorageAuthRepository>(),
-      )..add(const RabbitPhotosLoadPhotos())
-      // )..downloadPhoto(1),
-      ,
-      child: BlocListener<RabbitPhotosBloc, RabbitPhotosState>(
-        listener: (context, state) {
-          print('Listener: $state');
-          // context.read<RabbitPhotosCubit>().fetch();
-          // if (state is RabbitPhotoDownloaded) {
-          //   setState(() {
-          //     _photo = state.photo;
-          //   });
-          // }
+      )..add(const RabbitPhotosLoadPhotos()),
+      child: BlocBuilder<RabbitPhotosBloc, RabbitPhotosState>(
+        builder: (context, state) {
+          if (state is RabbitPhotosList) {
+            return Scaffold(
+                appBar: AppBar(
+                  title: Text(widget.rabbitName ?? 'Zdjęcia królika'),
+                  actions: [
+                    IconButton(
+                      icon: Icon(
+                          state.photos[state.names[_currentIndex]] != null &&
+                                  state.photos[state.names[_currentIndex]]!
+                                      .isDefault
+                              ? Icons.star
+                              : Icons.star_border_outlined),
+                      onPressed: () => context.read<RabbitPhotosBloc>().add(
+                            RabbitPhotosSetDefaultPhoto(
+                              state.names[_currentIndex],
+                            ),
+                          ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.download),
+                      onPressed: () {
+                        print('Download photo with index $_currentIndex');
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        print('Delete photo with index $_currentIndex');
+                      },
+                    ),
+                  ],
+                ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () {
+                    print('Add new photo');
+                  },
+                  child: const Icon(Icons.add),
+                ),
+                body: PhotoViewGallery.builder(
+                    itemCount: state.names.length,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                    builder: (context, index) {
+                      final photo = state.photos[state.names[index]];
+
+                      return PhotoViewGalleryPageOptions(
+                        imageProvider: MemoryImage(
+                          photo != null
+                              ? photo.data
+                              // throws an error catched by errorBuilder
+                              : Uint8List(0),
+                        ),
+                        errorBuilder: (context, error, stackTrace) => Center(
+                          child: photo != null
+                              ? const Icon(Icons.error)
+                              : const CircularProgressIndicator(),
+                        ),
+                      );
+                    }));
+          } else {
+            return Scaffold(
+              appBar: AppBar(),
+              body: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
         },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(widget.rabbitName ?? 'Zdjęcia królika'),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.download),
-                onPressed: () {
-                  print('Download photo with index $_currentIndex');
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  print('Delete photo with index $_currentIndex');
-                },
-              ),
-            ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              print('Add new photo');
-            },
-            child: const Icon(Icons.add),
-          ),
-          body: PhotoViewGallery.builder(
-            itemCount: 8,
-            onPageChanged: (index) {
-              _currentIndex = index;
-            },
-            builder: (context, index) {
-              return PhotoViewGalleryPageOptions(
-                imageProvider: ((_photo != null)
-                    ? MemoryImage(_photo!)
-                    : NetworkImage(
-                        '',
-                      )) as ImageProvider<Object>,
-                // minScale: PhotoViewComputedScale.contained,
-                // maxScale: PhotoViewComputedScale.covered * 2,
-              );
-            },
-          ),
-        ),
       ),
     );
   }

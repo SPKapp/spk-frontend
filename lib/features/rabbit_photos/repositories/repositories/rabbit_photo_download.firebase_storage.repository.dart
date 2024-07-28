@@ -60,6 +60,8 @@ final class RabbitPhotosFirebaseStorageRepositroy
   final String _path;
   final String rabbitId;
 
+  String? _defaultPhotoId;
+
   String _filePath(String photoId) => '$_path$photoId';
 
   /// {@macro rabbit_photos_repository.list_photos}
@@ -67,6 +69,8 @@ final class RabbitPhotosFirebaseStorageRepositroy
   /// This implementation also deletes old photos of this rabbit from the cache.
   @override
   Future<List<String>> listPhotos() async {
+    await getDefaultPhotoName();
+
     late final ListResult listResult;
     try {
       listResult = await _storageRef.listAll();
@@ -86,7 +90,10 @@ final class RabbitPhotosFirebaseStorageRepositroy
           listResult.items.map((photoRef) => photoRef.fullPath).toList()),
     );
 
-    return listResult.items.map((photoRef) => photoRef.name).toList();
+    return listResult.items
+        .map((photoRef) => photoRef.name)
+        .skipWhile((name) => name == 'default')
+        .toList();
   }
 
   /// This method deletes old photos from the cache.
@@ -229,7 +236,7 @@ final class RabbitPhotosFirebaseStorageRepositroy
         final photo = Photo(
           data: data,
           updatedAt: metadata.updated ?? DateTime.now(),
-          isDefault: false,
+          isDefault: photoId == _defaultPhotoId,
         );
 
         await _box?.put(_filePath(photoId), photo);
@@ -257,5 +264,68 @@ final class RabbitPhotosFirebaseStorageRepositroy
     return exeption is StorageTokenExpiredExeption ||
         exeption is StorageTokenNotSetExeption ||
         exeption is StorageNotInitializedExeption;
+  }
+
+  /// {@macro rabbit_photos_repository.get_default_photo_name}
+  @override
+  Future<String?> getDefaultPhotoName() async {
+    try {
+      final rawData = await _storageRef.child('default').getData();
+
+      if (rawData == null) {
+        _defaultPhotoId = null;
+        return null;
+      } else {
+        _defaultPhotoId = String.fromCharCodes(rawData);
+        return _defaultPhotoId;
+      }
+    } on FirebaseException catch (e) {
+      final exeption = parseFirebaseException(e);
+      _logger.error('Failed to get default photo for rabbit $rabbitId',
+          error: exeption);
+      throw exeption;
+    } catch (e) {
+      _logger.error('Failed to get default photo for rabbit $rabbitId',
+          error: e);
+      throw const StorageUnknownExeption();
+    }
+  }
+
+  /// {@macro rabbit_photos_repository.set_default_photo_name}
+  @override
+  Future<void> setDefaultPhotoName(String photoId) async {
+    final oldDefault = _defaultPhotoId;
+    try {
+      await _storageRef.child('default').putString(photoId,
+          metadata: SettableMetadata(
+              contentType: 'text/plain',
+              customMetadata: {'uploadedBy': getUserId()}));
+      _defaultPhotoId = photoId;
+    } on FirebaseException catch (e) {
+      final exeption = parseFirebaseException(e);
+      _logger.error('Failed to set default photo for rabbit $rabbitId',
+          error: exeption);
+      throw exeption;
+    } catch (e) {
+      _logger.error('Failed to set default photo for rabbit $rabbitId',
+          error: e);
+      throw const StorageUnknownExeption();
+    }
+
+    // Correct the cache
+    if (oldDefault != null) {
+      final oldDefaultPhoto = _box?.get(_filePath(oldDefault));
+      if (oldDefaultPhoto != null) {
+        await _box?.put(
+            _filePath(oldDefault), oldDefaultPhoto.copyWith(isDefault: false));
+      }
+    }
+    if (_defaultPhotoId != null) {
+      final newDefaultPhoto = _box?.get(_filePath(_defaultPhotoId!));
+      if (newDefaultPhoto != null) {
+        await _box?.put(_filePath(_defaultPhotoId!),
+            newDefaultPhoto.copyWith(isDefault: true));
+      }
+    }
   }
 }

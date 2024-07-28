@@ -19,6 +19,7 @@ part 'rabbit_photos.state.dart';
 /// Available events:
 /// - [RabbitPhotosLoadPhotos] - initiates the loading of photos from the storage.
 /// - [RabbitPhotosGetDefaultPhoto] - initiates the loading of the default photo from the storage.
+/// - [RabbitPhotosSetDefaultPhoto] - sets the photo with the given [photoId] as the default photo for the rabbit.
 ///
 /// Available states:
 /// - [RabbitPhotosInitial] - the initial state.
@@ -40,6 +41,8 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
       transformer: debounceTransformer(const Duration(milliseconds: 500)),
     );
     on<_RabbitPhotosEmmitPhotosError>(_onEmmitPhotosError);
+    on<RabbitPhotosGetDefaultPhoto>(_onGetDefaultPhoto);
+    on<RabbitPhotosSetDefaultPhoto>(_onSetDefaultPhoto);
   }
 
   final String rabbitId;
@@ -193,5 +196,26 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
     } else {
       add(const _RabbitPhotosEmmitPhotosError(StorageUnknownExeption()));
     }
+  }
+
+  /// The event handler for the [RabbitPhotosGetDefaultPhoto] event.
+  void _onGetDefaultPhoto(
+      RabbitPhotosGetDefaultPhoto event, Emitter<RabbitPhotosState> emit) {}
+
+  /// The event handler for the [RabbitPhotosSetDefaultPhoto] event.
+  Future<void> _onSetDefaultPhoto(RabbitPhotosSetDefaultPhoto event,
+      Emitter<RabbitPhotosState> emit) async {
+    await _photosRepositroy.setDefaultPhotoName(event.photoId);
+
+    for (final name in _photos.keys) {
+      if (_photos[name] != null) {
+        if (name == event.photoId) {
+          _photos[name] = _photos[name]!.copyWith(isDefault: true);
+        } else {
+          _photos[name] = _photos[name]!.copyWith(isDefault: false);
+        }
+      }
+    }
+    emit(RabbitPhotosList(names: _names, photos: _photos));
   }
 }
