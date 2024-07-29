@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gal/gal.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -58,8 +59,29 @@ class _RabbitPhotosListPageState extends State<RabbitPhotosListPage> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.download),
-                          onPressed: () {
-                            print('Download photo with index $_currentIndex');
+                          onPressed: () async {
+                            try {
+                              await Gal.putImageBytes(
+                                state.photos[state.names[_currentIndex]]!.data,
+                              );
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Nie udało się pobrać zdjęcia.'),
+                                  ),
+                                );
+                              }
+                            }
+
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Zdjęcie zostało pobrane.'),
+                                ),
+                              );
+                            }
                           },
                         ),
                         IconButton(
@@ -122,6 +144,14 @@ class _RabbitPhotosListPageState extends State<RabbitPhotosListPage> {
                         ),
                       );
                     }
+                  }
+
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Zdjęcie zostało dodane.'),
+                      ),
+                    );
                   }
                 },
                 child: const Icon(Icons.add),

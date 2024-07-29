@@ -4,7 +4,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:meta/meta.dart';
 
 import 'package:spk_app_frontend/common/services/logger.service.dart';
 import 'package:spk_app_frontend/common/storage/storage.dart';
