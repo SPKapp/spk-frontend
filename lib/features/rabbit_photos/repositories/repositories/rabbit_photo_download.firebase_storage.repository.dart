@@ -92,7 +92,7 @@ final class RabbitPhotosFirebaseStorageRepositroy
 
     return listResult.items
         .map((photoRef) => photoRef.name)
-        .skipWhile((name) => name == 'default')
+        .where((name) => name != 'default')
         .toList();
   }
 
@@ -356,5 +356,27 @@ final class RabbitPhotosFirebaseStorageRepositroy
     }
 
     await _box?.delete(_filePath(photoId));
+  }
+
+  /// {@macro rabbit_photos_repository.add_photo}
+  /// This implementation also adds the photo to the cache.
+  @override
+  Future<void> addPhoto(String photoId, Uint8List data) async {
+    try {
+      await _storageRef.child(photoId).putData(
+          data,
+          SettableMetadata(
+              contentType: 'image/jpeg',
+              customMetadata: {'uploadedBy': getUserId()}));
+    } on FirebaseException catch (e) {
+      final exeption = await parseFirebaseException(e);
+      _logger.error('Failed to add photo $photoId for rabbit $rabbitId',
+          error: exeption);
+      throw exeption;
+    } catch (e) {
+      _logger.error('Failed to add photo $photoId for rabbit $rabbitId',
+          error: e);
+      throw const StorageUnknownExeption();
+    }
   }
 }

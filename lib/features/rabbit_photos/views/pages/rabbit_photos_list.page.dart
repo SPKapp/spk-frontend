@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 import 'package:spk_app_frontend/common/storage/storage.dart';
@@ -98,8 +99,30 @@ class _RabbitPhotosListPageState extends State<RabbitPhotosListPage> {
                     : null,
               ),
               floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  print('Add new photo');
+                onPressed: () async {
+                  final picker = ImagePicker();
+
+                  try {
+                    final image =
+                        await picker.pickImage(source: ImageSource.gallery);
+
+                    if (image != null && context.mounted) {
+                      context.read<RabbitPhotosBloc>().add(
+                            RabbitPhotosAddPhoto(
+                              image.name,
+                              await image.readAsBytes(),
+                            ),
+                          );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Nie udało się dodać zdjęcia.'),
+                        ),
+                      );
+                    }
+                  }
                 },
                 child: const Icon(Icons.add),
               ),

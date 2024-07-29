@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:spk_app_frontend/common/storage/storage.dart';
 import 'package:spk_app_frontend/features/rabbit_photos/models/models.dart';
 
@@ -44,6 +46,11 @@ abstract class IRabbitPhotoDownloadRepository extends IStorageRepository {
   /// This method deletes the photo with the given [photoId] for the rabbit.
   /// {@endtemplate}
   Future<void> deletePhoto(String photoId);
+
+  /// {@template rabbit_photos_repository.add_photo}
+  /// This method adds the photo with the given [photoId] for the rabbit.
+  /// {@endtemplate}
+  Future<void> addPhoto(String photoId, Uint8List data);
 
   /// {@template rabbit_photos_repository.photosStream}
   /// This stream is used to return the photos, requested by the [getPhotos] and [getPhoto] methods.

@@ -69,3 +69,14 @@ final class RabbitPhotosDeletePhoto extends RabbitPhotosEvent {
   @override
   List<Object> get props => [photoId];
 }
+
+/// This event adds a new photo to the storage.
+final class RabbitPhotosAddPhoto extends RabbitPhotosEvent {
+  const RabbitPhotosAddPhoto(this.name, this.data);
+
+  final String name;
+  final Uint8List data;
+
+  @override
+  List<Object> get props => [name, data];
+}

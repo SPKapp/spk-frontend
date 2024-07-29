@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -21,6 +22,7 @@ part 'rabbit_photos.state.dart';
 /// - [RabbitPhotosGetDefaultPhoto] - initiates the loading of the default photo from the storage.
 /// - [RabbitPhotosSetDefaultPhoto] - sets the photo with the given [photoId] as the default photo for the rabbit.
 /// - [RabbitPhotosDeletePhoto] - deletes the photo with the given [photoId].
+/// - [RabbitPhotosAddPhoto] - adds a new photo to the storage.
 ///
 /// Available states:
 /// - [RabbitPhotosInitial] - the initial state.
@@ -46,6 +48,7 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
     on<RabbitPhotosGetDefaultPhoto>(_onGetDefaultPhoto);
     on<RabbitPhotosSetDefaultPhoto>(_onSetDefaultPhoto);
     on<RabbitPhotosDeletePhoto>(_onDeletePhoto);
+    on<RabbitPhotosAddPhoto>(_onAddPhoto);
   }
 
   final String rabbitId;
@@ -279,5 +282,15 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
     _names.remove(event.photoId);
 
     emit(RabbitPhotosList(names: _names, photos: _photos));
+  }
+
+  /// The event handler for the [RabbitPhotosAddPhoto] event.
+  /// It adds a new photo to the storage.
+  Future<void> _onAddPhoto(
+      RabbitPhotosAddPhoto event, Emitter<RabbitPhotosState> emit) async {
+    await _photosRepositroy.addPhoto(event.name, event.data);
+
+    _names.add(event.name);
+    _photosRepositroy.getPhoto(event.name);
   }
 }

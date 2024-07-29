@@ -3,8 +3,6 @@
 ## Backend
 Patrz [Bacnekd repo](https://github.com/SPKapp/spk-backend-service/blob/main/docs/staging.md)
 
-## Zainicjowanie Firebase Hosting
-TODO: Dodaj opis
 
 ## Web
 1. Ustawienie zmiennych środowskowych w `.env/staging.env`
