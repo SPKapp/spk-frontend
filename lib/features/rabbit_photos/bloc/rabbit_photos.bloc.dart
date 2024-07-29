@@ -41,6 +41,7 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
       transformer: debounceTransformer(const Duration(milliseconds: 500)),
     );
     on<_RabbitPhotosEmmitPhotosError>(_onEmmitPhotosError);
+    on<_RabbitPhotosEmmitDefaultPhoto>(_onEmmitDefaultPhoto);
     on<RabbitPhotosGetDefaultPhoto>(_onGetDefaultPhoto);
     on<RabbitPhotosSetDefaultPhoto>(_onSetDefaultPhoto);
   }
@@ -76,6 +77,7 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
   /// The list of photo names
   List<String> _names = [];
   final Map<String, Photo> _photos = {};
+  String? _defaultPhotoId;
 
   /// The method to authenticate to the storage.
   ///
@@ -156,9 +158,20 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
     emit(RabbitPhotosFailure(code: event.error));
   }
 
+  Future<void> _onEmmitDefaultPhoto(_RabbitPhotosEmmitDefaultPhoto event,
+      Emitter<RabbitPhotosState> emit) async {
+    emit(RabbitPhotosDefaultPhoto(photo: event.photo));
+  }
+
   /// The method to handle the received photo.
   void _onRecivePhoto((String, Photo) data) async {
     final (name, photo) = data;
+
+    if (_defaultPhotoId == name) {
+      add(_RabbitPhotosEmmitDefaultPhoto(photo));
+      _defaultPhotoId = null;
+      return;
+    }
 
     if (!_names.contains(name)) {
       return;
@@ -199,8 +212,43 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
   }
 
   /// The event handler for the [RabbitPhotosGetDefaultPhoto] event.
-  void _onGetDefaultPhoto(
-      RabbitPhotosGetDefaultPhoto event, Emitter<RabbitPhotosState> emit) {}
+  Future<void> _onGetDefaultPhoto(RabbitPhotosGetDefaultPhoto event,
+      Emitter<RabbitPhotosState> emit) async {
+    await _ensureInitialized;
+    await authenticate();
+
+    try {
+      final name = await _photosRepositroy.getDefaultPhotoName();
+      if (name == null) {
+        emit(const RabbitPhotosFailure(code: StorageUnknownExeption()));
+        return;
+      }
+      _defaultPhotoId = name;
+      _photosRepositroy.getPhoto(name);
+    } on StorageExeption catch (e) {
+      if (e is StorageTokenExpiredExeption || e is StorageTokenNotSetExeption) {
+        await authenticate(force: true);
+        // Retry
+        if (event is _RabbitPhotosLoadPhotosAfterSetToken) {
+          // Avoid infinite loop
+          _logger.error('Token expired after refresh', error: e);
+          emit(RabbitPhotosFailure(code: e));
+          return;
+        }
+        add(const _RabbitPhotosLoadPhotosAfterSetToken());
+        return;
+      } else {
+        _logger.error('Error when listing photos', error: e);
+        emit(RabbitPhotosFailure(code: e));
+        return;
+      }
+    } catch (e) {
+      // This should not happen
+      _logger.error('Unknown error when listing photos', error: e);
+      emit(const RabbitPhotosFailure(code: StorageUnknownExeption()));
+      return;
+    }
+  }
 
   /// The event handler for the [RabbitPhotosSetDefaultPhoto] event.
   Future<void> _onSetDefaultPhoto(RabbitPhotosSetDefaultPhoto event,

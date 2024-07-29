@@ -33,6 +33,18 @@ final class _RabbitPhotosEmmitPhotosError extends RabbitPhotosEvent {
   final StorageExeption error;
 }
 
+/// This event emmits the default photo.
+final class _RabbitPhotosEmmitDefaultPhoto extends RabbitPhotosEvent {
+  const _RabbitPhotosEmmitDefaultPhoto(
+    this.photo,
+  );
+
+  final Photo photo;
+
+  @override
+  List<Object> get props => [photo];
+}
+
 /// This event initiates the loading of the default photo from the storage.
 final class RabbitPhotosGetDefaultPhoto extends RabbitPhotosEvent {
   const RabbitPhotosGetDefaultPhoto();

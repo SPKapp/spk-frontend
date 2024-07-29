@@ -100,13 +100,14 @@ class NotificationService {
   void _onFrontendMessageHandler(RemoteMessage message) {
     // TODO: Implement this
 
-    print('Got a message whilst in the foreground!,  ${message.category}');
-    print('Message data: ${message.data}');
-    print('Message type: ${message.messageType}');
+    _logger.debug(
+      'Got a message whilst in the foreground!,  ${message.category}\nMessage data: ${message.data}\nMessage type: ${message.messageType}',
+    );
 
     if (message.notification != null) {
-      print(
-          'Message also contained a notification: ${message.notification?.body} ${message.notification}');
+      _logger.debug(
+        'Message also contained a notification: ${message.notification?.body} ${message.notification}',
+      );
     }
   }
 

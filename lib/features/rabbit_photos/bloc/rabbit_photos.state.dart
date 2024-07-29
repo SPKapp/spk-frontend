@@ -40,3 +40,15 @@ final class RabbitPhotosFailure extends RabbitPhotosState {
   @override
   List<Object> get props => [code];
 }
+
+/// This state is emitted when the default photo is loaded.
+final class RabbitPhotosDefaultPhoto extends RabbitPhotosState {
+  const RabbitPhotosDefaultPhoto({
+    required this.photo,
+  });
+
+  final Photo photo;
+
+  @override
+  List<Object> get props => [photo];
+}

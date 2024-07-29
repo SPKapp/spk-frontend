@@ -2,7 +2,6 @@ abstract class AppConfig {
   static const String apiUrl = String.fromEnvironment('API_URL');
   static const String appName =
       String.fromEnvironment('APP_NAME', defaultValue: 'HopManager Dev');
-  static const String photoUrl = String.fromEnvironment('PHOTO_URL');
 
   // Firebase Emulator settings
   static const String firebaseEmulatorsProjectId =
