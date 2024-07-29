@@ -20,6 +20,7 @@ part 'rabbit_photos.state.dart';
 /// - [RabbitPhotosLoadPhotos] - initiates the loading of photos from the storage.
 /// - [RabbitPhotosGetDefaultPhoto] - initiates the loading of the default photo from the storage.
 /// - [RabbitPhotosSetDefaultPhoto] - sets the photo with the given [photoId] as the default photo for the rabbit.
+/// - [RabbitPhotosDeletePhoto] - deletes the photo with the given [photoId].
 ///
 /// Available states:
 /// - [RabbitPhotosInitial] - the initial state.
@@ -44,6 +45,7 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
     on<_RabbitPhotosEmmitDefaultPhoto>(_onEmmitDefaultPhoto);
     on<RabbitPhotosGetDefaultPhoto>(_onGetDefaultPhoto);
     on<RabbitPhotosSetDefaultPhoto>(_onSetDefaultPhoto);
+    on<RabbitPhotosDeletePhoto>(_onDeletePhoto);
   }
 
   final String rabbitId;
@@ -264,6 +266,18 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
         }
       }
     }
+    emit(RabbitPhotosList(names: _names, photos: _photos));
+  }
+
+  /// The event handler for the [RabbitPhotosDeletePhoto] event.
+  /// It deletes the photo with the given [photoId].
+  Future<void> _onDeletePhoto(
+      RabbitPhotosDeletePhoto event, Emitter<RabbitPhotosState> emit) async {
+    await _photosRepositroy.deletePhoto(event.photoId);
+
+    _photos.remove(event.photoId);
+    _names.remove(event.photoId);
+
     emit(RabbitPhotosList(names: _names, photos: _photos));
   }
 }

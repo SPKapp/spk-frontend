@@ -280,7 +280,12 @@ final class RabbitPhotosFirebaseStorageRepositroy
         return _defaultPhotoId;
       }
     } on FirebaseException catch (e) {
-      final exeption = parseFirebaseException(e);
+      final exeption = await parseFirebaseException(e);
+
+      if (exeption is StorageFileNotFoundExeption) {
+        _defaultPhotoId = null;
+        return null;
+      }
       _logger.error('Failed to get default photo for rabbit $rabbitId',
           error: exeption);
       throw exeption;
@@ -302,7 +307,7 @@ final class RabbitPhotosFirebaseStorageRepositroy
               customMetadata: {'uploadedBy': getUserId()}));
       _defaultPhotoId = photoId;
     } on FirebaseException catch (e) {
-      final exeption = parseFirebaseException(e);
+      final exeption = await parseFirebaseException(e);
       _logger.error('Failed to set default photo for rabbit $rabbitId',
           error: exeption);
       throw exeption;
@@ -327,5 +332,29 @@ final class RabbitPhotosFirebaseStorageRepositroy
             newDefaultPhoto.copyWith(isDefault: true));
       }
     }
+  }
+
+  /// {@macro rabbit_photos_repository.delete_photo}
+  /// This implementation also deletes the photo from the cache.
+  @override
+  Future<void> deletePhoto(String photoId) async {
+    try {
+      if (photoId == _defaultPhotoId) {
+        await _storageRef.child('default').delete();
+        _defaultPhotoId = null;
+      }
+      await _storageRef.child(photoId).delete();
+    } on FirebaseException catch (e) {
+      final exeption = await parseFirebaseException(e);
+      _logger.error('Failed to delete photo $photoId for rabbit $rabbitId',
+          error: exeption);
+      throw exeption;
+    } catch (e) {
+      _logger.error('Failed to delete photo $photoId for rabbit $rabbitId',
+          error: e);
+      throw const StorageUnknownExeption();
+    }
+
+    await _box?.delete(_filePath(photoId));
   }
 }

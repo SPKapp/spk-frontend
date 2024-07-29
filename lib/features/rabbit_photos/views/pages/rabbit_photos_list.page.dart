@@ -34,67 +34,104 @@ class _RabbitPhotosListPageState extends State<RabbitPhotosListPage> {
       child: BlocBuilder<RabbitPhotosBloc, RabbitPhotosState>(
         builder: (context, state) {
           if (state is RabbitPhotosList) {
+            if (state.names.length <= _currentIndex) {
+              _currentIndex = state.names.length - 1;
+            }
             return Scaffold(
-                appBar: AppBar(
-                  title: Text(widget.rabbitName ?? 'Zdjęcia królika'),
-                  actions: [
-                    IconButton(
-                      icon: Icon(
-                          state.photos[state.names[_currentIndex]] != null &&
+              appBar: AppBar(
+                title: Text(widget.rabbitName ?? 'Zdjęcia królika'),
+                actions: state.names.isNotEmpty
+                    ? [
+                        IconButton(
+                          icon: Icon(state.photos[state.names[_currentIndex]] !=
+                                      null &&
                                   state.photos[state.names[_currentIndex]]!
                                       .isDefault
                               ? Icons.star
                               : Icons.star_border_outlined),
-                      onPressed: () => context.read<RabbitPhotosBloc>().add(
-                            RabbitPhotosSetDefaultPhoto(
-                              state.names[_currentIndex],
-                            ),
-                          ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.download),
-                      onPressed: () {
-                        print('Download photo with index $_currentIndex');
+                          onPressed: () => context.read<RabbitPhotosBloc>().add(
+                                RabbitPhotosSetDefaultPhoto(
+                                  state.names[_currentIndex],
+                                ),
+                              ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.download),
+                          onPressed: () {
+                            print('Download photo with index $_currentIndex');
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () async {
+                            await showDialog<bool>(
+                                context: context,
+                                builder: (_) {
+                                  return AlertDialog(
+                                    title: const Text(
+                                      'Czy na pewno chcesz usunąć to zdjęcie?',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: const Text('Anuluj'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          context.read<RabbitPhotosBloc>().add(
+                                                RabbitPhotosDeletePhoto(
+                                                  state.names[_currentIndex],
+                                                ),
+                                              );
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Usuń'),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        ),
+                      ]
+                    : null,
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  print('Add new photo');
+                },
+                child: const Icon(Icons.add),
+              ),
+              body: state.names.isNotEmpty
+                  ? PhotoViewGallery.builder(
+                      itemCount: state.names.length,
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentIndex = index;
+                        });
                       },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        print('Delete photo with index $_currentIndex');
-                      },
-                    ),
-                  ],
-                ),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    print('Add new photo');
-                  },
-                  child: const Icon(Icons.add),
-                ),
-                body: PhotoViewGallery.builder(
-                    itemCount: state.names.length,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                    builder: (context, index) {
-                      final photo = state.photos[state.names[index]];
+                      builder: (context, index) {
+                        final photo = state.photos[state.names[index]];
 
-                      return PhotoViewGalleryPageOptions(
-                        imageProvider: MemoryImage(
-                          photo != null
-                              ? photo.data
-                              // throws an error catched by errorBuilder
-                              : Uint8List(0),
-                        ),
-                        errorBuilder: (context, error, stackTrace) => Center(
-                          child: photo != null
-                              ? const Icon(Icons.error)
-                              : const CircularProgressIndicator(),
-                        ),
-                      );
-                    }));
+                        return PhotoViewGalleryPageOptions(
+                          imageProvider: MemoryImage(
+                            photo != null
+                                ? photo.data
+                                // throws an error catched by errorBuilder
+                                : Uint8List(0),
+                          ),
+                          errorBuilder: (context, error, stackTrace) => Center(
+                            child: photo != null
+                                ? const Icon(Icons.error)
+                                : const CircularProgressIndicator(),
+                          ),
+                        );
+                      })
+                  : const Center(
+                      child: Text('Brak zdjęć.'),
+                    ),
+            );
           } else {
             return Scaffold(
               appBar: AppBar(),

@@ -40,6 +40,11 @@ abstract class IRabbitPhotoDownloadRepository extends IStorageRepository {
   /// {@endtemplate}
   Future<void> setDefaultPhotoName(String photoId);
 
+  /// {@template rabbit_photos_repository.delete_photo}
+  /// This method deletes the photo with the given [photoId] for the rabbit.
+  /// {@endtemplate}
+  Future<void> deletePhoto(String photoId);
+
   /// {@template rabbit_photos_repository.photosStream}
   /// This stream is used to return the photos, requested by the [getPhotos] and [getPhoto] methods.
   /// {@endtemplate}

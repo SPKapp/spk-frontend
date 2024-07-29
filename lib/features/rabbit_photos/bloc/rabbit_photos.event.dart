@@ -59,3 +59,13 @@ final class RabbitPhotosSetDefaultPhoto extends RabbitPhotosEvent {
   @override
   List<Object> get props => [photoId];
 }
+
+/// This event deletes the photo with the given [photoId].
+final class RabbitPhotosDeletePhoto extends RabbitPhotosEvent {
+  const RabbitPhotosDeletePhoto(this.photoId);
+
+  final String photoId;
+
+  @override
+  List<Object> get props => [photoId];
+}

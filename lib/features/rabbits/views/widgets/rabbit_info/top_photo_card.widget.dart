@@ -68,14 +68,14 @@ class TopPhotoCard extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return Container(
-                    margin: const EdgeInsets.only(
+                  return const Card(
+                    margin: EdgeInsets.only(
                       top: 2.0,
                       bottom: 2.0,
                       left: 8.0,
                       right: 2.0,
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Icon(
                         Icons.photo,
                       ),

@@ -130,6 +130,8 @@ abstract class FirebaseStorageRepository implements IStorageRepository {
       }
       // That should not happen
       return const StorageTokenNotSetExeption();
+    } else if (e.code == 'object-not-found') {
+      return const StorageFileNotFoundExeption(fileId: null);
     } else {
       logger.error('Unknown Firebase Storage error', error: e);
       return const StorageUnknownExeption();
