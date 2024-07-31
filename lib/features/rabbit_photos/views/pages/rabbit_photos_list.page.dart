@@ -1,8 +1,8 @@
-import 'dart:typed_data';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gal/gal.dart';
+import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -61,9 +61,20 @@ class _RabbitPhotosListPageState extends State<RabbitPhotosListPage> {
                           icon: const Icon(Icons.download),
                           onPressed: () async {
                             try {
-                              await Gal.putImageBytes(
-                                state.photos[state.names[_currentIndex]]!.data,
-                              );
+                              if (kIsWeb) {
+                                await WebImageDownloader
+                                    .downloadImageFromUInt8List(
+                                  uInt8List: state
+                                      .photos[state.names[_currentIndex]]!.data,
+                                  name: state.names[_currentIndex],
+                                );
+                              } else {
+                                await Gal.putImageBytes(
+                                  state
+                                      .photos[state.names[_currentIndex]]!.data,
+                                  name: state.names[_currentIndex],
+                                );
+                              }
                             } catch (e) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -73,6 +84,7 @@ class _RabbitPhotosListPageState extends State<RabbitPhotosListPage> {
                                   ),
                                 );
                               }
+                              return;
                             }
 
                             if (context.mounted) {
