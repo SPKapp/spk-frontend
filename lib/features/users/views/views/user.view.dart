@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:spk_app_frontend/common/views/widgets/lists/card.widget.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
@@ -38,12 +38,12 @@ class UserView extends StatelessWidget {
         BasicInfoCard(
           user: user,
         ),
-        const AppCard(
-          child: ListTile(
-            title: Text('Tutaj będzie adres'),
-            leading: Icon(FontAwesomeIcons.addressCard),
-          ),
-        ),
+        // const AppCard(
+        //   child: ListTile(
+        //     title: Text('Tutaj będzie adres'),
+        //     leading: Icon(FontAwesomeIcons.addressCard),
+        //   ),
+        // ),
         RolesCard(roleInfo: roleInfo),
       ],
     );

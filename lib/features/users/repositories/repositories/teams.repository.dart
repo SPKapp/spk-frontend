@@ -39,7 +39,7 @@ final class TeamsReposiotry implements ITeamsRepository {
       _GetRegionsAndTeamsQuery.document,
       operationName: _GetRegionsAndTeamsQuery.operationName,
       variables: {
-        if (regionsIds != null) 'regionsIds': regionsIds,
+        if (regionsIds != null) 'regionsIds': List.unmodifiable(regionsIds),
         'limit': 0,
         'isActive': true,
       },

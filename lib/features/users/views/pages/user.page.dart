@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:spk_app_frontend/common/views/pages/get_one.page.dart';
 import 'package:spk_app_frontend/common/views/widgets/actions.dart';
-import 'package:spk_app_frontend/features/auth/auth.dart';
+// import 'package:spk_app_frontend/features/auth/auth.dart';
 import 'package:spk_app_frontend/features/users/bloc/user.cubit.dart';
 import 'package:spk_app_frontend/features/users/models/models.dart';
 import 'package:spk_app_frontend/features/users/repositories/interfaces.dart';
@@ -23,7 +23,7 @@ class UserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = context.read<AuthCubit>().currentUser;
+    // final currentUser = context.read<AuthCubit>().currentUser;
 
     return BlocProvider(
       create: userCubit ??
@@ -91,24 +91,24 @@ class UserPage extends StatelessWidget {
                   },
                   child: const Text('Usuń rolę'),
                 ),
-                if (user.active == true &&
-                    (currentUser.checkRole([Role.admin]) ||
-                        (currentUser.managerRegions?.isNotEmpty == true &&
-                            currentUser.managerRegions!.length > 1)))
-                  PopupMenuItem(
-                    key: const Key('changeRegion'),
-                    onTap: () async {
-                      final result = await showModalBottomSheet<bool>(
-                          context: context,
-                          builder: (_) {
-                            return const Text('Not implemented yet');
-                          });
-                      if (result == true && context.mounted) {
-                        context.read<UserCubit>().fetch();
-                      }
-                    },
-                    child: const Text('Zmień region'),
-                  ),
+                // if (user.active == true &&
+                //     (currentUser.checkRole([Role.admin]) ||
+                //         (currentUser.managerRegions?.isNotEmpty == true &&
+                //             currentUser.managerRegions!.length > 1)))
+                //   PopupMenuItem(
+                //     key: const Key('changeRegion'),
+                //     onTap: () async {
+                //       final result = await showModalBottomSheet<bool>(
+                //           context: context,
+                //           builder: (_) {
+                //             return const Text('Not implemented yet');
+                //           });
+                //       if (result == true && context.mounted) {
+                //         context.read<UserCubit>().fetch();
+                //       }
+                //     },
+                //     child: const Text('Zmień region'),
+                //   ),
                 PopupMenuItem(
                   key: const Key('deactivateUser'),
                   onTap: () async {
