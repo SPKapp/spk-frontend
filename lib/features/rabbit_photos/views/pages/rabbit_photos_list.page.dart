@@ -36,6 +36,15 @@ class _RabbitPhotosListPageState extends State<RabbitPhotosListPage> {
       child: BlocBuilder<RabbitPhotosBloc, RabbitPhotosState>(
         builder: (context, state) {
           if (state is RabbitPhotosList) {
+            if (state is RabbitPhotosPhotoAdded) {
+              _currentIndex = state.names.length - 1;
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Zdjęcie zostało dodane.'),
+                ),
+              );
+            }
             if (state.names.length <= _currentIndex) {
               _currentIndex = state.names.length - 1;
             }
@@ -156,14 +165,6 @@ class _RabbitPhotosListPageState extends State<RabbitPhotosListPage> {
                         ),
                       );
                     }
-                  }
-
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Zdjęcie zostało dodane.'),
-                      ),
-                    );
                   }
                 },
                 child: const Icon(Icons.add),

@@ -288,9 +288,15 @@ class RabbitPhotosBloc extends Bloc<RabbitPhotosEvent, RabbitPhotosState> {
   /// It adds a new photo to the storage.
   Future<void> _onAddPhoto(
       RabbitPhotosAddPhoto event, Emitter<RabbitPhotosState> emit) async {
-    await _photosRepositroy.addPhoto(event.name, event.data);
-
     _names.add(event.name);
+    emit(RabbitPhotosList(names: _names, photos: _photos));
+
+    await _photosRepositroy.addPhoto(event.name, event.data);
+    emit(RabbitPhotosPhotoAdded(
+      name: event.name,
+      names: _names,
+      photos: _photos,
+    ));
     _photosRepositroy.getPhoto(event.name);
   }
 }

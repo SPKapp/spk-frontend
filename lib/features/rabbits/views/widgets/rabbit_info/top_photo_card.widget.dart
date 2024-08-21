@@ -28,63 +28,72 @@ class TopPhotoCard extends StatelessWidget {
           left: 8.0,
           right: 4.0,
         ),
-        child: AspectRatio(
-          aspectRatio: 1.0,
-          child: GestureDetector(
-            onTap: () {
-              context.push('/rabbit/${rabbit.id}/photos', extra: {
-                'rabbitName': rabbit.name,
-              });
-            },
-            child: BlocBuilder<RabbitPhotosBloc, RabbitPhotosState>(
-              builder: (context, state) {
-                if (state is RabbitPhotosInitial) {
-                  return Container(
-                      margin: const EdgeInsets.only(
-                        top: 2.0,
-                        bottom: 2.0,
-                        left: 8.0,
-                        right: 2.0,
-                      ),
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ));
-                } else if (state is RabbitPhotosDefaultPhoto) {
-                  return Container(
-                    margin: const EdgeInsets.only(
-                      top: 2.0,
-                      bottom: 2.0,
-                      left: 8.0,
-                      right: 2.0,
+        child: BlocBuilder<RabbitPhotosBloc, RabbitPhotosState>(
+          builder: (context, state) {
+            late Widget child;
+
+            if (state is RabbitPhotosInitial) {
+              child = Container(
+                  margin: const EdgeInsets.only(
+                    top: 2.0,
+                    bottom: 2.0,
+                    left: 8.0,
+                    right: 2.0,
+                  ),
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ));
+            } else if (state is RabbitPhotosDefaultPhoto) {
+              child = Container(
+                margin: const EdgeInsets.only(
+                  top: 2.0,
+                  bottom: 2.0,
+                  left: 8.0,
+                  right: 2.0,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  image: DecorationImage(
+                    image: MemoryImage(
+                      state.photo.data,
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      image: DecorationImage(
-                        image: MemoryImage(
-                          state.photo.data,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                } else {
-                  return const Card(
-                    margin: EdgeInsets.only(
-                      top: 2.0,
-                      bottom: 2.0,
-                      left: 8.0,
-                      right: 2.0,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.photo,
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            } else {
+              child = const Card(
+                margin: EdgeInsets.only(
+                  top: 2.0,
+                  bottom: 2.0,
+                  left: 8.0,
+                  right: 2.0,
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.photo,
+                  ),
+                ),
+              );
+            }
+
+            return AspectRatio(
+              aspectRatio: 1.0,
+              child: GestureDetector(
+                onTap: () async {
+                  await context.push('/rabbit/${rabbit.id}/photos', extra: {
+                    'rabbitName': rabbit.name,
+                  });
+                  if (context.mounted) {
+                    context.read<RabbitPhotosBloc>().add(
+                          const RabbitPhotosGetDefaultPhoto(),
+                        );
+                  }
+                },
+                child: child,
+              ),
+            );
+          },
         ),
       ),
     );

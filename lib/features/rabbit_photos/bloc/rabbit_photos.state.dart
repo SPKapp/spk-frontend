@@ -14,7 +14,7 @@ final class RabbitPhotosInitial extends RabbitPhotosState {}
 /// The [names] are the names of the photos and the [photos] contains map of the names and the [Photo] objects.
 /// If the name is not in the [photos] map, the photo is not loaded.
 /// If in the [photos] map object is [Photo.error], error occured while loading the photo.
-final class RabbitPhotosList extends RabbitPhotosState {
+class RabbitPhotosList extends RabbitPhotosState {
   RabbitPhotosList({
     required List<String> names,
     required Map<String, Photo> photos,
@@ -51,4 +51,18 @@ final class RabbitPhotosDefaultPhoto extends RabbitPhotosState {
 
   @override
   List<Object> get props => [photo];
+}
+
+/// This state is emitted when photo was added.
+final class RabbitPhotosPhotoAdded extends RabbitPhotosList {
+  RabbitPhotosPhotoAdded({
+    required this.name,
+    required super.names,
+    required super.photos,
+  });
+
+  final String name;
+
+  @override
+  List<Object> get props => [name, names, photos];
 }
